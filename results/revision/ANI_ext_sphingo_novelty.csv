@@ -1,0 +1,7 @@
+MAG,Nearest_accession,Nearest_organism,Nearest_ANI,Novel_species_candidate
+S16,GCF_016894225.1,Sphingobacterium multivorum,93.85,True
+C13,GCF_003610355.1,Sphingobacterium detergens,94.5,True
+S13,GCF_003610355.1,Sphingobacterium detergens,94.57,True
+V3,GCF_003610355.1,Sphingobacterium detergens,95.09,False
+S23,GCF_014109745.1,Sphingobacterium paramultivorum,98.96,False
+C22,GCF_023277505.1,Sphingobacterium siyangense,99.16,False

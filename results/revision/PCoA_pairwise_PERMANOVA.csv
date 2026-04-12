@@ -1,0 +1,7 @@
+A,B,n_A,n_B,pseudo_F,p,q_BH
+Cattle,Poultry,22,42,1.237,0.213,0.3195
+Cattle,Sheep,22,32,1.094,0.313,0.3756
+Cattle,Swine,22,15,1.821,0.01,0.06
+Poultry,Sheep,42,32,0.638,0.852,0.852
+Poultry,Swine,42,15,1.431,0.114,0.228
+Sheep,Swine,32,15,1.729,0.035,0.105
