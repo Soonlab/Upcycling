@@ -39,31 +39,31 @@ Forest-style plot of fold-change enrichment (log-scale x-axis) for trait subcate
 ### Figure 7 | Pan-genome and trait-module PCoA by waste source.
 *(`revision/Fig_PCoA_source_genus.png`, `.pdf`; `revision/Fig_PCoA_trait_source.png`, `.pdf`)*
 
-**(a)** Jaccard-based Principal Coordinates Analysis of Panaroo gene presence/absence (filtered to 9,668 genes at 5–95 % prevalence). Points are coloured by waste source (red cattle, blue swine, green sheep, orange poultry); MICP-complete MAGs are highlighted with an open red ring and label. PERMANOVA identifies GTDB genus as the dominant structuring variable (pseudo-F = 8.21, p = 0.001) but only weak differentiation by waste source (pseudo-F = 1.25, p = 0.11). **(b)** Euclidean PCoA of per-10³-CDS-normalised counts across 38 trait-module subcategories. In contrast to panel (a), trait distribution is strongly structured by waste source (PERMANOVA pseudo-F = 34.19, p = 0.001). MICP-complete MAGs consistently project onto the "functionally extreme" tail of the ordination regardless of origin, supporting their interpretation as environmentally specialised lineages rather than source-specific outliers. Pairwise PERMANOVA and post-hoc q-values are listed in Supplementary Table S9 (`PCoA_pairwise_PERMANOVA.csv`).
+**(a)** Jaccard-based Principal Coordinates Analysis of Panaroo gene presence/absence (filtered to 9,668 genes at 5–95 % prevalence). Points are coloured by waste source (red cattle, blue swine, green sheep, orange poultry); MICP-complete MAGs are highlighted with an open red ring and label. PERMANOVA identifies GTDB genus as the dominant structuring variable (pseudo-F = 8.21, p = 0.001) but only weak differentiation by waste source (pseudo-F = 1.25, p = 0.11). **(b)** Z-score–standardised Euclidean PCoA of per-10³-CDS-normalised counts across 38 trait-module subcategories (z-scoring prevents a single high-abundance module from dominating the first principal coordinate). Trait distribution is significantly structured by waste source (PERMANOVA pseudo-F = 2.71, p = 0.001). MICP-complete MAGs consistently project onto the "functionally extreme" tail of the ordination regardless of origin, supporting their interpretation as environmentally specialised lineages rather than source-specific outliers. Pairwise PERMANOVA and post-hoc q-values are listed in Supplementary Table S9 (`PCoA_pairwise_PERMANOVA.csv`).
 
 ---
 
 ## Supplementary figures
 
-### Figure S1 | Biofilm / EPS gene modules across the 111-MAG panel.
-*(`extra/Fig_T1a_Biofilm_EPS_heatmap.png`, `.pdf`)*
-Keyword-based EPS/biofilm heat map (per 10³ CDS) covering pel, psl, pga, cellulose (bcs), alginate (alg), curli (csg), colanic (wca), capsule (wz*/cps), adhesin/autotransporter, and quorum-sensing subcategories. MICP-complete rows red bold.
+### Figure S1 | Biofilm / EPS gene modules (genus-aggregated).
+*(`Figure_S1.png`, `.pdf`)*
+Genus-aggregated heat map (mean gene hits per 10³ CDS, log₁₀-transformed for readability) of ten EPS/biofilm subcategories (pel, psl, pga, cellulose/bcs, alginate/alg, curli/csg, colanic/wca, capsule/wz\*, adhesin/autotransporter, quorum sensing) across the nine GTDB-Tk genera with ≥ 2 MAGs. Genera containing MICP-complete lineage members (*Sphingobacterium*, *Pseudomonas*\_E) are placed at the top and rendered in red bold.
 
-### Figure S2 | Ammonia-handling and nitrogen-assimilation modules.
-*(`extra/Fig_T1b_Ammonia_detox_heatmap.png`, `.pdf`)*
-Heat map of urea transport (urt, urea transporter), GS-GOGAT (glnA, gltBD), GDH, AmtB, PII regulators (glnB/K) and nitrate/nitrite reductase pathways.
+### Figure S2 | Ammonia-handling and nitrogen-assimilation modules (genus-aggregated).
+*(`Figure_S2.png`, `.pdf`)*
+Genus-aggregated heat map (log₁₀-scaled) covering urea transport (urtABC, urea transporter), GS–GOGAT (glnA, gltBD), GDH (gdhA), AmtB, PII regulators (glnB/K) and nitrate/nitrite reductase pathways.
 
-### Figure S3 | Alkaline and osmotic-stress tolerance modules.
-*(`extra/Fig_T2a_Alkaline_stress_heatmap.png`, `.pdf`)*
-Per-MAG counts of *nhaA–C*, Mrp complex, Kdp / Trk K⁺ uptake, compatible-solute biosynthesis (*opu*, *pro*, *betA/B*, *ect*), chaperones (*groEL/ES*, *dnaK/J*, *clpB*) and oxidative-stress defences (*katA/B/G*, *sodA/B/C*, *ahpCF*).
+### Figure S3 | Alkaline and osmotic-stress tolerance modules (genus-aggregated).
+*(`Figure_S3.png`, `.pdf`)*
+Genus-aggregated heat map (log₁₀-scaled) of Na⁺/H⁺ antiporter (nhaA–C), Mrp multi-subunit antiporter complex, Kdp / Trk K⁺ uptake, compatible-solute biosynthesis (opu, pro, betA/B, ect), chaperones (groEL/ES, dnaK/J, clpB) and oxidative-stress defences (katA/B/G, sodA/B/C, ahpCF).
 
 ### Figure S4 | CAZyme profile: keyword proxy and DRAM/dbCAN validation.
-*(`extra/Fig_T2b_CAZyme_heatmap.png`, `.pdf`; `revision/Fig_dbCAN_classes.png`, `revision/Fig_dbCAN_topFamilies.png`)*
-Keyword-based CAZy proxy heat map and dbCAN-derived class-level and family-level profiles. Both approaches identify MICP-complete enrichment of glycoside hydrolases and carbohydrate-binding modules.
+*(`Figure_S4a_keyword.png`, `Figure_S4b_dbCAN_classes.png`, `Figure_S4c_dbCAN_families.png`)*
+Keyword-based CAZy proxy heat map and independent DRAM/dbCAN-derived class-level and family-level profiles. Both approaches identify MICP-complete-lineage enrichment of glycoside hydrolases and carbohydrate-binding modules.
 
-### Figure S5 | Heavy-metal and antibiotic-resistance gene modules.
-*(`extra/Fig_T2c_MetalAMR_heatmap.png`, `.pdf`)*
-Heavy-metal efflux (*czc, cop, cus, ars, mer, znt*), metallothioneins, β-lactamases, MDR efflux (*acr, mex,* MATE), aminoglycoside/tetracycline/macrolide determinants.
+### Figure S5 | Heavy-metal and antibiotic-resistance gene modules (genus-aggregated).
+*(`Figure_S5.png`, `.pdf`)*
+Genus-aggregated heat map (log₁₀-scaled) of heavy-metal efflux (czc, cop, cus, ars, mer, znt), metallothioneins, β-lactamases, broad MDR efflux (acr, mex, MATE) and aminoglycoside/tetracycline/macrolide determinants.
 
 ### Figure S6 | Pairwise ANI within MICP-complete lineages.
 *(`extra/Fig_T2d_MICP-completeANI.png`, `.pdf`)*

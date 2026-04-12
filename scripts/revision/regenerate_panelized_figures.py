@@ -139,12 +139,14 @@ def Line2D_patch(col, lab): return Patch(facecolor="white", edgecolor=col, lw=2,
 # Figure 2 — module score by genus + per-gene prevalence  (a, b)
 # =============================================================================
 def figure2():
+    # use the MICP summary (100 MAGs that passed Panaroo QC) for module score
     micp = pd.read_csv(f"{BASE}/pangenome_work/MICP_Pangenome_Final_Summary.csv", index_col=0)
     gene_cols=["ureA","ureB","ureC","ureD","ureE","ureF","ureG","cah"]
     df=micp.copy()
     df["Genus"]=[tax.loc[i,"Genus"] if i in tax.index else "Unclassified" for i in df.index]
     df["Score"]=df[gene_cols].sum(axis=1)
     order=df.groupby("Genus")["Score"].mean().sort_values(ascending=False).index.tolist()
+    N_TOTAL=len(df)
 
     genera_all = sorted(tax["Genus"].unique())
     cmap = plt.get_cmap("tab20", len(genera_all))
@@ -184,7 +186,7 @@ def figure2():
             label=f"{LABEL_GROUP} (n={len(LINEAGE)})",
             color=COLOR_HIGHLIGHT, edgecolor="black", lw=0.5)
     ax2.bar(xk+w/2, rest_prev.values, w,
-            label=f"{LABEL_OTHER} (n={len(df)-len(LINEAGE)})",
+            label=f"{LABEL_OTHER} (n={N_TOTAL-len(LINEAGE)} of {N_TOTAL} Panaroo-QC MAGs)",
             color=COLOR_OTHER, edgecolor="black", lw=0.5)
     ax2.set_xticks(xk); ax2.set_xticklabels(gene_cols, style="italic")
     ax2.set_ylabel("Prevalence (% of genomes)")
@@ -430,26 +432,36 @@ def figure5():
     ax.text(-0.1, 1.03, "a", transform=ax.transAxes, fontsize=13, fontweight="bold")
     ax.grid(axis="y", ls=":", alpha=0.3)
 
-    # -- panel b: AAI S13/S16 vs in-panel Sphingobacterium --
+    # -- panel b: AAI S13/S16 vs in-panel Sphingobacterium (two stacked mini-axes) --
     aai=pd.read_csv(f"{BASE}/research/extra/novel_species/AAI_S13_S16_vs_Sphingobacterium.csv")
-    ax=fig.add_subplot(gs[0,1])
-    for off,q in enumerate(["S13","S16"]):
+    gs_b = gs[0,1].subgridspec(2, 1, hspace=0.3)
+    for idx,q in enumerate(["S13","S16"]):
+        ax=fig.add_subplot(gs_b[idx,0])
         sub=aai[aai.Query==q].dropna(subset=["AAI"]).sort_values("AAI", ascending=True)
-        y=np.arange(len(sub)) + off*7
-        lbls=[f"{q} → {t} ({s or 'sp.'})" for t,s in zip(sub.Target, sub.Target_species)]
-        colors=["#3498db" if qc==q else "#2ecc71" for qc in [q]*len(sub)]
-        ax.barh(y, sub.AAI.values, color="#3498db" if q=="S13" else "#16a085",
-                edgecolor="black", lw=0.4)
-        for yi, lb in zip(y, lbls):
-            ax.text(sub.AAI.min()-2, yi, lb, va="center", ha="right", fontsize=7)
-    ax.axvline(95, ls="--", color="red", lw=0.8, label="95 % (species)")
-    ax.axvline(70, ls=":",  color="gray", lw=0.8, label="70 % (genus)")
-    ax.set_xlabel("AAI (%)"); ax.set_xlim(55, 100)
-    ax.set_yticks([])
-    ax.legend(frameon=False, loc="lower right", fontsize=8)
-    ax.set_title("AAI of S13 and S16 vs in-panel Sphingobacterium (RBH, mmseqs2)",
-                 fontsize=9, loc="left")
-    ax.text(-0.05, 1.03, "b", transform=ax.transAxes, fontsize=13, fontweight="bold")
+        y=np.arange(len(sub))
+        lbls=[f"vs {t} ({s.replace('Sphingobacterium','S.') if s else 'sp.'})"
+              for t,s in zip(sub.Target, sub.Target_species.fillna(""))]
+        bar_col = "#3498db" if q=="S13" else "#16a085"
+        # Fold values that are below 1 (stored as proportion) to percent
+        vals = sub.AAI.values
+        if np.nanmedian(vals) < 1.5: vals = vals*100
+        ax.barh(y, vals, color=bar_col, edgecolor="black", lw=0.4)
+        for yi, lb, v in zip(y, lbls, vals):
+            ax.text(v-1, yi, f"{v:.2f}%  {lb}", va="center", ha="right",
+                    fontsize=7.5, color="white" if v>80 else "black")
+        ax.axvline(95, ls="--", color="red", lw=0.9)
+        ax.axvline(70, ls=":",  color="gray", lw=0.8)
+        ax.set_xlim(55,100); ax.set_yticks([])
+        ax.set_title(f"{q} AAI vs in-panel Sphingobacterium (n={len(sub)})",
+                     fontsize=9, loc="left")
+        if idx==1: ax.set_xlabel("AAI (%)")
+        # red-line legend only on top panel
+        if idx==0:
+            from matplotlib.lines import Line2D
+            ax.legend(handles=[Line2D([0],[0],color="red",ls="--", label="95 % species cutoff"),
+                               Line2D([0],[0],color="gray",ls=":",label="70 % genus cutoff")],
+                      frameon=False, loc="lower right", fontsize=7)
+            ax.text(-0.05, 1.15, "b", transform=ax.transAxes, fontsize=13, fontweight="bold")
 
     # -- panel c: External ANI vs 63 RefSeq --
     ani = pd.read_csv(f"{BASE}/research/revision/ANI_ext_sphingo_matrix.csv", index_col=0)
@@ -556,12 +568,17 @@ def figure7():
     ord_=pcoa(dm, number_of_dimensions=2); var=ord_.proportion_explained*100
     coords=ord_.samples.copy(); coords.index=mags
 
-    # trait
+    # trait — standardise each module to zero-mean/unit-variance so PCoA does not
+    # become 1-dimensional; distance = Bray-Curtis on the original counts
     cts=pd.read_csv(f"{BASE}/research/extra/gene_category_counts.csv").set_index("Sample")
     subcols=[c for c in cts.columns if "::" in c]
     norm=cts[subcols].div(cts["CDS_total"], axis=0)*1000
     mag_t=[m for m in mags if m in norm.index]
-    dm_t=DistanceMatrix(squareform(pdist(norm.loc[mag_t].values, metric="euclidean")), ids=mag_t)
+    # Z-score transform per module then Euclidean
+    from scipy.stats import zscore
+    Z = zscore(norm.loc[mag_t].values, axis=0, ddof=0, nan_policy="omit")
+    Z = np.nan_to_num(Z, nan=0.0)
+    dm_t=DistanceMatrix(squareform(pdist(Z, metric="euclidean")), ids=mag_t)
     perm_t=permanova(dm_t, grouping=meta.loc[mag_t,"Source"], permutations=999)
     ord_t=pcoa(dm_t, number_of_dimensions=2); var_t=ord_t.proportion_explained*100
     coords_t=ord_t.samples.copy(); coords_t.index=mag_t
