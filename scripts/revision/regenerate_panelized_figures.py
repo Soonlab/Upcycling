@@ -312,28 +312,49 @@ def figure4():
     # drop MAGs whose DRAM annotation is empty (all-zero rows)
     row_sum = sel[curated].sum(axis=1)
     sel = sel.loc[row_sum > 0]
-    sel=sel.sort_values(["Group","Genus"], ascending=[False, True])
 
-    fig=plt.figure(figsize=(17, 10))
-    gs=fig.add_gridspec(1, 2, width_ratios=[2.6, 1], wspace=0.25)
+    # ----- aggregate to genus level (mean completeness) for readable panel a -----
+    agg = sel.groupby("Genus")[curated].mean()
+    n_per_genus = sel.groupby("Genus").size()
+    # keep only genera with ≥2 MAGs and sort by mean urease/CA module score
+    agg = agg.loc[n_per_genus[n_per_genus>=2].index]
+    # sort: put taxa containing MICP-complete members at top
+    # (use full taxonomy, not the DRAM-filtered subset, so that a genus whose MICP-complete members
+    # lost DRAM annotation from the interrupted rerun is still flagged correctly)
+    contains_mc = {g: any(i in LINEAGE and tax.loc[i,"Genus"]==g for i in LINEAGE if i in tax.index)
+                   for g in agg.index}
+    agg["_priority"] = [0 if contains_mc[g] else 1 for g in agg.index]
+    agg = agg.sort_values("_priority").drop(columns="_priority")
+    # stylish y-labels: "Genus (n=X)" with MICP-complete genera in red
+    ylbls = [f"{g}  (n = {n_per_genus[g]})" for g in agg.index]
 
-    # panel a — heatmap
+    fig=plt.figure(figsize=(17, 9))
+    gs=fig.add_gridspec(1, 2, width_ratios=[1.7, 1], wspace=0.35)
+
+    # panel a — genus-level DRAM module heatmap
     ax=fig.add_subplot(gs[0,0])
-    mat=sel[curated].values.astype(float)
+    mat=agg[curated].values.astype(float)
     im=ax.imshow(mat, aspect="auto", cmap="YlGnBu", vmin=0, vmax=1)
     ax.set_xticks(range(len(curated)))
-    ax.set_xticklabels(curated, rotation=60, ha="right", fontsize=6.5)
-    ax.set_yticks(range(len(sel)))
-    lbls=[f"{i}  [{g}]" for i,g in zip(sel.index, sel["Genus"])]
-    ax.set_yticklabels(lbls, fontsize=5.0)
-    for i,(_,r) in enumerate(sel.iterrows()):
-        if r.Group:
+    ax.set_xticklabels(curated, rotation=45, ha="right", fontsize=8)
+    ax.set_yticks(range(len(agg)))
+    ax.set_yticklabels(ylbls, fontsize=10)
+    # colour code y-labels: red = MICP-complete-bearing genus
+    for i,g in enumerate(agg.index):
+        if contains_mc[g]:
             ax.get_yticklabels()[i].set_color(COLOR_HIGHLIGHT)
             ax.get_yticklabels()[i].set_fontweight("bold")
-    cbar=fig.colorbar(im, ax=ax, shrink=0.5, pad=0.01)
-    cbar.set_label("Module completeness", fontsize=8)
-    ax.text(-0.18, 1.02, "a", transform=ax.transAxes, fontsize=13, fontweight="bold")
-    ax.set_title(f"DRAM metabolic-module completeness ({len(sel)} MAGs × 30 modules)", fontsize=9, loc="left")
+    # outline cells
+    ax.set_xticks(np.arange(len(curated))-0.5, minor=True)
+    ax.set_yticks(np.arange(len(agg))-0.5, minor=True)
+    ax.grid(which="minor", color="white", lw=1.2)
+    ax.tick_params(which="minor", bottom=False, left=False)
+
+    cbar=fig.colorbar(im, ax=ax, shrink=0.6, pad=0.01)
+    cbar.set_label("Mean module completeness (per genus)", fontsize=9)
+    ax.text(-0.27, 1.03, "a", transform=ax.transAxes, fontsize=13, fontweight="bold")
+    ax.set_title(f"DRAM metabolic-module completeness, genus aggregated "
+                 f"({len(agg)} genera, n ≥ 2)", fontsize=10, loc="left")
 
     # panel b — Bakta-based trait-module comparison for MICP-critical pathways
     cts=pd.read_csv(f"{BASE}/research/extra/gene_category_counts.csv")
