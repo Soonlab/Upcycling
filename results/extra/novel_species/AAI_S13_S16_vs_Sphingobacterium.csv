@@ -1,0 +1,11 @@
+Query,Target,Target_species,AAI,RBH
+S13,V3,Sphingobacterium sp019969845,93.15,1401
+S13,C13,Sphingobacterium sp029542085,90.52,1481
+S13,S16,,82.47,2260
+S13,S23,Sphingobacterium paramultivorum,81.72,2151
+S13,C22,Sphingobacterium siyangense,78.88,1175
+S16,S23,Sphingobacterium paramultivorum,93.49,3160
+S16,C22,Sphingobacterium siyangense,91.36,1586
+S16,V3,Sphingobacterium sp019969845,83.18,1681
+S16,S13,,82.46,2260
+S16,C13,Sphingobacterium sp029542085,80.81,1795

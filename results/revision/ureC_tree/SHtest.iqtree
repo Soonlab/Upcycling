@@ -1,0 +1,207 @@
+IQ-TREE 3.1.1 built Apr  8 2026
+
+Input file name: /data/data/Upcycling/research/revision/ureC_tree/ureC_common.aln.faa
+Type of analysis: tree reconstruction
+Random seed number: 322122
+
+REFERENCES
+----------
+
+To cite IQ-TREE 3 please use:
+
+Thomas K.F. Wong, Nhan Ly-Trong, Huaiyan Ren, Hector Banos, Andrew J. Roger,
+Edward Susko, Chris Bielow, Nicola De Maio, Nick Goldman, Matthew W. Hahn,
+Gavin Huttley, Robert Lanfear, Bui Quang Minh (2025)
+IQ-TREE 3: Phylogenomic Inference Software using Complex Evolutionary Models.
+Submitted.
+
+SEQUENCE ALIGNMENT
+------------------
+
+NOTE: Alignment sequence type is auto-detected. If in doubt, specify it via -st option.
+Input data: 46 sequences with 625 amino-acid sites
+Number of constant sites: 240 (= 38.4% of all sites)
+Number of invariant (constant or ambiguous constant) sites: 240 (= 38.4% of all sites)
+Number of parsimony informative sites: 334
+Number of distinct site patterns: 445
+
+SUBSTITUTION PROCESS
+--------------------
+
+Model of substitution: LG+G4
+
+State frequencies: (model)
+
+Model of rate heterogeneity: Gamma with 4 categories
+Gamma shape alpha: 0.4989
+
+ Category  Relative_rate  Proportion
+  1         0.0332         0.2500
+  2         0.2512         0.2500
+  3         0.8195         0.2500
+  4         2.8961         0.2500
+Relative rates are computed as MEAN of the portion of the Gamma distribution falling in the category.
+
+STARTING TREE
+-------------
+
+Log-likelihood of the tree: -11157.1593 (s.e. 434.3653)
+Unconstrained log-likelihood (without tree): -3592.3654
+Number of free parameters (#branches + #model parameters): 90
+Akaike information criterion (AIC) score: 22494.3185
+Corrected Akaike information criterion (AICc) score: 22524.9927
+Bayesian information criterion (BIC) score: 22893.7161
+
+Total tree length (sum of branch lengths): 5.4826
+Sum of internal branch lengths: 2.9625 (54.0340% of tree length)
+
+WARNING: 1 near-zero internal branches (<0.0016) should be treated with caution
+         Such branches are denoted by '**' in the figure below
+
+NOTE: Tree is UNROOTED although outgroup taxon 'C13' is drawn at root
+
++--C13
+|
+|                                  +---------------C18
+|                               +--|
+|                               |  |           +--M1
+|                               |  |        +--|
+|                               |  |        |  +--M9
+|                               |  |  +-----|
+|                               |  |  |     |        +--S10
+|                               |  |  |     |     +--|
+|                               |  |  |     |     |  +--V32
+|                               |  |  |     |  +--|
+|                               |  |  |     |  |  +--V29
+|                               |  |  |     +--|
+|                               |  |  |        |  +--V28
+|                               |  |  |        +--|
+|                               |  |  |           +--V9
+|                               |  +--|
+|                               |     |                        +--M10
+|                               |     |     +------------------|
+|                               |     |     |                  +**V5
+|                               |     |  +--|
+|                               |     |  |  |                         +--S18
+|                               |     |  |  |                      +--|
+|                               |     |  |  |                      |  +--V22
+|                               |     |  |  |                   +--|
+|                               |     |  |  |                   |  |  +--S27
+|                               |     |  |  |                   |  +--|
+|                               |     |  |  |                   |     +--S31
+|                               |     |  |  |                +--|
+|                               |     |  |  |                |  +--V42
+|                               |     |  |  |             +--|
+|                               |     |  |  |             |  |  +--V25
+|                               |     |  |  |             |  +--|
+|                               |     |  |  |             |     +--V27
+|                               |     |  |  |          +--|
+|                               |     |  |  |          |  +--S4
+|                               |     |  |  +----------|
+|                               |     |  |             |     +--S19
+|                               |     |  |             |  +--|
+|                               |     |  |             |  |  +--S20
+|                               |     |  |             +--|
+|                               |     |  |                |  +--S9
+|                               |     |  |                +--|
+|                               |     |  |                   +--V11
+|                               |     +--|
+|                               |        |        +----M11
+|                               |        |     +--|
+|                               |        |     |  +----S14
+|                               |        |  +--|
+|                               |        |  |  |   +--S1
+|                               |        |  |  +---|
+|                               |        |  |      +--V17
+|                               |        +--|
+|                               |           +-------------S11
+|                       +-------|
+|                       |       |                +--M13
+|                       |       |             +--|
+|                       |       |             |  |  +--S24
+|                       |       |             |  +--|
+|                       |       |             |     |  +--S30
+|                       |       |             |     +--|
+|                       |       |             |        +--V38
+|                       |       |          +--|
+|                       |       |          |  +--S3
+|                       |       |       +--|
+|                       |       |       |  +--V8
+|                       |       +-------|
+|                       |               +--V23
+|             +---------|
+|             |         +----------------------------------S26
+|         +---|
+|         |   |          +**S13
+|         |   +----------|
+|         |              |     +--S16
+|         |              |  +--|
+|         |              |  |  +--S23
+|         |              +**|
+|         |                 +--V3
++---------|
+|         |                 +--S22
+|         |              +--|
+|         |              |  +--V31
+|         |           +--|
+|         |           |  +--V15
+|         |        +--|
+|         |        |  +--V24
+|         +--------|
+|                  +--V16
+|
++--C22
+
+Tree in newick format:
+
+(C13:0.0230587036,(((((C18:0.3534944538,(((M1:0.0104812796,M9:0.0100825826):0.0319090960,(((S10:0.0261913294,V32:0.0081068650):0.0067177704,V29:0.0166953791):0.0197281339,(V28:0.0256050511,V9:0.0074584631):0.0338944300):0.0126285454):0.1415301909,(((M10:0.0084784166,V5:0.0000010000):0.4137915790,((((((S18:0.0065822774,V22:0.0078077933):0.0039493683,(S27:0.0153202613,S31:0.0073871761):0.0045527920):0.0041700183,V42:0.0181893890):0.0058007144,(V25:0.0049896843,V27:0.0017518084):0.0362793440):0.0147943160,S4:0.0439558965):0.0422396734,((S19:0.0485326765,S20:0.0424354044):0.0144278482,(S9:0.0683544950,V11:0.0263197364):0.0110563754):0.0358899390):0.2461357474):0.0506409938,(((M11:0.1249244399,S14:0.1184870226):0.0541298936,(S1:0.0380493644,V17:0.0657452598):0.1063315357):0.0362831736,S11:0.3079141402):0.0444924797):0.0342572378):0.0361786869):0.0470901505,((((M13:0.0614526858,(S24:0.0320064147,(S30:0.0207216240,V38:0.0381691148):0.0204858629):0.0124567402):0.0109958094,S3:0.0325422716):0.0109885532,V8:0.0397369171):0.0219881262,V23:0.0308205146):0.1923730741):0.1778224110,S26:0.7609745564):0.2216176750,(S13:0.0000027112,((S16:0.0019974796,S23:0.0040114258):0.0141014375,V3:0.0019964731):0.0000010000):0.2588333712):0.0955684998,((((S22:0.0088433003,V31:0.0065670168):0.0024213818,V15:0.0040964815):0.0020700041,V24:0.0047058181):0.0119327006,V16:0.0099186178):0.2018018116):0.2181210655,C22:0.0251742915);
+
+
+USER TREES
+----------
+
+See /data/data/Upcycling/research/revision/ureC_tree/SHtest.trees for trees with branch lengths.
+
+WARNING: Too few replicates for AU test. At least -zb 10000 for reliable results!
+
+Tree      logL    deltaL  bp-RELL    p-KH     p-SH    p-WKH    p-WSH       c-ELW       p-AU
+-------------------------------------------------------------------------------------------
+  1 -11152.44742       0       1 +      1 +      1 +      1 +      1 +         1 +        1 + 
+  2 -11990.55969  838.11       0 -      0 -      0 -      0 -      0 - 4.71e-276 - 2.51e-37 - 
+
+deltaL  : logL difference from the maximal logl in the set.
+bp-RELL : bootstrap proportion using RELL method (Kishino et al. 1990).
+p-KH    : p-value of one sided Kishino-Hasegawa test (1989).
+p-SH    : p-value of Shimodaira-Hasegawa test (2000).
+p-WKH   : p-value of weighted KH test.
+p-WSH   : p-value of weighted SH test.
+c-ELW   : Expected Likelihood Weight (Strimmer & Rambaut 2002).
+p-AU    : p-value of approximately unbiased (AU) test (Shimodaira, 2002).
+
+Plus signs denote the 95% confidence sets.
+Minus signs denote significant exclusion.
+All tests performed 1000 resamplings using the RELL method.
+
+ALISIM COMMAND
+--------------
+To simulate an alignment of the same length as the original alignment, using the tree and model parameters estimated from this analysis, you can use the following command:
+
+--alisim simulated_MSA -t /data/data/Upcycling/research/revision/ureC_tree/SHtest.treefile -m "LG+G4{0.49895}" --length 625
+
+To mimic the alignment used to produce this analysis, i.e. simulate an alignment of the same length as the original alignment, using the tree and model parameters estimated from this analysis *and* copying the same gap positions as the original alignment, you can use the following command:
+
+iqtree -s /data/data/Upcycling/research/revision/ureC_tree/ureC_common.aln.faa --alisim mimicked_MSA
+
+To simulate any number of alignments in either of the two commandlines above, use the --num-alignments options, for example mimic 100 alignments you would use the command line:
+
+iqtree -s /data/data/Upcycling/research/revision/ureC_tree/ureC_common.aln.faa --alisim mimicked_MSA --num-alignments 100
+
+For more information on using AliSim, please visit: www.iqtree.org/doc/AliSim
+
+TIME STAMP
+----------
+
+Date and time: Sun Apr 12 17:38:29 2026
+Total CPU time used: 0.902 seconds (0h:0m:0s)
+Total wall-clock time used: 0.351 seconds (0h:0m:0s)
+

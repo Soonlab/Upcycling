@@ -1,0 +1,6 @@
+ureC vs species (n=46 taxa)
+RF = 50.0
+max_RF = 86.0
+normalized_RF = 0.5813953488372093
+Interpretation: normalized_RF close to 0 = congruent (vertical inheritance)
+                 normalized_RF close to 1 = incongruent (HGT likely)

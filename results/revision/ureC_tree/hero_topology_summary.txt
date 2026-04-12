@@ -1,0 +1,16 @@
+
+== ureC gene tree ==
+total leaves = 46; hero present = ['C22', 'M1', 'S13', 'S16', 'S23', 'S26']
+Hero monophyletic: False
+Common ancestor subtree has 45 taxa; 39 non-hero intruders
+Intruders: ['C18', 'M10', 'M11', 'M13', 'M9', 'S1', 'S10', 'S11', 'S14', 'S18', 'S19', 'S20', 'S22', 'S24', 'S27', 'S3', 'S30', 'S31', 'S4', 'S9', 'V11', 'V15', 'V16', 'V17', 'V22', 'V23', 'V24', 'V25', 'V27', 'V28', 'V29', 'V3', 'V31', 'V32', 'V38', 'V42', 'V5', 'V8', 'V9']
+Sphingobacterium-hero monophyletic: False
+  intruders: ['C13', 'C18', 'M1', 'M10', 'M11', 'M13', 'M9', 'S1', 'S10', 'S11', 'S14', 'S18', 'S19', 'S20', 'S22', 'S24', 'S26', 'S27', 'S3', 'S30', 'S31', 'S4', 'S9', 'V11', 'V15', 'V16', 'V17', 'V22', 'V23', 'V24', 'V25', 'V27', 'V28', 'V29', 'V3', 'V31', 'V32', 'V38', 'V42', 'V5', 'V8', 'V9']
+
+== species tree (pruned to ureC-bearing MAGs) ==
+total leaves = 46; hero present = ['C22', 'M1', 'S13', 'S16', 'S23', 'S26']
+Hero monophyletic: False
+Common ancestor subtree has 39 taxa; 33 non-hero intruders
+Intruders: ['C13', 'C18', 'M10', 'M11', 'M9', 'S1', 'S10', 'S11', 'S14', 'S18', 'S19', 'S20', 'S22', 'S27', 'S31', 'S4', 'S9', 'V11', 'V15', 'V16', 'V17', 'V22', 'V24', 'V25', 'V27', 'V28', 'V29', 'V3', 'V31', 'V32', 'V42', 'V5', 'V9']
+Sphingobacterium-hero monophyletic: False
+  intruders: ['C13', 'V3']

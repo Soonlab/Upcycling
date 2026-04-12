@@ -1,0 +1,7 @@
+Sample,Genome_size_Mb,GC_pct,Contigs,N50_kb,CDS,tRNA,rRNA,Genus,GTDB_species,ANI_to_closest
+C13,4.924,39.8,2103,2.6,3917,34,0,Sphingobacterium,Sphingobacterium sp029542085,97.35
+C22,4.335,39.6,2193,2.1,3638,28,0,Sphingobacterium,Sphingobacterium siyangense,97.46
+S13,4.277,40.03,643,7.7,3554,22,0,Sphingobacterium,,
+S16,5.619,39.91,198,52.1,4779,42,0,Sphingobacterium,,
+S23,5.603,39.9,609,12.1,4602,61,3,Sphingobacterium,Sphingobacterium paramultivorum,99.61
+V3,3.329,39.88,880,3.9,2752,43,2,Sphingobacterium,Sphingobacterium sp019969845,98.83

@@ -1,0 +1,112 @@
+user_genome,Genus,Species,ANI,Novel_sp_candidate,Hero
+S13,Sphingobacterium,,,True,True
+S16,Sphingobacterium,,,True,True
+C22,Sphingobacterium,Sphingobacterium siyangense,97.46,False,True
+S26,Pseudomonas_E,Pseudomonas_E helleri,97.48,False,True
+M1,Pseudomonas_E,Pseudomonas_E sp025837155,97.95,False,True
+S23,Sphingobacterium,Sphingobacterium paramultivorum,99.61,False,True
+C12,Comamonas,,,True,False
+C6,Acinetobacter,,,True,False
+C7,Achromobacter,,,True,False
+C9,Microvirgula,,,True,False
+M10,Alcaligenes,,,True,False
+M12,Stenotrophomonas,,,True,False
+M2,Pseudomonas_E,,,True,False
+M7,Pseudomonas_E,,,True,False
+S15,Comamonas,,,True,False
+S17,Stenotrophomonas,,,True,False
+S2,Achromobacter,,,True,False
+S21,Achromobacter,,,True,False
+S27,Pseudomonas_E,,,True,False
+S5,Achromobacter,,,True,False
+S6,Stenotrophomonas,,,True,False
+V20,Achromobacter,,,True,False
+V23,Acinetobacter,,,True,False
+V33,Pseudomonas_E,,,True,False
+V37,Acinetobacter,,,True,False
+M6,Stenotrophomonas,Stenotrophomonas indicatrix,95.08,False,False
+C20,Achromobacter,Achromobacter spanius,95.09,False,False
+M3,Stenotrophomonas,Stenotrophomonas lactitubi,95.19,False,False
+V24,Chryseobacterium,Chryseobacterium jejuense,95.24,False,False
+V16,Chryseobacterium,Chryseobacterium culicis_A,95.33,False,False
+V40,Stenotrophomonas,Stenotrophomonas sepilia,95.62,False,False
+S30,Acinetobacter,Acinetobacter sp013417555,95.76,False,False
+S32,Acinetobacter,Acinetobacter johnsonii,95.78,False,False
+C15,Acinetobacter,Acinetobacter bohemicus,96.02,False,False
+V30,Stenotrophomonas,Stenotrophomonas rhizophila,96.26,False,False
+M13,Acinetobacter,Acinetobacter calcoaceticus,96.32,False,False
+S22,Chryseobacterium,Chryseobacterium joostei,96.37,False,False
+V29,Pseudomonas_E,Pseudomonas_E protegens_B,96.47,False,False
+S14,Cupriavidus,Cupriavidus sp000955785,96.49,False,False
+C4,Pseudomonas_E,Pseudomonas_E alloputida,96.52,False,False
+S18,Pseudomonas_E,Pseudomonas_E kermanshahensis,96.83,False,False
+V19,Pseudomonas_E,Pseudomonas_E sp001422615,96.85,False,False
+M9,Pseudomonas_E,Pseudomonas_E oleovorans_B,96.86,False,False
+S7,Stenotrophomonas,Stenotrophomonas sp030549615,96.88,False,False
+V39,Pseudomonas_E,Pseudomonas_E sp029839275,96.98,False,False
+V1,Stenotrophomonas,Stenotrophomonas indicatrix,97.05,False,False
+C10,Acinetobacter,Acinetobacter calcoaceticus,97.12,False,False
+S8,Stenotrophomonas,Stenotrophomonas sp003086775,97.15,False,False
+V25,Pseudomonas_E,Pseudomonas_E putida,97.21,False,False
+V9,Pseudomonas_E,Pseudomonas_E sp001655615,97.24,False,False
+V4,Stenotrophomonas,Stenotrophomonas maltophilia_AA,97.26,False,False
+S4,Pseudomonas_E,Pseudomonas_E shirazensis,97.29,False,False
+C13,Sphingobacterium,Sphingobacterium sp029542085,97.35,False,False
+M8,Acinetobacter,Acinetobacter vivianii,97.38,False,False
+V5,Alcaligenes,Alcaligenes sp023425645,97.38,False,False
+V21,Acinetobacter,Acinetobacter amyesii,97.47,False,False
+V12,Alcaligenes,Alcaligenes nematophilus,97.5,False,False
+V18,Achromobacter,Achromobacter marplatensis,97.67,False,False
+C16,Acinetobacter,Acinetobacter baumannii,97.68,False,False
+C17,Paraburkholderia,Paraburkholderia nemoris,97.71,False,False
+V8,Acinetobacter,Acinetobacter schindleri,97.71,False,False
+S24,Acinetobacter,Acinetobacter guillouiae,97.73,False,False
+C11,Stenotrophomonas,Stenotrophomonas sp004348115,97.75,False,False
+C1,Pseudomonas_E,Pseudomonas_E putida,97.76,False,False
+C21,Stenotrophomonas,Stenotrophomonas bentonitica_A,97.85,False,False
+V13,Stenotrophomonas,Stenotrophomonas sp002471015,97.88,False,False
+V35,Acinetobacter,Acinetobacter pseudolwoffii,97.93,False,False
+C3,Pseudomonas_E,Pseudomonas_E putida_Q,97.94,False,False
+V41,Achromobacter,Achromobacter veterisilvae,97.99,False,False
+V27,Pseudomonas_E,Pseudomonas_E putida_Q,98.0,False,False
+M4,Stenotrophomonas,Stenotrophomonas hibiscicola,98.03,False,False
+V26,Flavobacterium,Flavobacterium sp002303885,98.08,False,False
+V31,Chryseobacterium,Chryseobacterium rhizosphaerae,98.08,False,False
+V42,Pseudomonas_E,Pseudomonas_E urmiensis,98.08,False,False
+V38,Acinetobacter,Acinetobacter sp002365595,98.16,False,False
+M11,Comamonas,Comamonas tsuruhatensis,98.17,False,False
+V34,Stenotrophomonas,Stenotrophomonas geniculata,98.2,False,False
+M15,Comamonas,Comamonas sp002472915,98.21,False,False
+S25,Stenotrophomonas,Stenotrophomonas maltophilia_AQ,98.25,False,False
+C5,Achromobacter,Achromobacter piechaudii,98.26,False,False
+C8,Diaphorobacter,Diaphorobacter nitroreducens,98.31,False,False
+V7,Stenotrophomonas,Stenotrophomonas sp003484865,98.32,False,False
+V17,Burkholderia,Burkholderia contaminans,98.43,False,False
+M14,Alcaligenes,Alcaligenes faecalis,98.45,False,False
+V6,Stenotrophomonas,Stenotrophomonas acidaminiphila_A,98.57,False,False
+C2,Paraburkholderia,Paraburkholderia nemoris,98.59,False,False
+S3,Acinetobacter,Acinetobacter gandensis,98.68,False,False
+C18,Agrobacterium,Agrobacterium fabacearum,98.72,False,False
+S9,Pseudomonas_E,Pseudomonas_E palmensis,98.79,False,False
+V11,Pseudomonas_E,Pseudomonas_E sp943914515,98.82,False,False
+S20,Pseudomonas_E,Pseudomonas_E sp900101695,98.83,False,False
+S28,Comamonas,Comamonas testosteroni_C,98.83,False,False
+V3,Sphingobacterium,Sphingobacterium sp019969845,98.83,False,False
+V14,Achromobacter,Achromobacter kerstersii,98.84,False,False
+C19,Paraburkholderia,Paraburkholderia hospita,98.85,False,False
+M5,Achromobacter,Achromobacter mucicolens,98.9,False,False
+V2,Comamonas,Comamonas koreensis_A,98.91,False,False
+S29,Acinetobacter,Acinetobacter sp002135435,98.93,False,False
+V32,Pseudomonas_E,Pseudomonas_E protegens,98.93,False,False
+V36,Acinetobacter,Acinetobacter faecalis,98.95,False,False
+S11,Variovorax,Variovorax sp000282635,99.08,False,False
+V10,Achromobacter,Achromobacter denitrificans,99.18,False,False
+V22,Pseudomonas_E,Pseudomonas_E putida_AF,99.25,False,False
+S1,Paraburkholderia,Paraburkholderia terricola,99.26,False,False
+S10,Pseudomonas_E,Pseudomonas_E sp020520285,99.26,False,False
+S12,Stenotrophomonas,Stenotrophomonas maltophilia_AC,99.29,False,False
+V15,Chryseobacterium,Chryseobacterium sp900156935,99.37,False,False
+C14,Bordetella,Bordetella trematum,99.59,False,False
+S31,Pseudomonas_E,Pseudomonas_E capeferrum,99.59,False,False
+V28,Pseudomonas_E,Pseudomonas_E laurylsulfatiphila,99.66,False,False
+S19,Pseudomonas_E,Pseudomonas_E sp000955815,99.69,False,False

@@ -1,0 +1,7 @@
+MAG,Genome_size_Mb,GC_pct,Contigs,N50_kb,ureABC_all_present,ureABCDEFG_all_present,cah_present,n_contigs_with_any_ure,main_contig,ure_genes_on_main_contig,cluster_span_kb_main,cah_on_main_contig,n_contigs_with_cah
+C22,4.335,39.6,2193,2.1,True,True,True,4,contig_74,5,5.32,False,1
+M1,4.307,63.15,17,413.5,True,True,True,1,contig_1,7,28.56,False,2
+S13,4.277,40.03,643,7.7,True,True,True,4,contig_69,7,5.86,False,1
+S16,5.619,39.91,198,52.1,True,True,True,3,contig_125,7,5.92,False,2
+S23,5.603,39.9,609,12.1,True,True,True,5,contig_220,4,3.27,False,2
+S26,5.31,58.57,327,25.1,False,False,True,5,contig_140,4,3.03,False,3

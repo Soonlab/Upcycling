@@ -1,0 +1,49 @@
+MAG,Gene,Contigs,n_copies
+C22,ureA,contig_3,1
+C22,ureB,contig_3,1
+C22,ureC,contig_74,1
+C22,ureD,contig_74,1
+C22,ureE,"contig_101, contig_14, contig_74",3
+C22,ureF,"contig_14, contig_74",2
+C22,ureG,"contig_14, contig_74",2
+C22,cah,contig_246,1
+M1,ureA,contig_1,1
+M1,ureB,contig_1,1
+M1,ureC,contig_1,1
+M1,ureD,contig_1,1
+M1,ureE,contig_1,1
+M1,ureF,contig_1,1
+M1,ureG,contig_1,1
+M1,cah,"contig_14, contig_3",2
+S13,ureA,"contig_69, contig_96",2
+S13,ureB,"contig_69, contig_96",2
+S13,ureC,"contig_69, contig_96",2
+S13,ureD,"contig_160, contig_69",2
+S13,ureE,"contig_160, contig_358, contig_69, contig_96",4
+S13,ureF,"contig_160, contig_69",2
+S13,ureG,"contig_160, contig_358, contig_69",3
+S13,cah,contig_3,1
+S16,ureA,"contig_125, contig_20",2
+S16,ureB,"contig_125, contig_20",2
+S16,ureC,"contig_125, contig_20",2
+S16,ureD,contig_125,1
+S16,ureE,"contig_125, contig_20, contig_86",3
+S16,ureF,"contig_125, contig_20",2
+S16,ureG,"contig_125, contig_20, contig_86",3
+S16,cah,"contig_7, contig_97",2
+S23,ureA,"contig_234, contig_432",2
+S23,ureB,"contig_234, contig_432",2
+S23,ureC,contig_234,1
+S23,ureD,"contig_151, contig_220",2
+S23,ureE,"contig_151, contig_220, contig_357",3
+S23,ureF,"contig_151, contig_220",2
+S23,ureG,"contig_151, contig_220, contig_357",3
+S23,cah,"contig_3, contig_485",2
+S26,ureA,contig_306,1
+S26,ureB,ABSENT,0
+S26,ureC,"contig_306, contig_85",2
+S26,ureD,"contig_137, contig_140",2
+S26,ureE,"contig_140, contig_25",2
+S26,ureF,"contig_140, contig_25",2
+S26,ureG,"contig_140, contig_25",2
+S26,cah,"contig_19, contig_27, contig_66",3
