@@ -10,9 +10,6 @@ Comparative-genomic analysis of 111 metagenome-assembled genomes (MAGs) recovere
 
 ```
 .
-├── manuscript/                        Full manuscript draft + figure legends (Markdown + Word)
-│   ├── Manuscript_v2.md / .docx
-│   └── Figure_legends_v2.md / .docx
 ├── figures/
 │   ├── main/                          Fig. 1–6 (PNG 300 dpi + PDF vector)
 │   └── supplementary/                 Fig. S1–S7
@@ -36,6 +33,12 @@ Comparative-genomic analysis of 111 metagenome-assembled genomes (MAGs) recovere
         ├── 04_dbcan_reanalysis.py
         └── 04b_dbcan_final.py
 ```
+
+
+> **Note on manuscript files**
+> The manuscript draft, cover letters and figure-legend document are kept privately
+> and will be released only upon publication (as a tagged GitHub release + Zenodo DOI).
+> Figures and all analysis code / tables remain public here.
 
 ## Analysis pipeline
 

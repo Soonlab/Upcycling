@@ -16,3 +16,7 @@ __pycache__/
 *.mmsdb*
 *.idx
 working_dir/
+
+# Manuscript + cover letters are kept off the public repo until publication
+manuscript/
+
