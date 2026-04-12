@@ -27,14 +27,19 @@ Synteny diagrams of the densest *ure*-containing contig in each hero-lineage Bak
 **(a)** Module-completeness heat map (DRAM v1.5 `distill/product.tsv`) for 111 MAGs × 35 curated KEGG/custom modules spanning central carbon metabolism, nitrogen metabolism, stress response, vitamin (cobalamin / B12) biosynthesis, and CAZyme categories. Row labels give MAG identifier and GTDB genus; hero-lineage rows are highlighted in red bold. Colour intensity encodes fractional module completeness (0 to 1). Housekeeping modules (glycolysis, TCA, fatty-acid biosynthesis) are comparably complete in hero and non-hero MAGs. **(b)** Mean module completeness of MICP-critical modules (urease, carbonic anhydrase, nitrogen metabolism, Na⁺/H⁺ antiport, cobalamin biosynthesis, CAZymes/carbohydrate metabolism) in hero MAGs (red, n = 6) versus the remaining MAGs (grey, n = 105).
 
 ### Figure 5 | Novel-species delineation of S13 and S16 within *Sphingobacterium*.
-*(`extra/Fig_T2d_Novelty_overview.png`, `.pdf`; `extra/novel_species/Fig_NovelSp_AAI.png`, `.pdf`)*
+*(`extra/Fig_T2d_Novelty_overview.png`, `.pdf`; `extra/novel_species/Fig_NovelSp_AAI.png`, `.pdf`; `revision/Fig_ext_Sphingo_ANI.png`, `.pdf`)*
 
-**(a)** Novelty screen. Each MAG is one point; the y-axis is the GTDB closest-reference ANI, and the dashed red line marks the 95 % species cutoff. Hero-lineage MAGs are enlarged and red-labelled. Twenty-one of 111 MAGs fall below 95 %, including S13 and S16 (no species-level ANI available). **(b)** Amino-acid identity of S13 (left) and S16 (right) versus the other five *Sphingobacterium* MAGs, computed from reciprocal-best mmseqs2 easy-search hits. Dashed vertical lines mark the 95 % (species) and 70 % (genus) AAI thresholds. Maximum AAI = 93.15 % (S13 vs V3) and 93.49 % (S16 vs S23); both well below the species threshold.
+**(a)** Novelty screen within the 111-MAG panel. Each MAG is one point; the y-axis is the GTDB closest-reference ANI, and the dashed red line marks the 95 % species cutoff. Hero-lineage MAGs are enlarged and red-labelled. Twenty-one of 111 MAGs fall below 95 %, including S13 and S16 (no species-level ANI available). **(b)** Amino-acid identity of S13 (left) and S16 (right) versus the other five *Sphingobacterium* MAGs, computed from reciprocal-best mmseqs2 easy-search hits. Dashed vertical lines mark the 95 % (species) and 70 % (genus) AAI thresholds. Maximum AAI = 93.15 % (S13 vs V3) and 93.49 % (S16 vs S23); both well below the species threshold. **(c)** External validation — pairwise skani ANI of the six study *Sphingobacterium* MAGs against the 63 RefSeq reference *Sphingobacterium* genomes (NCBI Datasets v16). Each panel ranks RefSeq genomes by descending ANI; the dashed red line marks the 95 % species cutoff, and bar colour encodes classification (red = species match, blue = sub-species). S13 (max ANI 94.57 % to *S. detergens*) and S16 (max ANI 93.85 % to *S. multivorum*) remain below the cutoff against the full public genus catalogue, while S23 (98.96 %) and C22 (99.16 %) validate the pipeline by reproducing their GTDB-Tk species assignments.
 
 ### Figure 6 | Permutation-tested hero-vs-rest enrichment of trait modules.
 *(`revision/Fig_Permutation_forest.png`, `.pdf`)*
 
 Forest-style plot of fold-change enrichment (log-scale x-axis) for trait subcategories with fold change > 1, ranked by magnitude. Points are fold change; error bars are 2,000-iteration bootstrap 95 % CI. Point colour encodes significance level after Benjamini–Hochberg FDR correction on 10,000-iteration one-sided permutation p-values: **red** q < 0.05, **orange** q < 0.10, **grey** n.s. Modules significantly enriched in the hero lineage include Mrp complex (FC 10.85), CBM (9.78), oxidative-stress defence (4.76), glycoside hydrolase (4.66), quorum sensing (2.13) and Na⁺/H⁺ antiporter (2.30). Complete statistics in Supplementary Table S2 (`Hero_vs_Rest_permutation_stats.csv`).
+
+### Figure 7 | Pan-genome and trait-module PCoA by waste source.
+*(`revision/Fig_PCoA_source_genus.png`, `.pdf`; `revision/Fig_PCoA_trait_source.png`, `.pdf`)*
+
+**(a)** Jaccard-based Principal Coordinates Analysis of Panaroo gene presence/absence (filtered to 9,668 genes at 5–95 % prevalence). Points are coloured by waste source (red cattle, blue swine, green sheep, orange poultry); hero-lineage MAGs are highlighted with an open red ring and label. PERMANOVA identifies GTDB genus as the dominant structuring variable (pseudo-F = 8.21, p = 0.001) but only weak differentiation by waste source (pseudo-F = 1.25, p = 0.11). **(b)** Euclidean PCoA of per-10³-CDS-normalised counts across 38 trait-module subcategories. In contrast to panel (a), trait distribution is strongly structured by waste source (PERMANOVA pseudo-F = 34.19, p = 0.001). Hero-lineage MAGs consistently project onto the "functionally extreme" tail of the ordination regardless of origin, supporting their interpretation as environmentally specialised lineages rather than source-specific outliers. Pairwise PERMANOVA and post-hoc q-values are listed in Supplementary Table S9 (`PCoA_pairwise_PERMANOVA.csv`).
 
 ---
 
@@ -95,3 +100,9 @@ ML UreC gene tree (n = 46 ureC-encoding MAGs) with ultrafast bootstrap support. 
 
 ### Table S8 | Novelty screen and MIGS-lite for candidate novel *Sphingobacterium* species.
 (`research/extra/novelty_ANI_screen.csv`, `research/extra/novel_species/MIGS_lite_Sphingobacterium.csv`.) Per-MAG ANI-based novelty classification for the full panel and MIGS-lite parameters for S13 and S16.
+
+### Table S9 | Pan-genome and trait-module PCoA with PERMANOVA.
+(`research/revision/PCoA_panaroo_coords.csv`, `PCoA_PERMANOVA.csv`, `PCoA_pairwise_PERMANOVA.csv`.) PC1–PC3 coordinates, waste-source and genus metadata per MAG; global and pairwise post-hoc PERMANOVA pseudo-F, p-values and BH-FDR q-values for the pan-genome and trait-module ordinations shown in Fig. 7.
+
+### Table S10 | External *Sphingobacterium* ANI comparison.
+(`research/revision/ANI_ext_sphingo_matrix.csv`, `ANI_ext_sphingo_novelty.csv`.) Full pairwise skani ANI matrix for the six study *Sphingobacterium* MAGs against 63 RefSeq reference *Sphingobacterium* genomes, and the per-MAG nearest-reference summary used to confirm novelty of S13 and S16.

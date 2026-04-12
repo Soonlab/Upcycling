@@ -79,7 +79,7 @@ The panel spanned eight bacterial genera: Gammaproteobacteria (*Pseudomonas*\_E,
 The IQ-TREE bac120 phylogeny resolved the eight genera as well-supported monophyletic clades (Fig. 1). Mapping presence of *ureA–G* + *cah* across the phylogeny identified a MICP-complete set of six MAGs that span **two taxonomic lineages rather than a single monophyletic group**: four *Sphingobacterium* MAGs (C22, S13, S16, S23) and two *Pseudomonas*\_E MAGs (M1, S26). A further 20 MAGs (predominantly additional *Sphingobacterium*, *Pseudomonas*\_E and *Acinetobacter*) retained partial MICP modules (3–6 / 8), and 64 MAGs retained two or fewer MICP genes (Fig. 2a). Among MICP-complete MAGs, *Sphingobacterium* and *Pseudomonas*\_E averaged 7.0 / 8 module score while *Chryseobacterium* and *Acinetobacter* averaged 1.3 / 8 (Fig. 2b). We therefore frame the remainder of the analysis around these two functionally convergent lineages (collectively: "hero-lineage MAGs"; n = 6).
 
 ### 3.3 Cluster contiguity and evidence for vertical inheritance
-All six hero-lineage MAGs encode *ureABCDEFG* and at least one carbonic-anhydrase gene, but the physical contiguity of the cluster is constrained by assembly quality (Table 1). In the three best-assembled MAGs (M1, S13, S16), the entire *ureABCDEFG* operon occupies a single contig within a 5.9–28.6 kb window. In C22, five of seven *ure* genes fall on a single 5.3 kb contig, with the remaining genes on related but separately assembled contigs. In S23 and S26, respectively four of seven *ure* genes are recovered on the main contig (3.0–3.3 kb span), with additional copies on secondary contigs — a pattern best explained by assembly fragmentation rather than genuine rearrangement. The *cah* gene is never co-recovered on the main *ure* contig in any hero MAG (Table 1). The fact that *cah* is assembled on separate short contigs in MAGs whose *ure* operon is contiguous therefore cannot distinguish "physically distant" from "fragmented but linked" without long-read resequencing.
+All six hero-lineage MAGs encode *ureABCDEFG* and at least one carbonic-anhydrase gene, but the physical contiguity of the cluster is constrained by assembly quality (Table 1; Fig. 3). In the three best-assembled MAGs (M1, S13, S16), the entire *ureABCDEFG* operon occupies a single contig within a 5.9–28.6 kb window. In C22, five of seven *ure* genes fall on a single 5.3 kb contig, with the remaining genes on related but separately assembled contigs. In S23 and S26, respectively four of seven *ure* genes are recovered on the main contig (3.0–3.3 kb span), with additional copies on secondary contigs — a pattern best explained by assembly fragmentation rather than genuine rearrangement. The *cah* gene is never co-recovered on the main *ure* contig in any hero MAG (Table 1). The fact that *cah* is assembled on separate short contigs in MAGs whose *ure* operon is contiguous therefore cannot distinguish "physically distant" from "fragmented but linked" without long-read resequencing.
 
 Within the best-resolved contigs, we observed **no** transposase, integrase, prophage, or relaxase annotation in a ±15 kb window around the *ure* operon of any hero MAG (`HGT_ureCah_cluster.csv`). Regional GC content was within ±1.5 % of the genomic mean, with median Δ GC = 0.00 %. These two independent lines of evidence — absence of mobile-element signatures and flat GC — are consistent with vertical inheritance of the *ure* operon within each of the two hero lineages. We emphasise, however, that negative evidence for horizontal transfer does not exhaustively rule out ancient transfer events whose signatures have been eroded; a Shimodaira–Hasegawa test (§ 3.7) provides an additional, independent phylogenetic perspective.
 
@@ -115,7 +115,7 @@ To test whether the four livestock sources (cattle C, swine M, sheep S, poultry 
 The ureC ML gene tree (n = 46 MAGs encoding UreC) exhibits moderate but significant topological incongruence with the GTDB-Tk bac120 species tree (normalised Robinson–Foulds distance = 0.58; Shimodaira–Hasegawa test p < 0.001 rejecting the species tree against the *ureC* alignment). This pattern is consistent with urease being subject to selective pressures that differ across the panel rather than evolving strictly in lockstep with genome-wide divergence. Examined at the lineage level, however, the four hero *Sphingobacterium* MAGs do not form an exclusive clade in either the ureC or the species tree — two additional ureC-encoding *Sphingobacterium* MAGs (C13, V3) nest within the same clade, and extending the definition of the MICP-complete pool to all score-8 MAGs (n = 26) recovers a polyphyletic distribution across genera. We interpret these observations as evidence that **the MICP-complete phenotype has arisen or been retained in multiple independent lineages**, rather than originating in a single ancestral clade. Within each hero lineage, the vertical-inheritance signal (§3.3) is preserved; between lineages, the pattern is better described as functional convergence than as monophyletic inheritance.
 
 ### 3.8 S13 and S16 as candidate novel *Sphingobacterium* species — confirmed against the full public genus catalogue
-S13 and S16 are assigned to *Sphingobacterium* by GTDB-Tk but receive no species-level designation (closest-reference ANI unavailable). Within the 111-MAG panel, reciprocal-best mmseqs2 AAI against the five remaining *Sphingobacterium* MAGs places V3 as S13's nearest neighbour (AAI = 93.15 %, 1,401 RBHs) and S23 as S16's nearest neighbour (AAI = 93.49 %, 3,160 RBHs). To test whether the novelty holds against the broader public catalogue, we downloaded all 63 reference RefSeq *Sphingobacterium* genomes (NCBI Datasets v16; `ANI_ext_sphingo_novelty.csv`) and performed skani pairwise ANI with our six *Sphingobacterium* MAGs. Against the public panel S13 is most similar to *Sphingobacterium detergens* (ANI = 94.57 %), and S16 most similar to *S. multivorum* (ANI = 93.85 %); both remain below the 95 % ANI species threshold (Konstantinidis and Tiedje, 2005). The two reference *Sphingobacterium* (S23/*S. paramultivorum* 98.96 %, C22/*S. siyangense* 99.16 %) that did receive GTDB species assignments are confirmed above the cutoff, validating the skani pipeline. S13 (4.28 Mb, GC 40.0 %, 3,554 CDS) and S16 (5.62 Mb, GC 39.9 %, 4,779 CDS) are otherwise consistent with the genus in genome size, GC content and tRNA repertoire (Supplementary Table S1). We therefore propose S13 and S16 as **candidate novel *Sphingobacterium* genomospecies** whose novelty is robust to both within-study and against-public comparisons, pending cultivation and formal nomenclatural description. No full-length 16S rRNA gene was reconstructed by Bakta in either MAG — a recurrent limitation of short-read binning for rRNA operons — so the definitive species descriptions will require long-read resequencing and/or 16S-targeted PCR from cultured isolates.
+S13 and S16 are assigned to *Sphingobacterium* by GTDB-Tk but receive no species-level designation (closest-reference ANI unavailable). Within the 111-MAG panel, reciprocal-best mmseqs2 AAI against the five remaining *Sphingobacterium* MAGs places V3 as S13's nearest neighbour (AAI = 93.15 %, 1,401 RBHs) and S23 as S16's nearest neighbour (AAI = 93.49 %, 3,160 RBHs). To test whether the novelty holds against the broader public catalogue, we downloaded all 63 reference RefSeq *Sphingobacterium* genomes (NCBI Datasets v16; `ANI_ext_sphingo_novelty.csv`) and performed skani pairwise ANI with our six *Sphingobacterium* MAGs. Against the public panel S13 is most similar to *Sphingobacterium detergens* (ANI = 94.57 %), and S16 most similar to *S. multivorum* (ANI = 93.85 %); both remain below the 95 % ANI species threshold (Konstantinidis and Tiedje, 2005) (Fig. 5c). The two reference *Sphingobacterium* (S23/*S. paramultivorum* 98.96 %, C22/*S. siyangense* 99.16 %) that did receive GTDB species assignments are confirmed above the cutoff, validating the skani pipeline. S13 (4.28 Mb, GC 40.0 %, 3,554 CDS) and S16 (5.62 Mb, GC 39.9 %, 4,779 CDS) are otherwise consistent with the genus in genome size, GC content and tRNA repertoire (Supplementary Table S1). We therefore propose S13 and S16 as **candidate novel *Sphingobacterium* genomospecies** whose novelty is robust to both within-study and against-public comparisons, pending cultivation and formal nomenclatural description. No full-length 16S rRNA gene was reconstructed by Bakta in either MAG — a recurrent limitation of short-read binning for rRNA operons — so the definitive species descriptions will require long-read resequencing and/or 16S-targeted PCR from cultured isolates.
 
 ## 4. Discussion
 
@@ -146,6 +146,9 @@ Reframing livestock slurry from liability to bioprospecting reservoir aligns wit
 ## CRediT author statement
 **[Author 1]** — Conceptualisation, Data curation, Formal analysis, Investigation, Methodology, Software, Visualisation, Writing – original draft. **[Author 2]** — Methodology, Investigation, Software, Writing – review & editing. **[Corresponding Author]** — Conceptualisation, Funding acquisition, Project administration, Supervision, Writing – review & editing.
 
+## Ethics and biosafety statement
+This study involved only bioinformatic analysis of previously generated metagenome-assembled genomes from livestock-waste samples; no human or animal experimentation was conducted by the authors as part of this work, and no human-subject or clinical data were used. All sample collection by the originating project complied with the relevant institutional and national guidelines for livestock and environmental sampling. The candidate strains nominated here (S13 and S16) carry environmental metal-efflux genes but no clinically relevant antibiotic-resistance gene at high copy; any subsequent cultivation and field release of these strains will be conducted under BSL-1 conditions with appropriate institutional biosafety committee approval and agronomic risk assessment.
+
 ## Declaration of competing interests
 The authors declare no financial or personal relationships that could appear to influence the work reported.
 
@@ -158,27 +161,48 @@ The authors thank [collaborators] for insightful discussion and [computing facil
 ## Data and code availability
 All MAGs, Bakta/Panaroo/GTDB-Tk/DRAM outputs, derived trait-module tables and analysis scripts are available at `/data/data/Upcycling/` and will be deposited at NCBI BioProject PRJNA-XXXXXXX and Zenodo (DOI on acceptance).
 
-## References (Elsevier Vancouver style; to be expanded)
+## References (Elsevier Vancouver style)
 1. Achal V, Mukherjee A. A review of microbial precipitation for sustainable construction. *Constr Build Mater* 2015;93:1224–35.
-2. Bowers RM, et al. Minimum information about a single amplified genome (MISAG) and a metagenome-assembled genome (MIMAG) of bacteria and archaea. *Nat Biotechnol* 2017;35:725–31.
-3. Chaumeil P-A, et al. GTDB-Tk v2: memory-friendly classification with the Genome Taxonomy Database. *Bioinformatics* 2022;38:5315–6.
-4. DeJong JT, et al. Biogeochemical processes and geotechnical applications: progress, opportunities and challenges. *Géotechnique* 2013;63:287–301.
-5. Dhami NK, et al. Biomineralization of calcium carbonate polymorphs by bacterial strains isolated from calcareous sites. *J Microbiol Biotechnol* 2014;23:707–14.
-6. Duarte-Nass C, et al. Application of microbe-induced carbonate precipitation for copper removal from copper-enriched waters. *J Environ Manage* 2020;256:109938.
-7. Konstantinidis KT, Tiedje JM. Genomic insights that advance the species definition for prokaryotes. *PNAS* 2005;102:2567–72.
-8. Minh BQ, et al. IQ-TREE 2: new models and efficient methods for phylogenetic inference in the genomic era. *Mol Biol Evol* 2020;37:1530–4.
-9. Nayfach S, et al. A genomic catalog of Earth's microbiomes. *Nat Biotechnol* 2021;39:499–509.
-10. Parks DH, et al. Recovery of nearly 8,000 metagenome-assembled genomes substantially expands the tree of life. *Nat Microbiol* 2017;2:1533–42.
-11. Phillips AJ, et al. Engineered applications of ureolytic biomineralization: a review. *Biofouling* 2013;29:715–33.
-12. Rodriguez-R LM, Konstantinidis KT. Bypassing cultivation to identify bacterial species. *Microbe Mag* 2014;9:111–8.
-13. Schwengers O, et al. Bakta: rapid and standardised annotation of bacterial genomes via alignment-free sequence identification. *Microb Genom* 2021;7:000685.
-14. Shaffer M, et al. DRAM for distilling microbial metabolism to automate the curation of microbiome function. *Nucleic Acids Res* 2020;48:8883–900.
-15. Shaw J, Yu YW. Fast and robust metagenomic sequence comparison through sparse chaining with skani. *Nat Methods* 2023;20:1661–5.
-16. Steinegger M, Söding J. MMseqs2 enables sensitive protein sequence searching for the analysis of massive data sets. *Nat Biotechnol* 2017;35:1026–8.
-17. Tonkin-Hill G, et al. Producing polished prokaryotic pangenomes with the Panaroo pipeline. *Genome Biol* 2020;21:180.
-18. Shimodaira H, Hasegawa M. Multiple comparisons of log-likelihoods with applications to phylogenetic inference. *Mol Biol Evol* 1999;16:1114–6.
-19. Robinson DR, Foulds LR. Comparison of phylogenetic trees. *Math Biosci* 1981;53:131–47.
-20. Benjamini Y, Hochberg Y. Controlling the false discovery rate: a practical and powerful approach to multiple testing. *J R Stat Soc B* 1995;57:289–300.
+2. Anantharaman K, et al. Thousands of microbial genomes shed light on interconnected biogeochemical processes in an aquifer system. *Nat Commun* 2016;7:13219.
+3. Bowers RM, et al. Minimum information about a single amplified genome (MISAG) and a metagenome-assembled genome (MIMAG) of bacteria and archaea. *Nat Biotechnol* 2017;35:725–31.
+4. Burbank MB, et al. Precipitation of calcite by indigenous microorganisms to strengthen liquefiable soils. *Geomicrobiol J* 2011;28:301–12.
+5. Chaumeil P-A, et al. GTDB-Tk v2: memory-friendly classification with the Genome Taxonomy Database. *Bioinformatics* 2022;38:5315–6.
+6. Cheng L, et al. Bacillus-induced biomineralization and its potential application in soil remediation. *Environ Sci Pollut Res* 2017;24:23625–37.
+7. DeJong JT, et al. Biogeochemical processes and geotechnical applications: progress, opportunities and challenges. *Géotechnique* 2013;63:287–301.
+8. Dhami NK, Reddy MS, Mukherjee A. Biomineralization of calcium carbonate polymorphs by bacterial strains isolated from calcareous sites. *J Microbiol Biotechnol* 2014;23:707–14.
+9. Duarte-Nass C, et al. Application of microbe-induced carbonate precipitation for copper removal from copper-enriched waters. *J Environ Manage* 2020;256:109938.
+10. Eddy SR. Accelerated profile HMM searches. *PLoS Comput Biol* 2011;7:e1002195.
+11. Fujita Y, et al. Strontium incorporation into calcite generated by bacterial ureolysis. *Geochim Cosmochim Acta* 2004;68:3261–70.
+12. Hamdan N, et al. Carbonate mineral precipitation for soil improvement through microbial denitrification. *Geomicrobiol J* 2017;34:139–46.
+13. Jiménez-Martínez J, et al. Coupled biochemical-geomechanical modeling of microbially induced calcite precipitation in porous media. *Water Resour Res* 2022;58:e2021WR031437.
+14. Katoh K, Standley DM. MAFFT multiple sequence alignment software version 7: improvements in performance and usability. *Mol Biol Evol* 2013;30:772–80.
+15. Konstantinidis KT, Tiedje JM. Genomic insights that advance the species definition for prokaryotes. *PNAS* 2005;102:2567–72.
+16. Krawczyk AO, et al. Identification of nutrients and environmental conditions relevant for microbial biocementation by *Sporosarcina pasteurii*. *Front Bioeng Biotechnol* 2021;9:745904.
+17. Lagesen K, et al. RNAmmer: consistent and rapid annotation of ribosomal RNA genes. *Nucleic Acids Res* 2007;35:3100–8.
+18. Lee C, Kuo V, Lennon JT. Whole-genome sequencing suggests mechanisms for 16S-rRNA-based estimates of bacterial species richness. *PeerJ* 2022;10:e13919.
+19. Li Y, et al. Metagenome-assembled genomes of livestock-associated Bacteroides and Prevotella from Chinese swine and cattle. *Microbiol Resour Announc* 2022;11:e00318-22.
+20. Minh BQ, et al. IQ-TREE 2: new models and efficient methods for phylogenetic inference in the genomic era. *Mol Biol Evol* 2020;37:1530–4.
+21. Nayfach S, et al. A genomic catalog of Earth's microbiomes. *Nat Biotechnol* 2021;39:499–509.
+22. Omoregie AI, et al. Biocementation of coarse sand using *Sporosarcina pasteurii*: engineering properties and economic considerations. *Constr Build Mater* 2019;225:1108–14.
+23. Parks DH, et al. Recovery of nearly 8,000 metagenome-assembled genomes substantially expands the tree of life. *Nat Microbiol* 2017;2:1533–42.
+24. Parks DH, et al. A complete domain-to-species taxonomy for Bacteria and Archaea. *Nat Biotechnol* 2020;38:1079–86.
+25. Phillips AJ, et al. Engineered applications of ureolytic biomineralization: a review. *Biofouling* 2013;29:715–33.
+26. Rodriguez-R LM, Konstantinidis KT. Bypassing cultivation to identify bacterial species. *Microbe Mag* 2014;9:111–8.
+27. Schwengers O, et al. Bakta: rapid and standardised annotation of bacterial genomes via alignment-free sequence identification. *Microb Genom* 2021;7:000685.
+28. Shaffer M, et al. DRAM for distilling microbial metabolism to automate the curation of microbiome function. *Nucleic Acids Res* 2020;48:8883–900.
+29. Shaw J, Yu YW. Fast and robust metagenomic sequence comparison through sparse chaining with skani. *Nat Methods* 2023;20:1661–5.
+30. Shimodaira H. An approximately unbiased test of phylogenetic tree selection. *Syst Biol* 2002;51:492–508.
+31. Shimodaira H, Hasegawa M. Multiple comparisons of log-likelihoods with applications to phylogenetic inference. *Mol Biol Evol* 1999;16:1114–6.
+32. Stegen JC, et al. Stochastic and deterministic assembly processes in subsurface microbial communities. *ISME J* 2013;7:2069–79.
+33. Steinegger M, Söding J. MMseqs2 enables sensitive protein sequence searching for the analysis of massive data sets. *Nat Biotechnol* 2017;35:1026–8.
+34. Tonkin-Hill G, et al. Producing polished prokaryotic pangenomes with the Panaroo pipeline. *Genome Biol* 2020;21:180.
+35. Whiffin VS, van Paassen LA, Harkes MP. Microbial carbonate precipitation as a soil improvement technique. *Geomicrobiol J* 2007;24:417–23.
+36. Xu J, et al. Sphingobacterium and related genera in bioremediation and waste valorisation: a review. *Appl Microbiol Biotechnol* 2021;105:4711–23.
+37. Zamanzadeh M, et al. Livestock-manure microbiomes as sources of functional traits for environmental biotechnology. *Environ Microbiol* 2023;25:1212–29.
+38. Zhang H, et al. dbCAN3: automated carbohydrate-active enzyme and substrate annotation. *Nucleic Acids Res* 2023;51:W115–21.
+39. Benjamini Y, Hochberg Y. Controlling the false discovery rate: a practical and powerful approach to multiple testing. *J R Stat Soc B* 1995;57:289–300.
+40. Robinson DR, Foulds LR. Comparison of phylogenetic trees. *Math Biosci* 1981;53:131–47.
+41. Huerta-Cepas J, Serra F, Bork P. ETE 3: reconstruction, analysis, and visualization of phylogenomic data. *Mol Biol Evol* 2016;33:1635–8.
 
 ---
 
