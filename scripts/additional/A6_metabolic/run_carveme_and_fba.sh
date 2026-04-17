@@ -13,14 +13,21 @@ HERO="S13 S16 S23 C22 M1 S26"
 echo "[A6] reconstructing GEMs for 6 MICP-complete MAGs"
 
 for m in $HERO; do
-    faa=$BAKTA/$m/$m.faa
+    src_faa=$BAKTA/$m/$m.faa
+    # IMPORTANT: carveme's diamond step writes <input>.tsv next to the input file,
+    # which destructively overwrites the Bakta .tsv if we pass bakta's .faa directly.
+    # Copy .faa into an isolated working dir so diamond output goes there instead.
+    work=$WD/carve_work/${m}
+    mkdir -p $work
+    cp -n $src_faa $work/${m}.faa
+    faa=$work/${m}.faa
     sbml=$WD/models/${m}.xml
     if [ -f $sbml ]; then
         echo "[A6] $m model exists, skip"
         continue
     fi
     echo "[A6] --- $m ---"
-    carve $faa -o $sbml --solver glpk -v 2>&1 | tail -3 || echo "[A6] $m carve FAILED"
+    carve $faa -o $sbml --solver scip -v 2>&1 | tail -3 || echo "[A6] $m carve FAILED"
 done
 
 ls -la $WD/models/
@@ -47,7 +54,10 @@ for xml in sorted(glob.glob(f"{mdir}/*.xml")):
         continue
     # baseline biomass (complete media)
     try:
-        model.solver = "glpk"
+        try:
+            model.solver = "glpk"
+        except Exception:
+            model.solver = "scipy"
         # open all exchanges
         for ex in model.exchanges:
             ex.lower_bound = -10

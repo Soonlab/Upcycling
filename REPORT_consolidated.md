@@ -243,13 +243,17 @@ This analysis **does not** claim the genes themselves are rare — we correct th
 
 **Outputs**: `A4_genomad/ureCah_vs_MGE_overlap.csv`, per-MAG summaries in `results/<MAG>/<MAG>_summary/`.
 
-**Partial aggregate (n = 55 MAGs of 111 so far)**:
-| Group | n | mean plasmid contigs | median | mean virus contigs |
-|---|---|---|---|---|
-| MICP-complete | 6 | 10.7 | 4.5 | 1.17 |
-| rest | 49 | 36.6 | 17.0 | 5.20 |
+**Final aggregate (n = 111 MAGs)**:
+| Group | n | mean plasmid contigs | median | max | mean virus contigs |
+|---|---|---|---|---|---|
+| MICP-complete | 6 | 10.7 | 4.5 | 49 | 1.17 |
+| rest | 105 | 28.1 | 16.0 | 212 | 3.89 |
 
-MICP-complete MAGs have ~4× **fewer** predicted MGE contigs than the rest — consistent with streamlined, vertically-maintained genomes. S26's apparent high plasmid count (49) is typical of environmental *Pseudomonas* which often carry several native plasmids, and none of them hosts the urease core (see cross-check above). Bulk aggregation for the remaining ~56 MAGs is still running in background (dual-worker setup, estimated ~30 min to full completion). Hero-MAG conclusions are final.
+MICP-complete MAGs have **~2.6× fewer plasmid-predicted contigs** (by median, ~3.6× fewer) than the rest — consistent with streamlined, vertically-maintained genomes. S26 is the outlier in hero group (49 plasmid contigs), typical for environmental *Pseudomonas*; however, none of S26's plasmid contigs hosts the urease core — only one CA accessory (contig_66).
+
+### Side note — data-integrity event
+
+During concurrent A6 CarveMe execution (user-edited with `--solver scip`), diamond's default output path landed on top of four hero MAGs' Bakta `.tsv` files in `bakta_results/{S13,S16,S23,C22}/`. Detected by checksum mismatch, the clobbered `.tsv` files were (a) backed up as `*.carveme_clobbered.bak`, (b) reconstructed from the intact `.gff3` files, and (c) the CarveMe script was patched to use an isolated `carve_work/{mag}/` working directory for the `.faa` input so diamond no longer touches the Bakta directory. All A-series analyses in this report ran before the clobbering and used the original Bakta annotations; A4 was re-verified after reconstruction and yields the same result (0/6 urease core on MGE contig).
 
 ### A1 addendum — PlasmidFinder
 

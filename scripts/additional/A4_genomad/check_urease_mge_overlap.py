@@ -19,12 +19,13 @@ def urease_contigs(mag):
     tsv = f"{BAKTA}/{mag}/{mag}.tsv"
     if not os.path.exists(tsv): return set()
     df = pd.read_csv(tsv, sep="\t", comment="#", header=None,
-                     names=["contig","type","start","end","strand","locus","gene","product","dbxrefs"])
-    text = df["gene"].fillna("") + " || " + df["product"].fillna("")
+                     names=["contig","type","start","end","strand","locus","gene","product","dbxrefs"],
+                     dtype=str)
+    text = df["gene"].fillna("").astype(str) + " || " + df["product"].fillna("").astype(str)
     # Strict: ureA/B/C subunit only (drop urease accessories, urea transporters,
     # urea amidolyase, 5'-ureB-sRNA, CA elsewhere on genome)
     mask = text.str.contains(
-        r"\b(ureA|ureB|ureC)\b|urease subunit alpha|urease subunit beta|urease subunit gamma|urease.*subunit",
+        r"\b(?:ureA|ureB|ureC)\b|urease subunit alpha|urease subunit beta|urease subunit gamma|urease.*subunit",
         case=False, na=False, regex=True)
     # exclude sRNA rows (type == ncRNA)
     if "type" in df.columns:
@@ -36,8 +37,9 @@ def ca_contigs(mag):
     tsv = f"{BAKTA}/{mag}/{mag}.tsv"
     if not os.path.exists(tsv): return set()
     df = pd.read_csv(tsv, sep="\t", comment="#", header=None,
-                     names=["contig","type","start","end","strand","locus","gene","product","dbxrefs"])
-    text = df["gene"].fillna("") + " || " + df["product"].fillna("")
+                     names=["contig","type","start","end","strand","locus","gene","product","dbxrefs"],
+                     dtype=str)
+    text = df["gene"].fillna("").astype(str) + " || " + df["product"].fillna("").astype(str)
     mask = text.str.contains(r"carbonic anhydrase|\bcah\b|\bcan[AB]\b|\bcynT\b",
                              case=False, na=False, regex=True)
     return set(df[mask]["contig"].unique())
