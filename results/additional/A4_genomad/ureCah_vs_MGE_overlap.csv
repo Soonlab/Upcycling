@@ -1,0 +1,7 @@
+MAG,urease_core_contigs,CA_contigs,n_plasmid_contigs,n_virus_contigs,urease_on_plasmid,urease_on_virus,CA_on_plasmid,CA_on_virus,urease_core_MGE_contamination,CA_MGE_contamination
+S13,"contig_69,contig_96",contig_3,5,0,,,,,0,0
+S16,"contig_125,contig_20","contig_7,contig_97",1,0,,,,,0,0
+S23,"contig_151,contig_234,contig_432","contig_3,contig_485",4,0,,,,,0,0
+C22,"contig_3,contig_74",contig_246,5,2,,,,,0,0
+M1,"contig_1,contig_7","contig_14,contig_3",0,3,,,,,0,0
+S26,"contig_137,contig_140,contig_210,contig_306,contig_7,contig_85","contig_19,contig_27,contig_66",49,2,,,contig_66,,0,1

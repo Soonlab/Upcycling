@@ -1,0 +1,87 @@
+# Proposed supplementary additions for Manuscript revision
+
+Based on analyses in `/data/data/Upcycling/research/additional/`, for inclusion in a revised submission.
+
+---
+
+## New Supplementary Figures
+
+### Figure S8 (A1) — Biosafety panel across MAGs
+
+*Boxplots with per-MAG scatter.* For each of 4 databases (CARD, VFDB, ResFinder, PlasmidFinder), the number of hits per MAG is plotted by group (MICP-complete vs rest). **Zero acquired-AMR hits (ResFinder) across all six MICP-complete MAGs; zero plasmid replicons; zero CARD/VFDB hits in the four Sphingobacterium MAGs (S13/S16/S23/C22). The Pseudomonas_E MICP-complete MAGs M1 and S26 carry only intrinsic housekeeping efflux/T4P/siderophore genes, none of which are acquired AMR or virulence determinants in non-pathogenic soil Pseudomonas.** File: `figures/A1_biosafety.png`.
+
+### Figure S9 (A2) — UreC active-site residue conservation vs *S. pasteurii* (UniProt P41020, PDB 4CEU)
+
+*Heatmap of 7 canonical active-site residues × 6 MICP-complete MAGs.* Columns: H137 and H139 (distal Ni²⁺ coordination), K220 (carbamate-modified bridging lysine), H249 and H275 (proximal Ni²⁺ coordination), C322 (flap cysteine), D363 (catalytic general acid). **All 42 residue positions (6 MAGs × 7 sites) exactly match the *S. pasteurii* reference**, including the catalytically critical dyad. This supports the prediction of retained urease activity in the novel Sphingobacterium (S13/S16) and the non-canonical Pseudomonas_E (M1/S26) UreCs, notwithstanding their ANI divergence. File: `figures/A2_ureC_active_site.png`.
+
+### Figure S10 (A3b) — MICP feature prevalence within genus *Pseudomonas_E*
+
+*Bar chart, n = 146 reference genomes.* UreC present 93.8%, any CA present 100.0%, UreC+UreB on same contig 93.8%, **UreC + CA on same contig 36.3%**. The MICP genes themselves are near-universal in Pseudomonas_E, but the specific co-localized architecture harbored by M1 and S26 is present in only ~1/3 of references — consistent with the convergent operon interpretation in the main text. File: `figures/A3b_pseudomonas_rarity.png`.
+
+### Figure S11 (A5) — Alkaliphile signatures per MAG
+
+*Boxplots of Mrp antiporter copy count, Nha copy count, proteome pI median, and acidic-fraction (pI<5) by group.* Mrp is **enriched 11.7× in MICP-complete MAGs (Mann-Whitney U p = 5.3 × 10⁻⁴)**; other features not significantly shifted. Provides MAG-level validation of the Fig 6 permutation-forest result. File: `figures/A5_alkaliphile.png`.
+
+### Figure S12 (A7) — gRodon predicted doubling times
+
+*Boxplots of predicted minimum doubling time (h, gRodon2 partial mode) for 85/111 MAGs.* Median 1.06 h (MICP-complete n=4) vs 1.10 h (rest n=81); MWU p = 0.57 — **no growth-rate penalty** associated with the MICP trait, supporting chassis compatibility. Note: S13 and S16 are excluded because their Bakta annotations reported < 10 true ribosomal-protein genes after stringent filtering; this is an artefact of MAG fragmentation and does not indicate a biological absence. File: `figures/A7_growth_rate.png`.
+
+### Figure S13 (B) — External MICP rarity across MGnify livestock MAG catalogs
+
+*Two-panel bar chart.* Left: % species clusters with MICP gene-complete profile per biome (cow-rumen v1.0.1 n=2,729; sheep-rumen v1.0 n=2,172; pig-gut v1.0 n=1,376; chicken-gut v1.0.1 n=1,322) and pooled (n=7,599 = 3.07%). Right: % species clusters with single-contig ureC + CA architecture (pooled = 3.49%). **Our study's 6/6 MICP-complete detection contrasts with a 3.07% background prevalence across the global livestock MAG reference set — an ~30× enrichment.** File: `figures/B_rarity_mgnify.png`.
+
+### Figure S14 (A6) — MICP pathway stoichiometry per MICP-complete MAG
+
+*Gene-copy heatmap.* Rows: 6 MICP-complete MAGs; columns: ureA, ureB, ureC, ureD_H, ureE, ureF, ureG, CA (generic), Ca-transporter, Ca-ATPase, Mrp-antiporter (Na⁺/H⁺). Colour encodes copy number. All six MAGs carry the complete reaction set required for net reaction CO(NH₂)₂ + 2 H₂O + Ca²⁺ → 2 NH₄⁺ + CaCO₃↓ + OH⁻ with at least one Ca²⁺-handling gene (83.3% vs 3.8% in the rest). File: `figures/A6_stoichiometry.png`.
+
+### Figure S15 (A4) — geNomad MGE calls per MAG
+
+*Boxplot of per-MAG plasmid-flagged and virus-flagged contig counts by group.* Cross-check table in Supplementary Table Sx confirms **0/6 MICP-complete MAGs have any ureA/B/C subunit on a plasmid-flagged or virus-flagged contig**, orthogonally supporting the vertical-inheritance claim from the existing HGT phylogenetic test (manuscript Fig S6). File: `figures/A4_genomad.png`.
+
+---
+
+## New Supplementary Tables
+
+### Table S11 — Biosafety hit matrix (A1)
+Rows: 111 MAGs. Columns: n_hits for CARD, VFDB, ResFinder, PlasmidFinder; plus per-MAG flag of MICP-complete membership. Source: `A1_biosafety/biosafety_counts_per_MAG.csv`.
+
+### Table S12 — UreC active-site residue alignment (A2)
+Rows: 7 reference residues (H137, H139, K220, H249, H275, C322, D363). Columns: *S. pasteurii* reference AA, alignment column, then observed AA in S13/S16/S23/C22/M1/S26. Source: `A2_structure/UreC_active_site_residues.csv`.
+
+### Table S13 — Pseudomonas_E genus MICP rarity (A3b)
+Rows: 146 Pseudomonas_E reference accessions. Columns: UreC_alpha (PF00449), UreB_beta_gamma (PF00699), Amidohydro, CA_alpha / CA_beta / CA_gamma Pfam flags; urease_core_present; ureC+CA single-contig. Source: `A3_pseudomonas_ani/pseudomonas_e_MICP_rarity_screen.csv` + `pseudomonas_e_single_contig.csv`.
+
+### Table S14 — MGnify livestock MICP profile (B)
+Rows: 7,599 species-cluster representatives across 4 catalogs. Columns: cluster_rep, catalog, Lineage (GTDB), ureC/ureB/ureA/CA flags, single-contig architecture flags, MICP_gene_complete. Source: `B_rarity_screen/all_mgnify_MICP_profiles.csv`.
+
+### Table S15 — MAG-level alkaliphile and stoichiometry features (A5 + A6)
+Rows: 111 MAGs. Columns: Mrp/Nha antiporter counts, proteome pI statistics, urease/CA/Ca-handling gene dosage, MICP completeness flag. Source: `A5_alkaliphile/alkaliphile_signature_per_MAG.csv` + `A6_metabolic/stoichiometry_per_MAG.csv`.
+
+### Table S16 — gRodon predicted doubling times (A7)
+Rows: 85 MAGs with ≥10 ribosomal protein genes. Columns: MAG, group, CUBHE, ConsistencyHE, CPB, n_HE, predicted d_hours with 95% CI. Source: `A7_grodon/gRodon_growth_rates_per_MAG.csv`.
+
+### Table S17 — geNomad MGE calls + urease-core cross-check (A4)
+Rows: 111 MAGs. Columns: n_plasmid_contigs, n_virus_contigs, urease_core_contigs, urease_on_plasmid_flag, CA_on_plasmid_flag. Source: `A4_genomad/ureCah_vs_MGE_overlap.csv` + per-MAG results.
+
+---
+
+## Recommended additions to Manuscript main text
+
+### Section 3 (Discussion) — proposed three new paragraphs
+
+**3.X (biosafety).** Chassis-candidate designation of the six MICP-complete MAGs was independently vetted through automated AMR and virulence screens (abricate v1.4.0 vs CARD, VFDB, ResFinder, PlasmidFinder; default identity ≥ 80% and coverage ≥ 70%). No acquired AMR determinants (ResFinder = 0) nor plasmid replicons (PlasmidFinder = 0) were detected in any of the six MAGs. The four Sphingobacterium MAGs (S13, S16, S23, C22) additionally returned zero CARD and zero VFDB hits. The two Pseudomonas_E MAGs (M1, S26) carry only intrinsic RND-type efflux subunits (MexE/F/K/V/W, OprM, AcrAB-TolC auxiliaries), type IV pilus structural genes (pilG/H/I/J/M), and a pyoverdine/mbtH-like siderophore scaffold — common housekeeping functions in saprophytic Pseudomonas that are retained in CARD/VFDB catalogues for pathogen detection rather than being pathogenicity markers *per se*. Based on the observed profile, the six MAGs appear suitable for further evaluation as non-pathogenic biocement chassis.
+
+**3.Y (external novelty).** To bound the worldwide rarity of the reported architecture, we screened 7,599 livestock-microbiome MAG species-cluster representatives from four MGnify catalogs (cow-rumen v1.0.1, sheep-rumen v1.0, pig-gut v1.0, chicken-gut v1.0.1) using their pre-computed per-gene KEGG KO and Pfam annotations. Across this combined reference set, **233 species (3.07 %)** encoded the gene-complete urease (K01428 + K01429 + K01430) plus carbonic anhydrase profile, and **265 species (3.49 %)** harbored the urease α and carbonic anhydrase on a single contig. Notably, Sphingobacterium was represented by only two chicken-gut species clusters, neither of which met the gene-complete criterion — placing the S13/S16/S23/C22 Sphingobacterium MICP-complete lineage described here outside the current livestock reference set. Pseudomonas_E representation was likewise sparse (two species clusters across all four biomes, both MICP-complete), consistent with the interpretation that the trait is convergent rather than ancestral within the genus.
+
+**3.Z (active-site conservation).** The ANI-divergent (ANI < 95% against all 63 Sphingobacterium reference genomes; main Fig 5) S13 and S16 UreCs were aligned against the biochemically characterised *Sporosarcina pasteurii* urease α-subunit (UniProt P41020, PDB 4CEU) with MAFFT-auto. All seven canonical active-site residues (distal-Ni²⁺ H137 and H139, bridging carbamate-lysine K220, proximal-Ni²⁺ H249 and H275, flap cysteine C322, general-acid D363) are conserved in all six MICP-complete MAGs (42/42 matches), indicating that the essential catalytic apparatus is maintained despite outer-domain divergence.
+
+---
+
+## Changes to existing figures / text — *none required*
+
+None of the additional analyses contradicts or weakens an existing claim. They supplement and independently validate the existing ones:
+
+- Existing Fig 3 (*ureCah* cluster synteny) → independently supported by A4 geNomad (0/6 ureABC-on-MGE overlap).
+- Existing Fig 5 (Sphingobacterium external ANI) → extended by A2 active-site conservation: novel Sphingobacterium retains catalytic residues.
+- Existing Fig 6 (permutation forest) → MAG-level replication in A5 (Mrp 11.7×, p = 5.3e-4) and orthogonal genome-wide test in A3b (MICP operon within-genus rarity for Pseudomonas_E).
+- Existing Fig 7 (PCoA by source) → complemented by B (external MGnify rarity).

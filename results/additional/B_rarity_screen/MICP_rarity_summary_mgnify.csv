@@ -1,0 +1,5 @@
+catalog,n_species_clusters,n_with_ureC,n_urease_core,n_urease_operon_single_contig,n_with_CA,n_MICP_gene_complete,n_MICP_single_contig_ureC_CA,pct_MICP_gene_complete,pct_MICP_single_contig
+cow-rumen,2729,870,36,33,1962,35,90,1.283,3.298
+sheep-rumen,2172,43,25,25,1433,23,4,1.059,0.184
+pig-gut,1376,498,71,65,971,67,89,4.869,6.468
+chicken-gut,1322,528,111,106,1033,108,82,8.169,6.203
