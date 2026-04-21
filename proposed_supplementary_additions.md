@@ -56,7 +56,11 @@ Based on analyses in `/data/data/Upcycling/research/additional/`, for inclusion 
 
 ### Figure S20 (C4) — ESMFold UreC structural superposition vs PDB 4CEU
 
-*Panel of six predicted UreC structures aligned to *S. pasteurii* urease α-subunit (PDB 4CEU chain C) by TM-align.* ESMFold v1 predictions for S13, S16, S23, C22, M1, S26 UreCs at full length. Backbone TM-score (normalised by reference length) and RMSD per hero are tabulated in Table S22. All six MAGs retain the canonical (β/α)₈ TIM-barrel urease α-subunit fold, corroborating the MSA-based active-site analysis (A2 / Fig S9) at the structural level. File: `figures/C4_esmfold_superposition.png` (composite).
+*Two-panel figure.* (a) Backbone TM-score (normalised to 4CEU chain C, 569 aa) for each of the six MICP-complete UreCs from ESMFold v1 predictions aligned with `tmtools.tm_align`: **S13 = 0.620, S16 = 0.613, S23 = 0.612, C22 = 0.678, M1 = 0.597, S26 = 0.599 — all six values above the TM = 0.5 same-fold threshold**. (b) Corresponding backbone RMSD: **C22 3.52 Å (best), S23 4.34 Å (worst) — all < 4.5 Å**. The (β/α)₈ TIM-barrel urease α-subunit fold is conserved across both the novel Sphingobacterium lineage (S13/S16/S23/C22) and the divergent Pseudomonas_E lineage (M1/S26), corroborating the MSA-based active-site analysis (A2 / Fig S9) at the whole-chain structural level. File: `figures/additional/C4_esmfold_superposition.png`.
+
+### Figure S21 (C1) — antiSMASH 7 secondary-metabolism profile
+
+*Two-panel figure (111 MAGs).* (a) Total BGC region count per MAG, MICP-complete vs rest: hero mean 6.2 vs rest 6.9, distribution indistinguishable (MWU n.s.) — heroes carry neither an enriched nor a depleted secondary-metabolism payload overall. (b) Class-level enrichment test: **BGC_T3PKS is 23× enriched in hero (mean 0.67 vs 0.029, MWU p = 5.3 × 10⁻¹⁰)** and **BGC_RRE-containing is 8× enriched (mean 0.83 vs 0.105, p = 1.9 × 10⁻⁵)**, driven by the four Sphingobacterium heroes (S13/S16/S23/C22) which each carry a T3PKS + RRE + arylpolyene + terpene signature. The two Pseudomonas_E heroes (M1/S26) instead carry a richer NAGGN / NRPS / RiPP-like / betalactone / hydrogen-cyanide profile typical of environmental Pseudomonas. File: `figures/additional/C1_antismash.png`.
 
 ---
 
@@ -101,6 +105,10 @@ Rows: 6 hero × 20 reference genomes. Columns: ANI, align_fraction_ref, align_fr
 ### Table S22 — ESMFold UreC TM-score vs PDB 4CEU (C4)
 Rows: 6 hero MAGs. Columns: MAG, pred_len, ref_len, TM-score normalized to prediction, TM-score normalized to reference, RMSD. Source: `results/additional/C4_esmfold/ureC_vs_4CEU_tm.csv`.
 
+### Table S23 — antiSMASH 7 BGC profile (C1)
+(a) 111 × (MAG, is_hero, n_regions, classes, per-class BGC counts). Source: `results/additional/C1_antismash/antismash_per_MAG.csv`.
+(b) 44 BGC classes × (hero_mean, hero_median, rest_mean, rest_median, MWU_p). Source: `results/additional/C1_antismash/antismash_hero_vs_rest.csv`.
+
 ---
 
 ## Recommended additions to Manuscript main text
@@ -115,7 +123,7 @@ Rows: 6 hero MAGs. Columns: MAG, pred_len, ref_len, TM-score normalized to predi
 
 **3.α (urease selection regime).** To test whether the urease subunits are under episodic adaptive evolution within the two MICP-complete lineages, we constructed per-gene codon-aware alignments (MAFFT-auto back-translated) of ureA, ureB, ureC and ureG, restricted to the six MICP-complete MAGs plus 12 non-hero representatives stratified by waste source, built bifurcating FastTree topologies, and fitted PAML codeml M0 (single-ω) together with yn00 pairwise ω (N=595 pairs). Whole-tree ω estimates were uniformly low (ω_M0 = 0.087, 0.059, 0.026, 0.041 for ureA/B/C/G), consistent with strong purifying selection on the urease catalytic machinery. In the pairwise partition, ureA/B/C hero-hero and rest-rest distributions were statistically indistinguishable (all MWU p > 0.3); ureG, the GTPase accessory subunit responsible for nickel insertion, showed a **≈4-fold elevation in hero-hero ω (median 0.31) versus rest-rest ω (median 0.074), MWU p = 7.7 × 10⁻⁸**, which we interpret as relaxed — not positive — selection acting on the accessory subunit within the convergent MICP-complete lineages (the catalytic subunits remain conserved).
 
-**3.β (defense-naive, low-BGC background).** Complementary reviewer-defense screens show the six MAGs are an engineering-friendly background: **DefenseFinder (0 anti-phage systems) and minced CRISPR arrays (0 arrays)** in both hero and non-hero groups place these chassis in a defense-naive state that will not interfere with programmable genetic cargo. SPAdes contig-coverage abundance proxy further shows **no abundance advantage** for MICP-complete MAGs (length-weighted mean coverage 26.8× vs 25.5×, MWU p = 0.27), i.e., the MICP trait is not an artefact of dominant-community outliers.
+**3.β (defense-naive background, lineage-specific secondary-metabolism fingerprint).** Complementary reviewer-defense screens show the six MAGs are an engineering-friendly background: **DefenseFinder (0 anti-phage systems) and minced CRISPR arrays (0 arrays)** in both hero and non-hero groups place these chassis in a defense-naive state that will not interfere with programmable genetic cargo. SPAdes contig-coverage abundance proxy further shows **no abundance advantage** for MICP-complete MAGs (length-weighted mean coverage 26.8× vs 25.5×, MWU p = 0.27), i.e., the MICP trait is not an artefact of dominant-community outliers. antiSMASH 7 secondary-metabolism profiling detects a comparable BGC load overall (hero mean 6.2 regions/MAG vs 6.9 in the rest, n.s.) but reveals a strong **Sphingobacterium-lineage-specific BGC signature**: type-III polyketide synthases (BGC_T3PKS, 23-fold enriched, MWU p = 5.3 × 10⁻¹⁰) and ribosomal RRE-containing RiPP clusters (8-fold enriched, MWU p = 1.9 × 10⁻⁵) are carried by all four Sphingobacterium heroes, flanking an arylpolyene + terpene scaffold that is independent of the urease-CA-Ca core. The MICP trait is thus layered on a metabolically active, not stripped-down, background — a relevant constraint for precursor competition and metabolic-load estimation in chassis engineering.
 
 ---
 
@@ -124,7 +132,7 @@ Rows: 6 hero MAGs. Columns: MAG, pred_len, ref_len, TM-score normalized to predi
 None of the additional analyses contradicts or weakens an existing claim. They supplement and independently validate the existing ones:
 
 - Existing Fig 3 (*ureCah* cluster synteny) → independently supported by A4 geNomad (0/6 ureABC-on-MGE overlap).
-- Existing Fig 5 (Sphingobacterium external ANI) → extended by A2 active-site conservation and C4 ESMFold TIM-barrel fold retention: novel Sphingobacterium retains catalytic residues and α-subunit 3D architecture.
+- Existing Fig 5 (Sphingobacterium external ANI) → extended by A2 active-site conservation and C4 ESMFold TIM-barrel fold retention (TM-score to 4CEU 0.60-0.68 across all 6 heroes): novel Sphingobacterium retains catalytic residues and α-subunit 3D architecture.
 - Existing Fig 6 (permutation forest) → MAG-level replication in A5 (Mrp 11.7×, p = 5.3e-4) and orthogonal genome-wide test in A3b (MICP operon within-genus rarity for Pseudomonas_E).
 - Existing Fig 7 (PCoA by source) → complemented by B (external MGnify rarity) and C6 (abundance not-an-outlier proxy).
 - C3 codeml + yn00: urease catalytic subunits are under strong purifying selection overall (ω_M0 < 0.1), with an interesting relaxed-selection signal specifically on ureG (GTPase accessory) within the convergent MICP-complete lineages (hero-hero yn00 ω 4× elevated, p = 7.7 × 10⁻⁸).

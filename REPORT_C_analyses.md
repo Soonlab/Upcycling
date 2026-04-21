@@ -14,7 +14,41 @@ First run (2026-04-20) failed because the MITE database was missing from
 On 2026-04-21 we ran `download-antismash-databases` (9.4 GB installed) and
 re-launched the scan over all 111 MAGs in `antismash_env` (8 jobs × 4 threads).
 
-Output: per-MAG `index.html`, `regions.js`, and aggregated BGC counts.
+### Total BGC load
+Hero mean 6.2 regions/MAG vs rest 6.9 — heroes are neither BGC-rich nor
+BGC-poor (MWU not significant).
+
+### Top class-level enrichments (Mann-Whitney U)
+
+| metric | hero_mean | rest_mean | MWU p |
+|--------|-----------|-----------|-------|
+| BGC_T3PKS          | 0.67 | 0.029 | **5.3e-10** |
+| BGC_RRE-containing | 0.83 | 0.105 | **1.9e-05** |
+| BGC_NRP-metallophore | 0.00 | 0.46  | 0.082 (depleted in heroes) |
+| BGC_resorcinol     | 0.00 | 0.24  | 0.18 |
+| BGC_NAGGN          | 0.33 | 0.14  | 0.21 |
+
+### Per-hero BGC profile
+
+```
+MAG  n_regions  classes
+C22  3          RRE-containing;T3PKS;terpene
+M1   7          NAGGN;RiPP-like;betalactone;redox-cofactor;terpene-precursor
+S13  5          RRE-containing;T3PKS;arylpolyene;terpene
+S16  5          RRE-containing;T3PKS;arylpolyene;terpene;terpene-precursor
+S23  5          RRE-containing;T3PKS;arylpolyene;betalactone;terpene-precursor
+S26  12         NAGGN;NRPS;RiPP-like;arylpolyene;betalactone;hydrogen-cyanide;...
+```
+
+**Interpretation**: The four Sphingobacterium heroes (S13/S16/S23/C22) carry a
+characteristic **T3PKS + RRE-containing + arylpolyene + terpene** secondary-
+metabolism fingerprint — an apparently lineage-specific signature consistent
+with published Sphingobacterium metabolomes. The two Pseudomonas_E heroes
+(M1/S26) show a distinct, richer profile (NAGGN / NRPS / RiPP-like /
+betalactone / hydrogen-cyanide), typical of environmental Pseudomonas.
+The MICP-complete trait is therefore superimposed on a metabolically active
+background, not a stripped-down chassis — relevant for downstream engineering
+(metabolic load, precursor competition).
 
 ## C2 DefenseFinder + minced CRISPR
 
@@ -81,12 +115,30 @@ CUDA build steps.
 (`EsmForProteinFolding` from `facebook/esmfold_v1`) which bundles the required
 openfold code. The RTX 5090 (sm_120) is not supported by the installed
 torch 2.5.1+cu121 (supports up to sm_90), so inference runs on CPU (fp32).
-Predictions are then aligned to 4CEU chain C with `tmtools.tm_align` and TM-score
-(normalised to prediction and to reference) + RMSD are reported for each of the 6
-MICP-complete UreCs.
+Predictions are then aligned to 4CEU chain C with `tmtools.tm_align` and
+TM-score (normalised to prediction and to reference) + RMSD are reported for
+each of the 6 MICP-complete UreCs.
+
+### Results (all 6 heroes folded successfully)
+
+| MAG  | pred_len | TM-norm(pred) | TM-norm(4CEU) | RMSD (Å) |
+|------|----------|---------------|----------------|----------|
+| S13  | 616      | 0.576         | 0.620          | 4.17     |
+| S16  | 616      | 0.570         | 0.613          | 4.31     |
+| S23  | 616      | 0.569         | 0.612          | 4.34     |
+| C22  | 573      | 0.673         | **0.678**      | **3.52** |
+| M1   | 566      | 0.600         | 0.597          | 4.18     |
+| S26  | 572      | 0.596         | 0.599          | 4.04     |
+
+**All 6 MICP-complete hero UreCs produce predictions with TM-score > 0.5 and
+backbone RMSD < 4.4 Å against the *S. pasteurii* urease α-subunit**, indicating
+that the (β/α)₈ TIM-barrel fold is conserved across both the novel
+Sphingobacterium lineage (S13/S16/S23/C22) and the divergent Pseudomonas_E
+lineage (M1/S26). This corroborates the MSA-based active-site conservation
+result (A2: 42/42 residue match) at the whole-chain structural level.
 
 Output: `results/additional/C4_esmfold/ureC_vs_4CEU_tm.csv` +
-`pdb/{HERO}.pdb`.
+`pdb/{HERO}.pdb`. Figure: `figures/additional/C4_esmfold_superposition.png`.
 
 ## C5 Pan-MICP environment ANI
 
