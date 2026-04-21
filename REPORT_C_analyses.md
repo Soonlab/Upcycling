@@ -1,6 +1,6 @@
 # C1-C6 reviewer-defense additions (extended panel)
 
-**Date**: 2026-04-20
+**Date**: 2026-04-20 (initial) / 2026-04-21 (C1 re-run + C3 v3 + C4 HF ESMFold)
 
 All in-silico, no wet-lab.
 
@@ -9,9 +9,12 @@ All in-silico, no wet-lab.
 
 `results/additional/C1_antismash/antismash_per_MAG.csv` + `_hero_vs_rest.csv`
 
-```
-(missing)
-```
+First run (2026-04-20) failed because the MITE database was missing from
+`antismash_env` (ValueError: No matching database in location .../databases/mite).
+On 2026-04-21 we ran `download-antismash-databases` (9.4 GB installed) and
+re-launched the scan over all 111 MAGs in `antismash_env` (8 jobs × 4 threads).
+
+Output: per-MAG `index.html`, `regions.js`, and aggregated BGC counts.
 
 ## C2 DefenseFinder + minced CRISPR
 
@@ -21,16 +24,13 @@ All in-silico, no wet-lab.
 1    n_crispr_arrays        0.0        0.0    1.0
 ```
 
+Interpretation: both groups are anti-phage-naive. This is a **null result** in the
+between-group sense but a positive one for chassis engineering - no programmable
+systems to displace.
+
 ## C3 dN/dS + codon usage
 
-codeml M0 ω per urease gene:
-
-```
-
-
-```
-
-Codon usage hero vs rest:
+### Codon usage (111 MAGs, whole-proteome)
 
 ```
     metric  hero_mean  rest_mean     MWU_p
@@ -38,23 +38,72 @@ Codon usage hero vs rest:
 1      ENC  49.988579  39.004205  0.002830
 ```
 
-## C4 ESMFold UreC vs PDB 4CEU
+Hero MAGs carry a low-GC codon background (Sphingobacterium dominates the hero
+set) with reduced codon bias (higher ENC).
+
+### codeml M0 single-ω (v3: 18-MAG subset + FastTree topology)
 
 ```
-(missing)
+gene  n_seqs  aln_len  omega_M0  tree_dN  tree_dS  lnL       kappa
+ureA  18      4215     0.08708   6.2701   72.0004  -25402.09 1.41
+ureB  17      1749     0.05942   2.3414   39.4026  -6372.31  1.37
+ureC  18      1875     0.02605   1.3080   50.2195  -16463.71 1.50
+ureG  18      828      0.04082   2.3150   56.7136  -7609.11  1.36
 ```
+
+v1/v2 runs failed because PAML's star-tree MAXNSONS limit is exceeded with
+>16 leaves. v3 uses 6 heroes + 12 stratified non-hero reps and a FastTree
+bifurcating topology. All four urease genes are under **strong purifying
+selection** (ω << 1); ureC (catalytic α) is the most constrained.
+
+### yn00 pairwise ω partitioned by group
+
+```
+gene  hero_hero_n  hh_median  rest_rest_n  rr_median  hero_rest_n  hr_median  MWU_hh_vs_rr_p
+ureA  14           0.767      65           0.717      71           0.697      0.832
+ureB  8            0.132      65           0.086      60           0.146      0.382
+ureC  12           0.137      62           0.121      71           0.146      0.572
+ureG  12           0.312      62           0.074      72           0.196      7.66e-08
+```
+
+**ureG** shows an ~4× elevation in hero-hero ω vs rest-rest ω (MWU p = 7.7e-8),
+while ureA/B/C are indistinguishable across buckets. Interpretation: **relaxed
+purifying selection** on the GTPase accessory within the two convergent
+MICP-complete lineages, the catalytic subunits remain conserved.
+
+## C4 ESMFold UreC vs PDB 4CEU
+
+First run (2026-04-20) failed with `ModuleNotFoundError: openfold` because
+fair-esm's ESMFold v1 imports openfold, which isn't pip-installable without
+CUDA build steps.
+
+2026-04-21 workaround: load ESMFold via HuggingFace Transformers
+(`EsmForProteinFolding` from `facebook/esmfold_v1`) which bundles the required
+openfold code. The RTX 5090 (sm_120) is not supported by the installed
+torch 2.5.1+cu121 (supports up to sm_90), so inference runs on CPU (fp32).
+Predictions are then aligned to 4CEU chain C with `tmtools.tm_align` and TM-score
+(normalised to prediction and to reference) + RMSD are reported for each of the 6
+MICP-complete UreCs.
+
+Output: `results/additional/C4_esmfold/ureC_vs_4CEU_tm.csv` +
+`pdb/{HERO}.pdb`.
 
 ## C5 Pan-MICP environment ANI
 
 ```
 Ref_file	Query_file	ANI	Align_fraction_ref	Align_fraction_query	Ref_name	Query_name
-/data/data/Upcycling/research/additional/C5_panMICP_env/refs/HERO_C22.fna	/data/data/Upcycling/research/additional/C5_panMICP_env/refs/HERO_C22.fna	100.00	99.52	99.52	GT14BC2:NODE_2886_length_6948_cov_2.316693	GT14BC2:NODE_2886_length_6948_cov_2.316693
-/data/data/Upcycling/research/additional/C5_panMICP_env/refs/HERO_S23.fna	/data/data/Upcycling/research/additional/C5_panMICP_env/refs/HERO_C22.fna	96.78	46.22	59.76	NODE_193_length_52978_cov_6.563883	GT14BC2:NODE_2886_length_6948_cov_2.316693
-/data/data/Upcycling/research/additional/C5_panMICP_env/refs/HERO_S16.fna	/data/data/Upcycling/research/additional/C5_panMICP_env/refs/HERO_C22.fna	93.54	29.23	37.89	NODE_9_length_193081_cov_8.934825	GT14BC2:NODE_2886_length_6948_cov_2.316693
-/data/data/Upcycling/research/additional/C5_panMICP_env/refs/HERO_S26.fna	/data/data/Upcycling/research/additional/C5_panMICP_env/refs/HERO_S26.fna	100.00	99.77	99.77	NODE_16_length_104489_cov_9.279412	NODE_16_length_104489_cov_9.279412
-/data/data/Upcycling/research/additional/C5_panMICP_env/refs/Pseudomonas_helleri.fna	/data/data/Upcycling/research/additional/C5_panMICP_env/refs/HERO_S26.fna	97.54	83.59	89.36	NZ_JYLD01000010.1 Pseudomonas helleri strain DSM 29165 10_220866_45.2889, whole genome shotgun sequence	NODE_16_length_104489_cov_9.279412
-/data/data/Upcycling/research/additional/C5_panMICP_env/refs/HERO_S23.fna	/data/data/Upcycling/research/additional/C5_panMI
+HERO_C22.fna	HERO_C22.fna	100.00	99.52	99.52	...
+HERO_S23.fna	HERO_C22.fna	96.78	46.22	59.76	...
+HERO_S16.fna	HERO_C22.fna	93.54	29.23	37.89	...
+HERO_S26.fna	HERO_S26.fna	100.00	99.77	99.77	...
+Pseudomonas_helleri.fna	HERO_S26.fna	97.54	83.59	89.36	NZ_JYLD01000010.1 ...
+HERO_S23.fna	HERO_S23.fna	100.00	...
 ```
+
+Key external hit: **S26 ↔ *P. helleri* DSM 29165 = 97.54% ANI** - same
+assignment as the A3 screen with 146 NCBI genomes. Sphingobacterium heroes
+remain <95% against all environmental refs, reinforcing the novel-species
+designation.
 
 ## C6 In-situ abundance proxy
 
@@ -74,3 +123,7 @@ Ref_file	Query_file	ANI	Align_fraction_ref	Align_fraction_query	Ref_name	Query_n
 2    sheep     15  57.427073  33.271047  62.777102
 3    swine     32  20.317635  11.993405  24.865754
 ```
+
+Heroes carry **no abundance advantage** over rest (MWU p ≈ 0.3), so the MICP
+trait is not an artefact of outlier-dominant populations. Sheep-rumen MAGs are
+the most deeply covered.

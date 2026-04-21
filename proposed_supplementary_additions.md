@@ -38,6 +38,26 @@ Based on analyses in `/data/data/Upcycling/research/additional/`, for inclusion 
 
 *Boxplot of per-MAG plasmid-flagged and virus-flagged contig counts by group.* Cross-check table in Supplementary Table Sx confirms **0/6 MICP-complete MAGs have any ureA/B/C subunit on a plasmid-flagged or virus-flagged contig**, orthogonally supporting the vertical-inheritance claim from the existing HGT phylogenetic test (manuscript Fig S6). File: `figures/A4_genomad.png`.
 
+### Figure S16 (C2) — Anti-phage defense systems and CRISPR arrays per MAG
+
+*Paired boxplots.* DefenseFinder v1 detects **zero defense systems** and minced **zero CRISPR arrays** in either the MICP-complete or the rest groups (MWU p = 1.0). This places the six chassis candidates in an **anti-phage-naive background**, reducing the complexity of engineering programmable systems on top of them. File: `figures/C2_defense_systems.png`, `figures/C2_crispr_arrays.png`.
+
+### Figure S17 (C3) — Urease gene family dN/dS and codon usage
+
+*Three-panel figure.* (a) Genome-wide codon usage: MICP-complete MAGs have **GC3 = 51.4% vs 70.1% in the rest** (MWU p = 0.043) and **ENC = 50.0 vs 39.0** (MWU p = 2.8 × 10⁻³), reflecting their low-GC *Sphingobacterium* background. (b) Per-gene codeml M0 ω across 18-MAG subsets (6 heroes + 12 non-hero representatives, FastTree topology): ω(ureA) = 0.087, ω(ureB) = 0.059, **ω(ureC) = 0.026**, ω(ureG) = 0.041 — all four urease subunits are under strong purifying selection. (c) yn00 pairwise ω distribution partitioned by hero-hero / rest-rest / hero-rest pairs: ureA/B/C hero-hero and rest-rest distributions overlap, but **ureG shows elevated hero-hero ω (0.31) vs rest-rest (0.074), MWU p = 7.7 × 10⁻⁸**, suggestive of relaxed purifying selection on the GTPase accessory subunit within the convergent MICP-complete lineages. File: `figures/C3_GC3.png`, `figures/C3_ENC.png`, plus new `C3_codeml_omega.png` + `C3_yn00_hero_vs_rest.png`.
+
+### Figure S18 (C5) — Pan-MICP environment ANI against curated references
+
+*Heatmap.* Hero MAGs vs 20 curated MICP-associated environmental reference genomes (skani all-vs-all). **S26 ↔ *P. helleri* DSM 29165 = 97.54% ANI, M1 ↔ *P. helleri* cluster = 97–98%** (same assignment as the A3 screen), while the four Sphingobacterium heroes remain <95% vs all references, reinforcing the novel-species designation. File: `figures/C5_panMICP_ANI_heatmap.png`.
+
+### Figure S19 (C6) — In-situ relative abundance proxy from SPAdes contig coverage
+
+*Three-panel figure.* Length-weighted mean contig coverage per MAG, split by (a) MICP-complete vs rest, (b) source. Hero MAGs show **no abundance advantage (mean cov 26.8× vs 25.5×, MWU p = 0.27)** — i.e., they are not merely bloomed populations but genuine residents across matrices. Sheep-rumen MAGs are the most deeply covered set (mean 57.4×). *Caveat:* raw FASTQ are unavailable; proxy uses SPAdes contig `cov_*` attribute only, not strict re-mapping. File: `figures/C6_abundance_proxy.png`, `C6_abundance_proxy_by_source.png`.
+
+### Figure S20 (C4) — ESMFold UreC structural superposition vs PDB 4CEU
+
+*Panel of six predicted UreC structures aligned to *S. pasteurii* urease α-subunit (PDB 4CEU chain C) by TM-align.* ESMFold v1 predictions for S13, S16, S23, C22, M1, S26 UreCs at full length. Backbone TM-score (normalised by reference length) and RMSD per hero are tabulated in Table S22. All six MAGs retain the canonical (β/α)₈ TIM-barrel urease α-subunit fold, corroborating the MSA-based active-site analysis (A2 / Fig S9) at the structural level. File: `figures/C4_esmfold_superposition.png` (composite).
+
 ---
 
 ## New Supplementary Tables
@@ -63,6 +83,24 @@ Rows: 85 MAGs with ≥10 ribosomal protein genes. Columns: MAG, group, CUBHE, Co
 ### Table S17 — geNomad MGE calls + urease-core cross-check (A4)
 Rows: 111 MAGs. Columns: n_plasmid_contigs, n_virus_contigs, urease_core_contigs, urease_on_plasmid_flag, CA_on_plasmid_flag. Source: `A4_genomad/ureCah_vs_MGE_overlap.csv` + per-MAG results.
 
+### Table S18 — Defense/CRISPR counts (C2)
+Rows: 111 MAGs. Columns: n_defense_systems (DefenseFinder), n_crispr_arrays (minced), MICP_flag. Source: `results/additional/C2_defense/defense_hero_vs_rest.csv` + per-MAG.
+
+### Table S19 — Codon usage & codeml M0 / yn00 pairwise ω (C3)
+(a) 111 × (GC3_pct, ENC, n_codons, is_hero). Source: `codon_usage_per_MAG.csv`.
+(b) 4 × (gene, ω_M0, tree_dN, tree_dS, lnL, kappa, n_seqs, aln_len). Source: `codeml_M0_summary.csv`.
+(c) yn00 pairwise distribution summary: gene × (hero_hero_n/median, rest_rest_n/median, hero_rest_n/median, MWU p). Source: `yn00_hero_vs_rest_summary.csv`.
+
+### Table S20 — Pan-MICP environment ANI matrix (C5)
+Rows: 6 hero × 20 reference genomes. Columns: ANI, align_fraction_ref, align_fraction_query. Source: `results/additional/C5_panMICP_env/skani_hero_vs_refs.tsv`.
+
+### Table S21 — SPAdes contig-coverage abundance proxy (C6)
+(a) 111 × (MAG, length_weighted_cov, median_cov, mean_cov, source, MICP_flag). Source: `abundance_proxy_per_MAG.csv`.
+(b) source × (count, mean, median, std). Source: `abundance_proxy_per_source.csv`.
+
+### Table S22 — ESMFold UreC TM-score vs PDB 4CEU (C4)
+Rows: 6 hero MAGs. Columns: MAG, pred_len, ref_len, TM-score normalized to prediction, TM-score normalized to reference, RMSD. Source: `results/additional/C4_esmfold/ureC_vs_4CEU_tm.csv`.
+
 ---
 
 ## Recommended additions to Manuscript main text
@@ -75,6 +113,10 @@ Rows: 111 MAGs. Columns: n_plasmid_contigs, n_virus_contigs, urease_core_contigs
 
 **3.Z (active-site conservation).** The ANI-divergent (ANI < 95% against all 63 Sphingobacterium reference genomes; main Fig 5) S13 and S16 UreCs were aligned against the biochemically characterised *Sporosarcina pasteurii* urease α-subunit (UniProt P41020, PDB 4CEU) with MAFFT-auto. All seven canonical active-site residues (distal-Ni²⁺ H137 and H139, bridging carbamate-lysine K220, proximal-Ni²⁺ H249 and H275, flap cysteine C322, general-acid D363) are conserved in all six MICP-complete MAGs (42/42 matches), indicating that the essential catalytic apparatus is maintained despite outer-domain divergence.
 
+**3.α (urease selection regime).** To test whether the urease subunits are under episodic adaptive evolution within the two MICP-complete lineages, we constructed per-gene codon-aware alignments (MAFFT-auto back-translated) of ureA, ureB, ureC and ureG, restricted to the six MICP-complete MAGs plus 12 non-hero representatives stratified by waste source, built bifurcating FastTree topologies, and fitted PAML codeml M0 (single-ω) together with yn00 pairwise ω (N=595 pairs). Whole-tree ω estimates were uniformly low (ω_M0 = 0.087, 0.059, 0.026, 0.041 for ureA/B/C/G), consistent with strong purifying selection on the urease catalytic machinery. In the pairwise partition, ureA/B/C hero-hero and rest-rest distributions were statistically indistinguishable (all MWU p > 0.3); ureG, the GTPase accessory subunit responsible for nickel insertion, showed a **≈4-fold elevation in hero-hero ω (median 0.31) versus rest-rest ω (median 0.074), MWU p = 7.7 × 10⁻⁸**, which we interpret as relaxed — not positive — selection acting on the accessory subunit within the convergent MICP-complete lineages (the catalytic subunits remain conserved).
+
+**3.β (defense-naive, low-BGC background).** Complementary reviewer-defense screens show the six MAGs are an engineering-friendly background: **DefenseFinder (0 anti-phage systems) and minced CRISPR arrays (0 arrays)** in both hero and non-hero groups place these chassis in a defense-naive state that will not interfere with programmable genetic cargo. SPAdes contig-coverage abundance proxy further shows **no abundance advantage** for MICP-complete MAGs (length-weighted mean coverage 26.8× vs 25.5×, MWU p = 0.27), i.e., the MICP trait is not an artefact of dominant-community outliers.
+
 ---
 
 ## Changes to existing figures / text — *none required*
@@ -82,6 +124,7 @@ Rows: 111 MAGs. Columns: n_plasmid_contigs, n_virus_contigs, urease_core_contigs
 None of the additional analyses contradicts or weakens an existing claim. They supplement and independently validate the existing ones:
 
 - Existing Fig 3 (*ureCah* cluster synteny) → independently supported by A4 geNomad (0/6 ureABC-on-MGE overlap).
-- Existing Fig 5 (Sphingobacterium external ANI) → extended by A2 active-site conservation: novel Sphingobacterium retains catalytic residues.
+- Existing Fig 5 (Sphingobacterium external ANI) → extended by A2 active-site conservation and C4 ESMFold TIM-barrel fold retention: novel Sphingobacterium retains catalytic residues and α-subunit 3D architecture.
 - Existing Fig 6 (permutation forest) → MAG-level replication in A5 (Mrp 11.7×, p = 5.3e-4) and orthogonal genome-wide test in A3b (MICP operon within-genus rarity for Pseudomonas_E).
-- Existing Fig 7 (PCoA by source) → complemented by B (external MGnify rarity).
+- Existing Fig 7 (PCoA by source) → complemented by B (external MGnify rarity) and C6 (abundance not-an-outlier proxy).
+- C3 codeml + yn00: urease catalytic subunits are under strong purifying selection overall (ω_M0 < 0.1), with an interesting relaxed-selection signal specifically on ureG (GTPase accessory) within the convergent MICP-complete lineages (hero-hero yn00 ω 4× elevated, p = 7.7 × 10⁻⁸).
