@@ -1,8 +1,10 @@
 # C1-C6 reviewer-defense additions (extended panel)
 
-**Date**: 2026-04-20 (initial) / 2026-04-21 (C1 re-run + C3 v3 + C4 HF ESMFold)
+**Date**: 2026-04-20 (initial) / 2026-04-21 (C1 re-run + C3 v3 + C4 HF ESMFold) / **2026-04-22 (integrated into main manuscript)**
 
 All in-silico, no wet-lab.
+
+**Integration status (2026-04-22)**: all C1–C6 analyses — alongside the earlier A1–A7+B reviewer-defense layer — have been **integrated into the initial submission body** as Methods §2.11–2.24, Results §3.9–3.12, Discussion §4.6–4.10, supplementary Figures S8–S21, and Tables S11–S23. The revision-card document (`proposed_supplementary_additions.md`) is retained as a historical planning artefact and is superseded by the submission package at `/data/data/Upcycling/SUBMISSION/` (manuscript itself is gitignored until publication).
 
 
 ## C1 antiSMASH BGC scan
