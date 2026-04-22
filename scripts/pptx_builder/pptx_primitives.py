@@ -457,13 +457,13 @@ def draw_categorical_heatmap(shapes, x0: float, y0: float,
                              size=cell_font_size, align="center",
                              bold=True, color=col_txt)
 
-    # Row labels (left)
+    # Row labels (left) — width 1.8 in to accommodate long genus names
     for ri, row in enumerate(row_labels):
         lc = (row_label_colors.get(row) if row_label_colors
               else OKABE_ITO["black"])
         lb = bool(row_label_bold and row in row_label_bold)
-        add_text(shapes, x0 - 1.0, y0 + ri * cell_h + cell_h / 2 - 0.12,
-                 0.95, 0.22, row, size=row_label_size,
+        add_text(shapes, x0 - 1.9, y0 + ri * cell_h + cell_h / 2 - 0.12,
+                 1.85, 0.22, row, size=row_label_size,
                  align="right", color=lc, bold=lb)
     # Col labels (above)
     ncols = len(col_labels)

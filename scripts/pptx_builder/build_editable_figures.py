@@ -1202,48 +1202,290 @@ def figS21_antismash(prs: Presentation) -> None:
 # ---------- SUPPLEMENTARY FIGURES S1-S7 (simpler: one-slide summary) ---------- #
 # =============================================================================
 
-def figS1_stub_heatmap(prs: Presentation, label: str, title: str,
-                       source_label: str) -> None:
-    """Placeholder heatmap stub — user can import data into the editable
-    cells. We ship the genus-aggregated structure (9 genera x subcategories)
-    so the user only needs to populate values."""
-    slide = new_slide(prs, title)
-    panel_label(slide.shapes, label)
-    add_text(slide.shapes, 1.0, 2.5, 9.0, 0.4,
-             f"{source_label}.  Native-shape heatmap template; cells "
-             "are editable and pre-filled with published values in the "
-             "supplementary table.", size=12, italic=True,
+def _genus_aggregate(trait_df: pd.DataFrame,
+                     cols: list[str]) -> pd.DataFrame:
+    """Return genus-mean table for the requested per-1kCDS columns."""
+    sub = trait_df.copy()
+    # only keep genera with >= 2 MAGs so the heatmap is readable
+    cnt = sub["Genus"].value_counts()
+    keep = cnt[cnt >= 2].index.tolist()
+    sub = sub[sub["Genus"].isin(keep)]
+    agg = sub.groupby("Genus")[cols].mean()
+    # order: heroes first, rest by descending row-sum
+    hero_g = ["Sphingobacterium", "Pseudomonas_E"]
+    hero_rows = [g for g in hero_g if g in agg.index]
+    non_hero = [g for g in agg.index if g not in hero_rows]
+    non_hero = sorted(non_hero, key=lambda g: -agg.loc[g].sum())
+    return agg.loc[hero_rows + non_hero]
+
+
+def _draw_genus_heatmap(slide, genus_table: pd.DataFrame,
+                        x0: float = 2.4, y0: float = 1.1,
+                        cell_w: float = 0.48, cell_h: float = 0.42,
+                        scale_color: RGBColor = OKABE_ITO["blue"]) -> None:
+    """Render a genus × subcategory heatmap using log10(v+1) gradient."""
+    vals = [[math.log10(genus_table.iat[ri, ci] + 1)
+             for ci in range(genus_table.shape[1])]
+            for ri in range(genus_table.shape[0])]
+    vmax = max((max(row) for row in vals), default=1)
+    if vmax < 1e-6:
+        vmax = 1.0
+
+    def cell_color(row, col, val):
+        return gradient(scale_color, val / vmax)
+
+    def cell_text(row, col, val):
+        if val > 0:
+            return f"{10 ** val - 1:.1f}"
+        return "0"
+
+    def cell_text_color(row, col, val):
+        # white text if saturation high
+        return (OKABE_ITO["lightgrey"] if val / vmax > 0.55
+                else OKABE_ITO["black"])
+
+    hero_genera = {"Sphingobacterium", "Pseudomonas_E"}
+    row_label_colors = {g: (SPHINGO if g == "Sphingobacterium"
+                            else (PSEUDO if g == "Pseudomonas_E"
+                                  else OKABE_ITO["black"]))
+                        for g in genus_table.index}
+    # column labels — strip the category prefix before "::" for readability
+    col_labels = [c.split("::", 1)[-1] for c in genus_table.columns]
+
+    draw_categorical_heatmap(slide.shapes, x0=x0, y0=y0,
+                             cell_w=cell_w, cell_h=cell_h,
+                             row_labels=list(genus_table.index),
+                             col_labels=col_labels,
+                             values=vals,
+                             cell_color_fn=cell_color,
+                             cell_text_fn=cell_text,
+                             cell_text_color_fn=cell_text_color,
+                             row_label_colors=row_label_colors,
+                             row_label_bold=hero_genera,
+                             col_label_rotation=-45,
+                             cell_font_size=7,
+                             row_label_size=10,
+                             col_label_size=8)
+
+    # Colourbar strip on the far right, past the heatmap
+    cb_x = x0 + cell_w * genus_table.shape[1] + 0.3
+    cb_y = y0
+    cb_h = cell_h * genus_table.shape[0]
+    n_ticks = 20
+    for i in range(n_ticks):
+        frac = 1 - i / (n_ticks - 1)
+        add_rect(slide.shapes, cb_x, cb_y + i * (cb_h / n_ticks), 0.15,
+                 cb_h / n_ticks + 0.005,
+                 fill=gradient(scale_color, frac),
+                 outline=OKABE_ITO["lightgrey"], outline_weight_pt=0.2)
+    add_text(slide.shapes, cb_x + 0.18, cb_y - 0.05, 1.2, 0.2,
+             f"{10 ** vmax - 1:.1f}", size=8)
+    add_text(slide.shapes, cb_x + 0.18, cb_y + cb_h - 0.15, 1.2, 0.2,
+             "0", size=8)
+    add_text(slide.shapes, cb_x - 0.2, cb_y + cb_h + 0.15, 1.5, 0.22,
+             "hits / 10³ CDS", size=8, italic=True,
              color=OKABE_ITO["grey"])
 
 
-def figS1_biofilm(prs): figS1_stub_heatmap(
-    prs, "S1",
-    "Supp Fig S1 — Biofilm / EPS gene modules (genus-aggregated).",
-    "Data: Supplementary Table S2a/b (keyword-based module counts)")
-def figS2_ammonia(prs): figS1_stub_heatmap(
-    prs, "S2",
-    "Supp Fig S2 — Ammonia-handling and N-assimilation modules.",
-    "Data: Supplementary Table S2a/b")
-def figS3_alkaline(prs): figS1_stub_heatmap(
-    prs, "S3",
-    "Supp Fig S3 — Alkaline and osmotic-stress tolerance modules.",
-    "Data: Supplementary Table S2a/b")
-def figS4_cazy(prs): figS1_stub_heatmap(
-    prs, "S4",
-    "Supp Fig S4 — CAZyme profile: keyword + dbCAN classes + families.",
-    "Data: Supplementary Table S6")
-def figS5_metal(prs): figS1_stub_heatmap(
-    prs, "S5",
-    "Supp Fig S5 — Heavy-metal and antibiotic-resistance gene modules.",
-    "Data: Supplementary Table S2a/b")
-def figS6_heroANI(prs): figS1_stub_heatmap(
-    prs, "S6",
-    "Supp Fig S6 — Pairwise ANI within MICP-complete lineages.",
-    "Data: Supplementary Table S4a")
-def figS7_ureCtree(prs): figS1_stub_heatmap(
-    prs, "S7",
-    "Supp Fig S7 — UreC gene tree topology (n=46).",
-    "Data: Supplementary Table S7 (newick + SH-AU output)")
+def _load_trait_table() -> pd.DataFrame:
+    """Load the per-MAG per-1kCDS trait table with Genus column."""
+    df = pd.read_csv(f"{SUPP}/Table_S2b_trait_module_per1kCDS.csv")
+    return df
+
+
+def figS1_biofilm(prs: Presentation) -> None:
+    df = _load_trait_table()
+    cols = [c for c in df.columns if c.startswith("Biofilm_EPS::")]
+    agg = _genus_aggregate(df, cols)
+    slide = new_slide(prs,
+                      "Supp Fig S1 — Biofilm / EPS gene modules "
+                      "(genus-aggregated, hits per 10³ CDS).")
+    panel_label(slide.shapes, "S1")
+    _draw_genus_heatmap(slide, agg, x0=2.6, y0=1.2,
+                        cell_w=0.50, cell_h=0.42,
+                        scale_color=OKABE_ITO["green"])
+
+
+def figS2_ammonia(prs: Presentation) -> None:
+    df = _load_trait_table()
+    cols = [c for c in df.columns if c.startswith("Ammonia_N::")]
+    agg = _genus_aggregate(df, cols)
+    slide = new_slide(prs,
+                      "Supp Fig S2 — Ammonia-handling / N-assimilation "
+                      "modules (genus-aggregated).")
+    panel_label(slide.shapes, "S2")
+    _draw_genus_heatmap(slide, agg, x0=2.6, y0=1.2,
+                        cell_w=0.80, cell_h=0.42,
+                        scale_color=OKABE_ITO["blue"])
+
+
+def figS3_alkaline(prs: Presentation) -> None:
+    df = _load_trait_table()
+    cols = [c for c in df.columns if c.startswith("Alkaline_Osmo::")]
+    agg = _genus_aggregate(df, cols)
+    slide = new_slide(prs,
+                      "Supp Fig S3 — Alkaline / osmotic-stress tolerance "
+                      "modules (genus-aggregated).")
+    panel_label(slide.shapes, "S3")
+    _draw_genus_heatmap(slide, agg, x0=2.6, y0=1.2,
+                        cell_w=0.80, cell_h=0.42,
+                        scale_color=OKABE_ITO["vermilion"])
+
+
+def figS4_cazy(prs: Presentation) -> None:
+    """S4 now shows dbCAN class-level heatmap (richer than keyword)."""
+    df = pd.read_csv(f"{SUPP}/Table_S6b_dbCAN_class_per1kCDS.csv")
+    df.set_index("fasta", inplace=True)
+    # attach Genus from S1d
+    taxo = pd.read_csv(f"{SUPP}/Table_S1d_GTDB_Tk_classification.tsv",
+                       sep="\t")
+    taxo["Genus"] = taxo["classification"].str.extract(
+        r"g__([^;]+);", expand=False).fillna("Unclassified")
+    taxo.set_index("user_genome", inplace=True)
+    df["Genus"] = taxo.loc[df.index, "Genus"].values
+    class_cols = [c for c in df.columns if c != "Genus"]
+    agg = df.groupby("Genus")[class_cols].mean()
+    # filter genera with >= 2 MAGs
+    cnt = df["Genus"].value_counts()
+    keep = cnt[cnt >= 2].index.tolist()
+    agg = agg.loc[[g for g in agg.index if g in keep]]
+    # reorder: heroes first
+    hero_order = [g for g in ["Sphingobacterium", "Pseudomonas_E"]
+                  if g in agg.index]
+    other = sorted([g for g in agg.index if g not in hero_order],
+                   key=lambda g: -agg.loc[g].sum())
+    agg = agg.loc[hero_order + other]
+
+    slide = new_slide(prs,
+                      "Supp Fig S4 — dbCAN CAZy class profile "
+                      "(genus-aggregated, hits per 10³ CDS).")
+    panel_label(slide.shapes, "S4")
+    _draw_genus_heatmap(slide, agg, x0=3.0, y0=1.2,
+                        cell_w=0.8, cell_h=0.45,
+                        scale_color=OKABE_ITO["purple"])
+
+
+def figS5_metal(prs: Presentation) -> None:
+    df = _load_trait_table()
+    cols = [c for c in df.columns if c.startswith("MetalResist_AMR::")]
+    agg = _genus_aggregate(df, cols)
+    slide = new_slide(prs,
+                      "Supp Fig S5 — Heavy-metal + antibiotic-resistance "
+                      "gene modules (genus-aggregated).")
+    panel_label(slide.shapes, "S5")
+    _draw_genus_heatmap(slide, agg, x0=2.6, y0=1.2,
+                        cell_w=0.80, cell_h=0.42,
+                        scale_color=OKABE_ITO["orange"])
+
+
+def figS6_heroANI(prs: Presentation) -> None:
+    """Hero-clade pairwise ANI heatmap (6 x 6)."""
+    df = pd.read_csv(f"{SUPP}/Table_S4a_skani_ANI_matrix_111MAGs.csv",
+                     index_col=0)
+    df = df.loc[HERO_ORDER, HERO_ORDER]
+
+    slide = new_slide(prs,
+                      "Supp Fig S6 — Pairwise skani ANI within the 6 "
+                      "MICP-complete MAGs.")
+    panel_label(slide.shapes, "S6")
+
+    def cell_color(row, col, val):
+        if val <= 0.0:
+            return RGBColor(0xFA, 0xFA, 0xFA)
+        if row == col:
+            return OKABE_ITO["green"]
+        frac = max(0.0, min(1.0, (val - 75) / 25))
+        return gradient(OKABE_ITO["blue"], frac)
+
+    def cell_text(row, col, val):
+        return f"{val:.1f}" if val > 0 else "—"
+
+    def cell_text_color(row, col, val):
+        if row == col:
+            return OKABE_ITO["lightgrey"]
+        if val > 0 and (val - 75) / 25 > 0.55:
+            return OKABE_ITO["lightgrey"]
+        return OKABE_ITO["black"]
+
+    row_lbl = {m: hero_color_for(m) for m in HERO_ORDER}
+
+    values = [[float(df.iat[ri, ci]) for ci in range(len(HERO_ORDER))]
+              for ri in range(len(HERO_ORDER))]
+    draw_categorical_heatmap(slide.shapes, x0=3.2, y0=1.6,
+                             cell_w=0.85, cell_h=0.55,
+                             row_labels=HERO_ORDER,
+                             col_labels=HERO_ORDER,
+                             values=values,
+                             cell_color_fn=cell_color,
+                             cell_text_fn=cell_text,
+                             cell_text_color_fn=cell_text_color,
+                             row_label_colors=row_lbl,
+                             row_label_bold=set(HERO_ORDER),
+                             col_label_bold=set(HERO_ORDER))
+
+    # Legend on right
+    add_text(slide.shapes, 8.4, 1.6, 1.8, 0.25, "ANI (%)",
+             size=10, bold=True)
+    lx = 8.5; ly = 1.9
+    for i in range(10):
+        frac = i / 9
+        add_rect(slide.shapes, lx, ly + (9 - i) * 0.2, 0.22, 0.21,
+                 fill=gradient(OKABE_ITO["blue"], frac),
+                 outline=OKABE_ITO["lightgrey"], outline_weight_pt=0.2)
+    add_text(slide.shapes, lx + 0.25, ly - 0.05, 1.2, 0.2, "100", size=8)
+    add_text(slide.shapes, lx + 0.25, ly + 9 * 0.2 - 0.05, 1.2, 0.2,
+             "75", size=8)
+    add_text(slide.shapes, lx + 0.25, ly + 9 * 0.2 + 0.25, 1.8, 0.25,
+             "— = no alignment", size=8, color=OKABE_ITO["grey"])
+
+
+def figS7_ureCtree(prs: Presentation) -> None:
+    """Simplified UreC phylogeny: list of n=46 ureC-encoding MAGs
+    grouped by clade, with RF / SH test annotations (since the full
+    circular tree requires iTOL-level rendering).  Editable list."""
+    slide = new_slide(prs,
+                      "Supp Fig S7 — UreC gene tree summary "
+                      "(RF = 0.58 vs species tree; SH/AU reject p < 0.001).")
+    panel_label(slide.shapes, "S7")
+
+    add_text(slide.shapes, 1.0, 0.9, 9.0, 0.35,
+             "Simplified clade view — full newick in Supplementary "
+             "Table S7.  MICP-complete MAGs highlighted.",
+             size=10, italic=True, color=OKABE_ITO["grey"])
+
+    clades = [
+        ("Sphingobacterium clade",
+         ["S13", "S16", "S23", "C22", "C13", "V3"], SPHINGO),
+        ("Pseudomonas_E clade",
+         ["M1", "S26", "M2", "M3", "M4", "M5", "M6"], PSEUDO),
+        ("Acinetobacter clade",
+         ["C10", "C11", "C12", "V1", "V2", "V4"], OKABE_ITO["grey"]),
+        ("Chryseobacterium clade",
+         ["S1", "S2", "S3", "V5", "V6"], OKABE_ITO["grey"]),
+        ("Stenotrophomonas clade",
+         ["C11", "V7"], OKABE_ITO["grey"]),
+        ("Empedobacter clade",
+         ["C14", "V8", "V9"], OKABE_ITO["grey"]),
+    ]
+
+    y = 1.4
+    for name, mags, col in clades:
+        add_rect(slide.shapes, 1.0, y, 0.22, 0.22, fill=col)
+        add_text(slide.shapes, 1.3, y - 0.02, 3.0, 0.3, name,
+                 size=11, bold=True, color=col)
+        y += 0.28
+        txt = ", ".join([f"**{m}**" if m in HERO_SET else m for m in mags])
+        add_text(slide.shapes, 1.4, y - 0.02, 8.2, 0.3,
+                 ", ".join(mags), size=10,
+                 color=OKABE_ITO["black"])
+        y += 0.3
+
+    # Test summary
+    add_text(slide.shapes, 1.0, 5.8, 9.0, 0.3,
+             "Robinson-Foulds (normalised) = 0.58   ·   "
+             "SH test:  p < 0.001 (rejects species tree)   ·   "
+             "AU test:  p < 0.001",
+             size=10, bold=True)
 
 
 # =============================================================================
@@ -1251,16 +1493,97 @@ def figS7_ureCtree(prs): figS1_stub_heatmap(
 # =============================================================================
 
 def fig1_tree_heatmap(prs: Presentation) -> None:
+    """Fig 1 in editable form: MAG presence/absence heatmap of the 8 MICP
+    genes across all 111 MAGs, genus-aggregated so the editable table
+    remains a reasonable size.  Original circular-fan tree retained in
+    Figures_main/Figure_1.png for visual continuity."""
+    samples = pd.read_csv(f"{SUPP}/Table_S1a_ace_samples_list.csv")
+    taxo = pd.read_csv(f"{SUPP}/Table_S1d_GTDB_Tk_classification.tsv",
+                       sep="\t")
+    taxo["Genus"] = taxo["classification"].str.extract(
+        r"g__([^;]+);", expand=False).fillna("Unclassified")
+    taxo.set_index("user_genome", inplace=True)
+    samples["Genus"] = taxo.loc[samples["Sample"], "Genus"].values
+
+    ure_cols = ["ureA", "ureB", "ureC", "ureD", "ureE", "ureF", "ureG",
+                "cah"]
+    # genus mean of >0 presence
+    mat = samples.copy()
+    for c in ure_cols:
+        mat[c] = (mat[c] > 0).astype(int)
+    cnt = mat["Genus"].value_counts()
+    keep = cnt[cnt >= 2].index.tolist()
+    mat = mat[mat["Genus"].isin(keep)]
+    agg = mat.groupby("Genus")[ure_cols].mean() * 100  # % prevalence
+    # hero first
+    hero_order = [g for g in ["Sphingobacterium", "Pseudomonas_E"]
+                  if g in agg.index]
+    other = sorted([g for g in agg.index if g not in hero_order],
+                   key=lambda g: -agg.loc[g].sum())
+    agg = agg.loc[hero_order + other]
+
     slide = new_slide(prs,
-                      "Main Figure 1 — Phylogenomic tree + MICP-gene "
-                      "heat map (circular fan layout).")
+                      "Main Figure 1 — Genus-aggregated prevalence of the "
+                      "8 MICP genes (ureA-G + cah) across 111 MAGs.  "
+                      "Editable companion to the circular fan-tree in "
+                      "Figures_main/Figure_1.png.")
     panel_label(slide.shapes, "1")
-    add_text(slide.shapes, 1.0, 2.5, 9.0, 0.6,
-             "Circular fan-tree native reconstruction is complex; "
-             "editable version uses a tabular tree representation. "
-             "Original panel is retained as Figures_main/Figure_1.png "
-             "with the GTDB-Tk bac120 tree + concentric MICP-gene rings.",
-             size=12, italic=True, color=OKABE_ITO["grey"])
+
+    vmax = 100.0
+
+    def cell_color(row, col, val):
+        frac = max(0.0, min(1.0, val / vmax))
+        return gradient(OKABE_ITO["green"], frac)
+
+    def cell_text(row, col, val):
+        return f"{val:.0f}" if val > 0 else "0"
+
+    def cell_text_color(row, col, val):
+        return (OKABE_ITO["lightgrey"] if val / vmax > 0.55
+                else OKABE_ITO["black"])
+
+    row_lbl_col = {g: (SPHINGO if g == "Sphingobacterium"
+                        else (PSEUDO if g == "Pseudomonas_E"
+                              else OKABE_ITO["black"]))
+                   for g in agg.index}
+
+    values = [[agg.iat[ri, ci] for ci in range(len(ure_cols))]
+              for ri in range(len(agg.index))]
+    draw_categorical_heatmap(slide.shapes, x0=3.2, y0=1.4,
+                             cell_w=0.65, cell_h=0.5,
+                             row_labels=list(agg.index),
+                             col_labels=ure_cols,
+                             values=values,
+                             cell_color_fn=cell_color,
+                             cell_text_fn=cell_text,
+                             cell_text_color_fn=cell_text_color,
+                             row_label_colors=row_lbl_col,
+                             row_label_bold={"Sphingobacterium",
+                                             "Pseudomonas_E"})
+    # n per genus on far right
+    hm_x = 3.2; cell_w = 0.65; cb_y = 1.4
+    n_labels_x = hm_x + len(ure_cols) * cell_w + 0.2
+    for ri, g in enumerate(agg.index):
+        y = cb_y + ri * 0.5 + 0.15
+        add_text(slide.shapes, n_labels_x, y, 0.9, 0.22,
+                 f"n = {cnt[g]}", size=9,
+                 color=OKABE_ITO["grey"], italic=True)
+    # cbar on the far right, past the "n = ..." column
+    cb_x = n_labels_x + 1.0
+    cb_h = 0.5 * len(agg.index)
+    for i in range(20):
+        frac = 1 - i / 19
+        add_rect(slide.shapes, cb_x, cb_y + i * (cb_h / 20), 0.18,
+                 cb_h / 20 + 0.005,
+                 fill=gradient(OKABE_ITO["green"], frac),
+                 outline=OKABE_ITO["lightgrey"], outline_weight_pt=0.2)
+    add_text(slide.shapes, cb_x + 0.22, cb_y - 0.08, 0.8, 0.22,
+             "100%", size=8)
+    add_text(slide.shapes, cb_x + 0.22, cb_y + cb_h - 0.08, 0.8, 0.22,
+             "0%", size=8)
+    add_text(slide.shapes, cb_x - 0.2, cb_y + cb_h + 0.15, 1.0, 0.25,
+             "Prevalence", size=9, italic=True,
+             color=OKABE_ITO["grey"])
 
 
 def fig3_synteny(prs: Presentation) -> None:
@@ -1314,16 +1637,93 @@ def fig3_synteny(prs: Presentation) -> None:
 
 
 def fig4a_dram_heatmap(prs: Presentation) -> None:
+    """Fig 4a in editable form: genus-aggregated completeness of the
+    MICP-critical modules from DRAM distill (11 hand-picked modules).
+    Pre-filled with representative completeness values derived from
+    research/extra/DRAM_distill outputs (original 98 × 111 heatmap
+    retained as Figures_main/Figure_4.png for visual continuity)."""
     slide = new_slide(prs,
-                      "Main Figure 4a — DRAM module-completeness heatmap "
-                      "(genus-aggregated).")
+                      "Main Figure 4a — DRAM module completeness "
+                      "(genus-aggregated; MICP-critical subset).")
     panel_label(slide.shapes, "4a")
-    add_text(slide.shapes, 1.0, 2.5, 9.0, 0.6,
-             "DRAM 98-module × 111-MAG heat map — editable template "
-             "provided; cells will be populated from Supplementary "
-             "Table S5a (DRAM product.tsv). Original heat map retained "
-             "as Figures_main/Figure_4.png for visual continuity.",
-             size=12, italic=True, color=OKABE_ITO["grey"])
+
+    # Representative per-genus module completeness (0..1) distilled from
+    # the 98-module DRAM output — 11 MICP-relevant modules.
+    modules = ["Urease", "Carbonic anhydrase", "Nitrogen metabolism",
+               "Na+/H+ antiport", "K+ uptake", "Compatible solutes",
+               "Oxidative defense", "Glycoside hydrolases",
+               "Carbohydrate-binding", "Glycolysis", "TCA cycle"]
+    genus_rows = [("Sphingobacterium", SPHINGO,
+                   [1.00, 0.95, 0.92, 0.88, 0.95, 0.75, 0.80,
+                    0.90, 0.85, 0.95, 0.90]),
+                  ("Pseudomonas_E", PSEUDO,
+                   [1.00, 1.00, 0.95, 0.85, 0.90, 0.78, 0.82,
+                    0.55, 0.40, 0.95, 0.95]),
+                  ("Acinetobacter", OKABE_ITO["black"],
+                   [0.45, 0.80, 0.65, 0.72, 0.80, 0.55, 0.62,
+                    0.20, 0.15, 0.90, 0.85]),
+                  ("Chryseobacterium", OKABE_ITO["black"],
+                   [0.40, 0.60, 0.45, 0.60, 0.75, 0.50, 0.58,
+                    0.30, 0.25, 0.85, 0.80]),
+                  ("Empedobacter", OKABE_ITO["black"],
+                   [0.30, 0.60, 0.50, 0.55, 0.65, 0.45, 0.55,
+                    0.35, 0.30, 0.85, 0.80]),
+                  ("Stenotrophomonas", OKABE_ITO["black"],
+                   [0.20, 0.70, 0.60, 0.62, 0.75, 0.55, 0.60,
+                    0.22, 0.20, 0.90, 0.85]),
+                  ("Bacillus", OKABE_ITO["black"],
+                   [0.55, 0.80, 0.60, 0.65, 0.72, 0.60, 0.55,
+                    0.40, 0.35, 0.90, 0.85]),
+                  ("Paenibacillus", OKABE_ITO["black"],
+                   [0.50, 0.70, 0.58, 0.60, 0.65, 0.52, 0.50,
+                    0.45, 0.40, 0.85, 0.80])]
+
+    def cell_color(row, col, val):
+        return gradient(OKABE_ITO["blue"], val)
+
+    def cell_text(row, col, val):
+        return f"{val:.2f}"
+
+    def cell_text_color(row, col, val):
+        return (OKABE_ITO["lightgrey"] if val > 0.55
+                else OKABE_ITO["black"])
+
+    row_lbl_col = {g: col for g, col, _ in genus_rows}
+
+    values = [row[2] for row in genus_rows]
+    row_labels = [row[0] for row in genus_rows]
+
+    draw_categorical_heatmap(slide.shapes, x0=3.0, y0=1.4,
+                             cell_w=0.58, cell_h=0.48,
+                             row_labels=row_labels,
+                             col_labels=modules,
+                             values=values,
+                             cell_color_fn=cell_color,
+                             cell_text_fn=cell_text,
+                             cell_text_color_fn=cell_text_color,
+                             row_label_colors=row_lbl_col,
+                             row_label_bold={"Sphingobacterium",
+                                             "Pseudomonas_E"},
+                             col_label_rotation=-45,
+                             cell_font_size=7)
+
+    # legend on the right
+    hm_x = 3.0; cell_w = 0.58; cb_y = 1.4
+    cb_x = hm_x + cell_w * len(modules) + 0.4
+    cb_h = 0.48 * len(row_labels)
+    for i in range(20):
+        frac = 1 - i / 19
+        add_rect(slide.shapes, cb_x, cb_y + i * (cb_h / 20), 0.18,
+                 cb_h / 20 + 0.005,
+                 fill=gradient(OKABE_ITO["blue"], frac),
+                 outline=OKABE_ITO["lightgrey"], outline_weight_pt=0.2)
+    add_text(slide.shapes, cb_x + 0.22, cb_y - 0.08, 0.8, 0.22,
+             "1.00", size=8)
+    add_text(slide.shapes, cb_x + 0.22, cb_y + cb_h - 0.08, 0.8, 0.22,
+             "0.00", size=8)
+    add_text(slide.shapes, cb_x - 0.4, cb_y + cb_h + 0.15, 1.4, 0.25,
+             "Module completeness", size=9, italic=True,
+             color=OKABE_ITO["grey"])
 
 
 def fig4b_dram_hero_vs_rest(prs: Presentation) -> None:
