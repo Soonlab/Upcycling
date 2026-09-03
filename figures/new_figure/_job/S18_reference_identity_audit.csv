@@ -1,0 +1,21 @@
+organism,habitat,status,actual
+Sporosarcina_pasteurii,soil_canonical,not downloaded,
+Sporosarcina_psychrophila,cold_soil,not downloaded,
+Sporosarcina_ureae,soil,wrong organism,"NC_018661.1 Escherichia coli O104:H4 str. 2009EL-2071, complete sequence"
+Bacillus_subtilis_168,soil,verified,NC_000964.3 Bacillus subtilis subsp. subtilis str. 168 complete genome
+Bacillus_megaterium,soil,not downloaded,
+Bacillus_licheniformis,soil,wrong organism,"NZ_AP014815.1 Geminocystis sp. NIES-3708 chromosome, complete genome"
+Lysinibacillus_sphaericus,soil,wrong organism,"NZ_CP010822.1 Thermus aquaticus Y51MC23 chromosome, complete genome"
+Lysinibacillus_fusiformis,soil,wrong organism,"NZ_CP007656.1 Bdellovibrio bacteriovorus strain 109J chromosome, complete genome"
+Halomonas_pacifica,marine,wrong organism,NZ_LT632320.1 Escherichia coli strain NCTC 13441 chromosome 1
+Halomonas_elongata,marine_saline,wrong organism,"NC_005363.1 Bdellovibrio bacteriovorus HD100, complete sequence"
+Idiomarina_loihiensis,marine_deep,not downloaded,
+Pseudoalteromonas_haloplanktis,marine,wrong organism,"NZ_BAJB01000047.1 Hoylesella loescheii DSM 19665 = JCM 12249 = ATCC 15930 strain JCM 12249, whole genome shotgun sequence"
+Helicobacter_pylori_26695,host_acidic,wrong organism,"NZ_CP007204.1 Riemerella anatipestifer Yb2 chromosome, complete genome"
+Klebsiella_aerogenes,clinical_ureolytic,wrong organism,"NC_006156.1 Borreliella bavariensis PBi chromosome linear, complete sequence"
+Proteus_mirabilis,clinical_ureolytic,not downloaded,
+Yersinia_enterocolitica,clinical,wrong organism,"NC_008229.1 Helicobacter acinonychis str. Sheeba, complete sequence"
+Sphingobacterium_sp_21,soil_sphingo,wrong organism,"NC_017067.1 Marinobacter nauticus ATCC 49840, complete sequence"
+Sphingobacterium_multivorum,soil_sphingo,not downloaded,
+Sphingobacterium_paramultivorum,soil_sphingo,wrong organism,"NZ_CP017087.1 Enterobacter sp. HK169 chromosome, complete genome"
+Pseudomonas_helleri,soil_pseudomonas,verified,"NZ_JYLD01000010.1 Pseudomonas helleri strain DSM 29165 10_220866_45.2889, whole genome shotgun sequence"
