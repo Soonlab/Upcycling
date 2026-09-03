@@ -23,7 +23,8 @@ HEROES = {"S13","S16","S23","C22","M1","S26"}
 # Source mapping: prefix → source
 def source_of(name):
     p = name[0].upper()
-    return {"C":"cattle","S":"swine","M":"sheep","V":"poultry"}.get(p, "unknown")
+    # 2026-09-04 fix: S and M were transposed here, mislabelling 47 of 111 MAGs
+    return {"C": "cattle", "M": "swine", "S": "sheep", "V": "poultry"}.get(p, "unknown")
 
 rows = []
 for fa_gz in sorted(MAG_DIR.glob("*.fasta.gz")):

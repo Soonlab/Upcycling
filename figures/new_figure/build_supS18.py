@@ -1,48 +1,52 @@
 """Suppl Fig S18 - ANI of the MICP-complete MAGs against the curated MICP reference panel (C5).
 
-Panel
-  A  nearest curated reference genome for each MICP-complete MAG, with the 95 % species
-     threshold.  Only one MAG-reference pair produced an alignment above skani's reporting
-     threshold; the other five MAGs are marked as having no alignment reported, which is the
-     result rather than a missing series.
+Panels
+  A  the complete comparison: six MICP-complete MAGs against every verified reference of the
+     curated panel.  A cell carries the ANI where skani reported an alignment and a dash where
+     it reported none.  The sparsity is the result: the MAGs share no measurable whole-genome
+     identity with any canonical ureolytic reference, only with references of their own genus.
+  B  the reported pairs, ranked, against the 95 % species boundary.
 
-REFERENCE-SET INTEGRITY (why this page is sparse)
-The build verifies each reference FASTA against the organism its filename claims, by reading
-the first sequence header.  Twelve of the fourteen downloaded references contain a DIFFERENT
-organism (e.g. the file named Halomonas_elongata holds Bdellovibrio bacteriovorus HD100, and
-both files named Sphingobacterium hold Enterobacter and Marinobacter).  Those files are
-EXCLUDED here, because drawing them would put false organism names on the figure.  Five
-further references in curated_refs.tsv never downloaded at all, Sporosarcina pasteurii - the
-canonical MICP organism - among them.  Only Bacillus subtilis 168 and Pseudomonas helleri
-survive verification.  The two impossible ANI values in the stored matrix (99.02 % between
-"Halomonas elongata" and "Lysinibacillus fusiformis", 96.45 % between "Halomonas pacifica"
-and "Sporosarcina ureae") are artefacts of the same mislabelling: each pair is really two
-strains of one species.  The consequence for the manuscript is recorded in the journal - the
-claim that the Sphingobacterium MAGs stay below 95 % against every reference examined is NOT
-supported by C5, because no genuine Sphingobacterium reference was ever in this comparison.
-It is supported instead by the independent 63-genome RefSeq screen drawn in Fig. 5c / Table S10,
-whose reference set was checked here and is correct.
+REFERENCE PANEL - REBUILT 2026-09-04
+The first C5 run is superseded.  Its `curated_refs.tsv` accessions did not correspond to the
+organisms they were labelled with: of 20 accessions, only GCF_000009045.1 (Bacillus subtilis 168)
+and GCF_001043025.1 (Pseudomonas helleri DSM 29165) named the intended taxon.  The rest pointed
+at unrelated organisms (the accession labelled Sporosarcina ureae is Escherichia coli; the two
+labelled Sphingobacterium are Marinobacter and Enterobacter) or did not exist, Sporosarcina
+pasteurii among the latter.  The downloads had been faithful to those accessions, so the fault
+was upstream of the download and the whole panel was fictitious.
+The panel was rebuilt by resolving each intended TAXON against the NCBI datasets API,
+downloading by accession, and verifying the organism NCBI reports for that accession against
+the intended taxon before accepting the file
+(`research/additional/C5_panMICP_env_v2/`, manifest `reference_manifest.tsv`).
+Twenty of twenty references are now organism-verified.  Two taxa carry current names that
+differ from the manuscript's: Halomonas pacifica is now Bisbaumannia pacifica and Bacillus
+megaterium is now Priestia megaterium, both the same tax_id.  Sphingobacterium sp. 21 has no
+genome under that strain designation and was replaced in the panel by the two Sphingobacterium
+type strains the manuscript actually compares against.
 
 Sources
-  research/additional/C5_panMICP_env/skani_panMICP.matrix  20 x 20 all-vs-all ANI
-  research/additional/C5_panMICP_env/curated_refs.tsv      intended reference panel
-  research/additional/C5_panMICP_env/refs/*.fna            first header, for identity check
-  Table_S20_skani_hero_vs_refs.tsv                         the reported pairs (asserted against)
-A matrix entry of 0.00 means skani reported no alignment for that pair, not 0 % identity, so
-it is drawn as absent rather than as a value.
+  research/additional/C5_panMICP_env_v2/reference_manifest.tsv  accession -> verified organism
+  research/additional/C5_panMICP_env_v2/skani_panMICP.matrix    all-vs-all ANI, verified panel
+  Table_S20_skani_hero_vs_refs.tsv                              the 6 x 20 pair table
+A matrix entry of 0.00 means skani reported no alignment for that pair, not 0 % identity, and
+is drawn as absent rather than as a value.
 
 Colour meanings on this page
-  blue   = Sphingobacterium lineage MAG (S13, S16, S23, C22)
-  orange = Pseudomonas_E lineage MAG (M1, S26)
-  grey   = the 95 % species threshold and the no-alignment markers, neither of them a lineage
+  blue   = Sphingobacterium lineage MAG (S13, S16, S23, C22), and its cells and points
+  orange = Pseudomonas_E lineage MAG (M1, S26), and its cells and points
+  grey   = the 95 % species boundary, the no-alignment dashes and the panel rules; none of
+           them a lineage
+Cell and point colour therefore carries lineage only; ANI magnitude is printed, not encoded,
+so that a single hue is never asked to mean two things on one page.
 """
 
-import re
 import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from matplotlib.patches import Rectangle
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -54,11 +58,31 @@ from _style import GREY, TEXT, LIGHT, FS_STAT, FS_BODY
 st.setup()
 OUT = HERE / "figures"
 SUPP = Path(gh.SUPP)
-C5 = Path(gh.ADDITIONAL) / "C5_panMICP_env"
+C5 = Path(gh.ADDITIONAL) / "C5_panMICP_env_v2"
 
-SPECIES_ANI = 95.0  # standard prokaryotic species boundary, a published constant
+SPECIES_ANI = 95.0  # standard prokaryotic species boundary (Konstantinidis & Tiedje 2005)
 
-# ------------------------------------------------------------------ data: matrix
+# ------------------------------------------------------------------ verified reference panel
+man = pd.read_csv(C5 / "reference_manifest.tsv", sep="\t")
+assert (man.status == "verified").all(), man.loc[man.status != "verified", "accession"].tolist()
+n_refs = len(man)
+
+
+def binomial(organism):
+    """Genus + species of the organism NCBI reports, for use as a column label."""
+    return " ".join(str(organism).split()[:2])
+
+
+man["label"] = [binomial(o) for o in man.reported_organism]
+# where two accessions share a binomial, the strain designation distinguishes them; it is
+# read from the assembly report, not typed in, so the label always names the genome drawn
+dupe = man.label.duplicated(keep=False)
+man.loc[dupe, "label"] = [f"{lab} {str(strain).replace('type strain: ', '')}"
+                          for lab, strain in zip(man.loc[dupe, "label"],
+                                                 man.loc[dupe, "strain"])]
+assert man.label.is_unique
+
+# ------------------------------------------------------------------ data: skani matrix
 lines = (C5 / "skani_panMICP.matrix").read_text().splitlines()
 n_declared = int(lines[0])
 names, rows = [], []
@@ -69,118 +93,103 @@ for ln in lines[1:]:
 M = np.array(rows)
 assert M.shape == (n_declared, len(names)) and M.shape[0] == M.shape[1], M.shape
 assert np.allclose(M, M.T), "skani matrix is not symmetric"
-
-heroes = [n for n in names if n.startswith("HERO_")]
-assert sorted(h.replace("HERO_", "") for h in heroes) == sorted(st.HEROES)
-
-# ------------------------------------------------------------------ reference identity check
-curated = pd.read_csv(C5 / "curated_refs.tsv", sep="\t", header=None,
-                      names=["accession", "organism", "habitat"])
-
-
-def first_header(path):
-    with open(path) as fh:
-        return fh.readline().lstrip(">").strip()
-
-
-def identity_ok(expected_name, header):
-    """Does the FASTA header name the organism the filename claims?
-
-    Compares the genus and species tokens of the expected name against the header text,
-    ignoring strain designations and the numeric suffixes used in the file names.
-    """
-    tokens = [t for t in expected_name.split("_") if not t.isdigit()]
-    genus = tokens[0].lower()
-    species = tokens[1].lower() if len(tokens) > 1 else ""
-    h = header.lower()
-    if genus not in h:
-        return False
-    return species in ("", "sp") or species in h
-
-
-audit = []
-for _, row in curated.iterrows():
-    fna = C5 / "refs" / f"{row.organism}.fna"
-    if not fna.exists():
-        audit.append(dict(organism=row.organism, habitat=row.habitat, status="not downloaded",
-                          actual=""))
-        continue
-    header = first_header(fna)
-    ok = identity_ok(row.organism, header)
-    audit.append(dict(organism=row.organism, habitat=row.habitat,
-                      status="verified" if ok else "wrong organism",
-                      actual=header))
-audit = pd.DataFrame(audit)
-verified = set(audit.loc[audit.status == "verified", "organism"])
-print(f"  reference panel: {len(audit)} curated | "
-      f"{(audit.status == 'verified').sum()} verified | "
-      f"{(audit.status == 'wrong organism').sum()} wrong organism | "
-      f"{(audit.status == 'not downloaded').sum()} not downloaded")
-for _, r in audit[audit.status != "verified"].iterrows():
-    print(f"    {r.organism:34s} {r.status:16s} {r.actual[:70]}")
-audit.to_csv(HERE / "_job" / "S18_reference_identity_audit.csv", index=False)
-
-# ------------------------------------------------------------------ nearest verified reference
 idx = {nm: i for i, nm in enumerate(names)}
-records = []
-for mag in st.HEROES:
-    hi = idx[f"HERO_{mag}"]
-    best_ref, best_ani = None, np.nan
-    for ref in verified:
-        if ref not in idx:
-            continue
-        ani = M[hi, idx[ref]]
-        if ani > 0 and (np.isnan(best_ani) or ani > best_ani):
-            best_ref, best_ani = ref, ani
-    records.append(dict(MAG=mag, ref=best_ref, ani=best_ani))
-res = pd.DataFrame(records)
+assert sorted(n.replace("HERO_", "") for n in names if n.startswith("HERO_")) == sorted(st.HEROES)
 
-# assert every reported pair in the shipped table is reproduced by the matrix
+# ------------------------------------------------------------------ data: Table S20, asserted
 tab = pd.read_csv(SUPP / "Table_S20_skani_hero_vs_refs.tsv", sep="\t")
-for _, r in tab.iterrows():
-    a, b = Path(r.Ref_file).stem, Path(r.Query_file).stem
-    assert abs(M[idx[a], idx[b]] - r.ANI) < 0.01, (a, b, M[idx[a], idx[b]], r.ANI)
-got = res.dropna(subset=["ani"])
-assert len(got) == 1 and got.iloc[0].MAG == "S26", res
-assert abs(got.iloc[0].ani - tab.query("Ref_name.str.contains('helleri')").ANI.iloc[0]) < 0.01
+# pandas reads the TRUE/FALSE column as bool; normalise so the check below is unambiguous
+tab["Alignment_reported"] = tab.Alignment_reported.astype(str).str.upper() == "TRUE"
+assert len(tab) == len(st.HEROES) * n_refs, (len(tab), n_refs)
+assert set(tab.Ref_accession) == set(man.accession)
+
+ani = pd.DataFrame(np.nan, index=st.HEROES, columns=list(man.label))
+acc2label = dict(zip(man.accession, man.label))
+for r in tab.itertuples():
+    m = M[idx[f"HERO_{r.MAG}"], idx[r.Ref_accession]]
+    reported = bool(r.Alignment_reported)
+    assert reported == (m > 0), (r.MAG, r.Ref_accession, m, r.Alignment_reported)
+    if reported:
+        assert abs(m - float(r.ANI)) < 0.01, (r.MAG, r.Ref_accession, m, r.ANI)
+        ani.loc[r.MAG, acc2label[r.Ref_accession]] = m
+
+reported = ani.stack().sort_values(ascending=False)
+assert len(reported) == int(tab.Alignment_reported.sum())
+print(f"  verified references {n_refs} | reported MAG-reference pairs {len(reported)}")
+
+# every reported pair is with a reference of the MAG's own genus - state it as a check,
+# derived from the manifest rather than asserted from a list
+for (mag, lab), v in reported.items():
+    genus_of_ref = lab.split()[0]
+    expected = "Sphingobacterium" if st.LINEAGE[mag] == "Sphingobacterium" else "Pseudomonas"
+    assert genus_of_ref == expected, (mag, lab)
 
 # ------------------------------------------------------------------ page
-H = 59.0
+H = 132.0
 fig, ax_mm, text_mm, letter = st.page(H)
 
-ax = ax_mm(28.0, 16.0, 118.0, 34.0)
-y = np.arange(len(res), dtype=float)
-XMIN = 88.0
-
-for yy, r in zip(y, res.itertuples()):
-    col = st.hero_col(r.MAG)
-    if np.isnan(r.ani):
-        ax.text(XMIN + 0.4, yy, "no alignment reported", ha="left", va="center",
-                fontsize=FS_STAT, color=GREY)
-    else:
-        ax.plot([XMIN, r.ani], [yy, yy], lw=1.0, color=col, zorder=2)
-        ax.scatter([r.ani], [yy], s=22, color=col, zorder=3)
-        ax.text(r.ani + 0.35, yy, f"{r.ani:.2f}  {r.ref.replace('_', ' ')}",
-                ha="left", va="center", fontsize=FS_STAT, color=TEXT)
-
-ax.axvline(SPECIES_ANI, color=GREY, lw=0.8, ls="--", zorder=1)
-ax.text(SPECIES_ANI, 1.02, "95 % species threshold", transform=ax.get_xaxis_transform(),
-        ha="center", va="bottom", fontsize=FS_STAT, color=GREY)
-ax.set_yticks(y)
-ax.set_yticklabels(res.MAG)
-ax.invert_yaxis()
-ax.set_xlim(XMIN, 100.5)
-ax.set_xlabel("ANI to nearest verified reference genome (%)")
-ax.grid(axis="x", color=LIGHT, lw=0.5, zorder=0)
-ax.set_axisbelow(True)
-st.style_axis(ax, left=False)
-ax.tick_params(left=False)
-for tick, mag in zip(ax.get_yticklabels(), res.MAG):
+# ---- A: the full 6 x n_refs comparison; column labels sit ABOVE the matrix so that the
+#         long organism names do not hang into panel B
+axA = ax_mm(26.0, 50.0, 148.0, 26.0)
+nr, nc = len(st.HEROES), n_refs
+for i, mag in enumerate(st.HEROES):
+    for j, lab in enumerate(man.label):
+        v = ani.loc[mag, lab]
+        if np.isnan(v):
+            axA.text(j, i, "\u2013", ha="center", va="center", fontsize=FS_STAT, color=GREY)
+        else:
+            axA.add_patch(Rectangle((j - 0.5, i - 0.5), 1, 1,
+                                    facecolor=st.hero_col(mag), edgecolor="none"))
+            axA.text(j, i, f"{v:.2f}", ha="center", va="center", fontsize=FS_STAT,
+                     color="white")
+axA.set_xlim(-0.5, nc - 0.5)
+axA.set_ylim(nr - 0.5, -0.5)
+axA.xaxis.set_ticks_position("top")
+axA.xaxis.set_label_position("top")
+axA.set_xticks(range(nc))
+axA.set_xticklabels(man.label, rotation=90, fontsize=FS_STAT, fontstyle="italic",
+                    ha="center", va="bottom")
+axA.set_yticks(range(nr))
+axA.set_yticklabels(st.HEROES)
+for tick, mag in zip(axA.get_yticklabels(), st.HEROES):
     tick.set_color(st.hero_col(mag))
+axA.tick_params(length=0)
+for sp in axA.spines.values():
+    sp.set_visible(False)
+axA.set_xticks(np.arange(-0.5, nc, 1), minor=True)
+axA.set_yticks(np.arange(-0.5, nr, 1), minor=True)
+axA.grid(which="minor", color=LIGHT, lw=0.5)
 
-letter(15.0, 8.5, "A")
-text_mm(146.0, 9.0, f"verified references: {len(verified)} of {len(audit)} curated",
-        fontsize=FS_STAT, color=GREY, ha="right")
+# ---- B: the reported pairs, ranked
+axB = ax_mm(58.0, 92.0, 106.0, 30.0)
+y = np.arange(len(reported), dtype=float)
+XMIN = 88.0
+for yy, ((mag, lab), v) in zip(y, reported.items()):
+    col = st.hero_col(mag)
+    axB.plot([XMIN, v], [yy, yy], lw=1.0, color=col, zorder=2)
+    axB.scatter([v], [yy], s=20, color=col, zorder=3)
+    axB.text(v + 0.3, yy, f"{v:.2f}", ha="left", va="center", fontsize=FS_STAT, color=TEXT)
+axB.axvline(SPECIES_ANI, color=GREY, lw=0.8, ls="--", zorder=1)
+axB.text(SPECIES_ANI, 1.04, "95 % species boundary", transform=axB.get_xaxis_transform(),
+         ha="center", va="bottom", fontsize=FS_STAT, color=GREY)
+axB.set_yticks(y)
+axB.set_yticklabels([f"{mag}  vs  {lab}" for (mag, lab), _ in reported.items()],
+                    fontsize=FS_STAT)
+for tick, ((mag, _lab), _v) in zip(axB.get_yticklabels(), reported.items()):
+    tick.set_color(st.hero_col(mag))
+axB.set_ylim(len(reported) - 0.5, -0.5)
+axB.set_xlim(XMIN, 101.0)
+axB.set_xlabel("skani ANI (%)")
+axB.grid(axis="x", color=LIGHT, lw=0.5, zorder=0)
+axB.set_axisbelow(True)
+st.style_axis(axB, left=False)
+axB.tick_params(left=False)
+
+letter(13.0, 8.0, "A")
+letter(13.0, 84.0, "B")
+text_mm(26.0, 8.0, f"MICP-complete MAG  \u00d7  {n_refs} organism-verified reference genomes",
+        fontsize=FS_BODY, color=TEXT)
+text_mm(26.0, 12.5, "\u2013  no alignment reported by skani", fontsize=FS_STAT, color=GREY)
 
 st.audit(fig)
 st.prose_scan(fig)

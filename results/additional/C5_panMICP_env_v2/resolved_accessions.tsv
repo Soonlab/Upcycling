@@ -1,0 +1,21 @@
+name	habitat	old_accession	taxon	accession	organism	level	category	n_candidates	resolved_by
+Sporosarcina_pasteurii	soil_canonical	GCF_000189475.1	Sporosarcina pasteurii	GCF_041295575.1	Sporosarcina pasteurii	Complete Genome	reference genome	1	reference
+Sporosarcina_psychrophila	cold_soil	GCF_000293575.1	Sporosarcina psychrophila	GCF_001590685.1	Sporosarcina psychrophila	Complete Genome	reference genome	1	reference
+Sporosarcina_ureae	soil	GCF_000299475.1	Sporosarcina ureae	GCF_002081995.1	Sporosarcina ureae	Complete Genome	reference genome	1	reference
+Bacillus_subtilis_168	soil	GCF_000009045.1	Bacillus subtilis subsp. subtilis str. 168	GCF_000009045.1	Bacillus subtilis subsp. subtilis str. 168	Complete Genome	reference genome	1	reference
+Bacillus_megaterium	soil	GCF_002209305.2	Priestia megaterium	GCF_006094495.1	Priestia megaterium NBRC 15308 = ATCC 14581	Complete Genome	reference genome	1	reference
+Bacillus_licheniformis	soil	GCF_001548095.1	Bacillus licheniformis	GCF_034478925.1	Bacillus licheniformis	Complete Genome	reference genome	1	reference
+Lysinibacillus_sphaericus	soil	GCF_001399775.1	Lysinibacillus sphaericus	GCF_002982115.1	Lysinibacillus sphaericus	Complete Genome	reference genome	1	reference
+Lysinibacillus_fusiformis	soil	GCF_000691605.1	Lysinibacillus fusiformis	GCF_000724775.3	Lysinibacillus fusiformis	Complete Genome	reference genome	1	reference
+Halomonas_pacifica	marine	GCF_900119685.1	Halomonas pacifica	GCF_007989625.1	Bisbaumannia pacifica	Contig	reference genome	1	reference
+Halomonas_elongata	marine_saline	GCF_000196175.1	Halomonas elongata	GCF_000196875.2	Halomonas elongata DSM 2581	Complete Genome	reference genome	1	reference
+Idiomarina_loihiensis	marine_deep	GCF_002288455.1	Idiomarina loihiensis	GCF_000008465.1	Idiomarina loihiensis L2TR	Complete Genome	reference genome	1	reference
+Pseudoalteromonas_haloplanktis	marine	GCF_000613485.1	Pseudoalteromonas haloplanktis	GCF_945859885.1	Pseudoalteromonas haloplanktis	Scaffold	reference genome	1	reference
+Helicobacter_pylori_26695	host_acidic	GCF_001077795.1	Helicobacter pylori 26695	GCF_000307795.1	Helicobacter pylori 26695	Complete Genome	-	1	best_current
+Klebsiella_aerogenes	clinical_ureolytic	GCF_000196215.1	Klebsiella aerogenes	GCF_019048125.1	Klebsiella aerogenes	Complete Genome	reference genome	1	reference
+Proteus_mirabilis	clinical_ureolytic	GCF_000648555.1	Proteus mirabilis	GCF_000069965.1	Proteus mirabilis HI4320	Complete Genome	reference genome	1	reference
+Yersinia_enterocolitica	clinical	GCF_000009305.1	Yersinia enterocolitica	GCF_000253175.1	Yersinia enterocolitica subsp. palearctica Y11	Complete Genome	reference genome	1	reference
+Sphingobacterium_sp_21	soil_sphingo	GCF_000284615.1	Sphingobacterium sp. 21					0	
+Sphingobacterium_multivorum	soil_sphingo	GCF_000620325.1	Sphingobacterium multivorum	GCF_016894225.1	Sphingobacterium multivorum	Chromosome	reference genome	1	reference
+Sphingobacterium_paramultivorum	soil_sphingo	GCF_001719105.1	Sphingobacterium paramultivorum	GCF_014109745.1	Sphingobacterium paramultivorum	Chromosome	reference genome	1	reference
+Pseudomonas_helleri	soil_pseudomonas	GCF_001043025.1	Pseudomonas helleri	GCF_045830615.1	Pseudomonas helleri	Complete Genome	reference genome	1	reference

@@ -771,3 +771,80 @@ write an exponent**; either reuse `fmt_p` or widen the rewrite in `_style.save`.
   collapse onto the baseline. Limits are taken from the data.
 - S16 keeps a 0–1 y-axis although every value is 0, so the null is visible as points on the zero
   line rather than as an empty panel.
+
+---
+
+## 2026-09-04 ureB sRNA/CDS correction (group ureB_fix)
+
+Rebuilt the MICP presence matrix behind **Fig 1B** and **Fig 2** from the Bakta annotations
+of all 111 MAGs, counting **CDS features only**. New shared module `_micp_presence.py`;
+both build scripts now import `presence()` and no longer read `Table_S1a`.
+
+### Defect 1 — a non-coding RNA counted as the urease beta subunit
+
+Bakta annotates a `5_ureB_sRNA` feature (Rfam RF02514, product "5' ureB small RNA").
+The keyword scan behind `Table_S1a_ace_samples_list.csv` matched the gene-name column over
+**every feature type**, so the sRNA was counted as a *ureB* copy. It occurs **58 times**
+across the panel. For most MAGs it merely inflates the copy count beside a real CDS, but for
+two MAGs it is the only *ureB* feature:
+
+| MAG | *ureB* CDS | `5_ureB_sRNA` | Table S1a *ureB* | score before | score after |
+|---|---|---|---|---|---|
+| S26 | 0 | 2 | 2 | 8 | **7** |
+| S11 | 0 | 1 | 1 | 6 | **6** (was 7) |
+
+S26 is one of the six MICP-complete MAGs. **This resolves the long-standing disagreement**
+between Table S1a (S26 = 8/8), Table S1c (`ureABC_all_present = False`) and
+`MICP_Pangenome_Final_Summary.csv` (S26 = 1/8): S26 has no protein-coding urease beta
+subunit, and the tables that said otherwise were counting the sRNA. It is an annotation
+parsing artefact, not a biological ambiguity.
+
+**Only *ureB* is affected.** The other seven genes have no non-CDS features anywhere in the
+panel; asserted in `_micp_presence.presence()`.
+
+### Defect 2 — Table S1a covers only 45 of the 111 MAGs
+
+Found while checking defect 1. Table S1a lists 45 MAGs, but **58 MAGs carry at least one
+*ure* CDS** and 58 carry a carbonic anhydrase. Thirteen MAGs with real *ure* genes are absent
+from the table entirely — C2, C3, C4, C10, C17, C19, M10, M15, S15, S28, S29, V2, V9 (V9
+carries 7 of the 8 genes). Reading "absent from S1a" as "no MICP gene", as the first version
+of this rebuild did, drew those MAGs as gene-free and **understated every rest-group
+prevalence**, most severely for *cah*.
+
+### Corrected numbers now drawn
+
+| quantity | before | after (CDS-only, all 111) |
+|---|---|---|
+| MAGs with all eight genes | 28 (Table S1a) | **27** |
+| MICP-complete carrying all eight | 6/6 | **5/6** (S26 = 7/8) |
+| MICP-complete prevalence, *ureB* | 100 % | **83.3 %** |
+| MICP-complete prevalence, other seven | 100 % | 100 % |
+| rest-group prevalence, *ure* genes | 27.6–37.1 % | **29.5–45.7 %** |
+| rest-group prevalence, *cah* | 37.1 % | **92.4 %** |
+
+### Assertions in `_micp_presence.presence()`
+
+1. The same keyword rule applied over **all** feature types reproduces Table S1a's
+   presence/absence exactly for the 45 MAGs it covers. (Copy counts differ for S23, S26, V3
+   and C13, where alpha and gamma swap between the gene-name and product routes; presence is
+   unaffected and these figures use presence only.)
+2. Excluding non-CDS features changes **only** `ureB`, and only downwards.
+3. Table S1a's coverage gap is 45 / 66 and none of the omitted MAGs reaches 8/8.
+4. In both build scripts: exactly five of the six MICP-complete MAGs score 8, and
+   `S26.ureB == 0`.
+
+### Verification
+
+`st.audit` 0 / `st.prose_scan` empty for both pages; `_job/verify_outputs.py` **29/29 PASS**;
+`_job/check_no_hardcoded.py` clean for `build_fig1.py` and `build_fig2.py`.
+
+### For the user
+
+`Table_S1a_ace_samples_list.csv` is a shipped supplementary table and was **not** edited. It
+should be re-exported so that (i) its *ureB* column counts protein-coding features only and
+(ii) it covers all 111 MAGs rather than 45. `Table_S15b` reports the same two *ureB* copies
+for S26 and inherits the same defect.
+
+Prose updated to match: manuscript §2.2a, §3.2, §4.4, Highlights, Abstract (both the in-text
+400-word version and `_revision_260904/abstract_250w.md`), Conclusions; and the Figure 1,
+Figure 2 and Table S1 legends.

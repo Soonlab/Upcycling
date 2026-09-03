@@ -6,17 +6,19 @@ Panels (reading order left to right):
   B  per-gene prevalence, MICP-complete group (n = 6) versus the remaining 105 MAGs
 
 Sources
-  Table_S1a_ace_samples_list.csv    per-MAG copy counts of ureA-G + cah for the 45
-                                    ure-bearing MAGs; MAGs absent from this table carry
-                                    no detected MICP gene and score 0
+  MAGs_FASTA_files/bakta_results/*/*.tsv  gene presence, via _micp_presence.presence():
+                                    a CDS-only keyword scan of all 111 annotations
   Table_S1d_GTDB_Tk_classification.tsv   genus per MAG (all 111)
   Table_S15a_alkaliphile_signature_per_MAG.csv   the MICP-complete / rest group flag
 
-Provenance note (see _job/journal_main_1_3.md): the shipped figure was drawn from
-pangenome_work/MICP_Pangenome_Final_Summary.csv, which covers only 100 of the 111 MAGs
-and scores S26 at 1/8, so its MICP-complete bars read 83.3 % (5/6). Table S1a is the
-supplementary table of record and is the only per-gene source in which all six
-MICP-complete MAGs carry all eight genes; it is used here.
+Provenance note (see _job/JOURNAL.md).  Neither earlier source for this panel is usable.
+pangenome_work/MICP_Pangenome_Final_Summary.csv, used by the shipped figure, covers only
+100 of the 111 MAGs.  Table_S1a_ace_samples_list.csv, used by the first version of this
+rebuild, lists only 45 MAGs - 13 of the 66 it omits carry a ure CDS, so the non-MICP-
+complete prevalences came out far too low - and it counts the Bakta 5_ureB_sRNA
+non-coding feature as a copy of the beta subunit.  Both panels are therefore built from
+the annotations directly; _micp_presence documents the defects and asserts the
+relationship to S1a.
 
 Colour meanings on this page (one meaning per colour):
   coral  = the MICP-complete group (box outline of the two lineage genera in A, bars in B)
@@ -36,6 +38,7 @@ sys.path.insert(0, str(HERE))
 
 import _style as st
 from _style import HERO, REST, TEXT, GREY, LIGHT, FS_BODY, FS_STAT
+from _micp_presence import presence
 
 st.setup()
 OUT = HERE / "figures"
@@ -56,12 +59,13 @@ assert heroes == sorted(st.HEROES), heroes
 assert len(genus) == len(grp) == 111, (len(genus), len(grp))
 n_hero, n_rest = len(heroes), len(PANEL) - len(heroes)
 
-counts = pd.read_csv(SUPP / "Table_S1a_ace_samples_list.csv", index_col=0)
-pres = pd.DataFrame(0, index=PANEL, columns=GENES, dtype=int)
-pres.loc[counts.index, GENES] = (counts[GENES] > 0).astype(int)
+pres = presence().reindex(PANEL)[GENES]
+assert pres.notna().all().all()
 score = pres.sum(axis=1)
-# every MICP-complete MAG carries the full module in this source
-assert (score[heroes] == len(GENES)).all(), score[heroes].to_dict()
+# five of the six MICP-complete MAGs carry the full module; S26 has no protein-coding
+# urease beta subunit in its Bakta annotation (see _micp_presence)
+assert (score[heroes] == len(GENES)).sum() == 5, score[heroes].to_dict()
+assert pres.loc["S26", "ureB"] == 0 and score["S26"] == len(GENES) - 1
 
 is_hero = pd.Series(pres.index.isin(heroes), index=pres.index)
 prev_hero = pres[is_hero.values].mean() * 100

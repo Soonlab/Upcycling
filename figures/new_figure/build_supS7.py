@@ -155,6 +155,12 @@ for x in (0, SCALE_BAR):
 ax.text(SCALE_BAR * 1.15, sb_y, f"{SCALE_BAR} substitutions per site", ha="left",
         va="center", fontsize=st.FS_STAT, color=st.GREY)
 
+def fmt_p(v):
+    """IQ-TREE prints an exhausted RELL p-value as a bare 0; report it at the
+    resolution the test actually has (1,000 replicates) rather than as an exact zero."""
+    return "< 0.001" if v == 0 else f"{v:.3g}"
+
+
 # --- B: topology test and RF, as stat columns
 bx = [B_LEFT, B_LEFT + 30.0, B_LEFT + 42.0, B_LEFT + 52.0, B_LEFT + 62.0]
 by = 16.0
@@ -172,7 +178,7 @@ for r in rows:
     text_mm(bx[0], by, TREE_NAMES[r["tree"]], ha="left", va="center",
             fontsize=st.FS_STAT)
     for x, v in zip(bx[1:], [f"{r['logL']:.2f}", f"{r['dL']:.2f}",
-                             f"{r['p_sh']:.3g}", f"{r['p_au']:.3g}"]):
+                             fmt_p(r['p_sh']), fmt_p(r['p_au'])]):
         text_mm(x + 8.0, by, v, ha="right", va="center", fontsize=st.FS_STAT, color=col)
 
 by += 12.0

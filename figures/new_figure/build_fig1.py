@@ -10,16 +10,18 @@ Sources
                                     and branch lengths; tip names carry the MAG id and
                                     the GTDB species
   Table_S1d_GTDB_Tk_classification.tsv    genus and species per MAG
-  Table_S1a_ace_samples_list.csv          per-MAG copy counts of ureA-G + cah for the 45
-                                    ure-bearing MAGs; a MAG absent from that table has no
-                                    detected MICP gene
+  MAGs_FASTA_files/bakta_results/*/*.tsv  gene presence, via _micp_presence.presence():
+                                    a CDS-only keyword scan of all 111 annotations
   Table_S15a_alkaliphile_signature_per_MAG.csv   the MICP-complete / rest group flag
 
-Provenance note (see _job/journal_main_1_3.md): the shipped figure took presence from
-pangenome_work/MICP_Pangenome_Final_Summary.csv, which holds only 100 of the 111 MAGs -
-C1 and C10-C19 are missing and were drawn as all-absent - and which scores S26, one of the
-six MICP-complete MAGs, at 1/8.  Table S1a is used instead; it is the supplementary table
-of record and the only per-gene source in which all six MICP-complete MAGs are complete.
+Provenance note (see _job/JOURNAL.md).  Two earlier sources for panel B are unusable.
+pangenome_work/MICP_Pangenome_Final_Summary.csv, used by the shipped figure, holds only
+100 of the 111 MAGs - C1 and C10-C19 are missing and were drawn as all-absent.
+Table_S1a_ace_samples_list.csv, used by the first version of this rebuild, lists only 45
+MAGs (13 of the 66 it omits carry a ure CDS) and counts the Bakta 5_ureB_sRNA non-coding
+feature as a copy of the beta subunit, which is why it scores S26 8/8 where the Bakta
+annotation has no protein-coding ureB.  Panel B is therefore built from the annotations
+directly; _micp_presence documents both defects and asserts the relationship to S1a.
 
 Colour meanings on this page (one meaning per colour):
   genus strip = one colour per GTDB genus; Sphingobacterium blue and Pseudomonas_E orange
@@ -43,6 +45,7 @@ sys.path.insert(0, str(HERE))
 
 import _style as st
 from _style import HERO, SPHINGO, PSEUDO, GREEN, TEXT, GREY, AXIS, LIGHT, FS_BODY, FS_STAT
+from _micp_presence import presence
 
 st.setup()
 OUT = HERE / "figures"
@@ -72,8 +75,6 @@ grp = pd.read_csv(SUPP / "Table_S15a_alkaliphile_signature_per_MAG.csv", index_c
 heroes = set(grp.index[grp["group"] == "MICP_complete"])
 assert sorted(heroes) == sorted(st.HEROES), sorted(heroes)
 
-counts = pd.read_csv(SUPP / "Table_S1a_ace_samples_list.csv", index_col=0)
-
 tree = Phylo.read(TREE, "newick")
 tree.root_at_midpoint()
 tips = [t.name for t in tree.get_terminals()]
@@ -81,9 +82,13 @@ mag_of = {t: t.split("_s__")[0] for t in tips}
 assert len(tips) == 111 == len(tax), (len(tips), len(tax))
 assert set(mag_of.values()) == set(tax.index)
 
-pres = pd.DataFrame(0, index=sorted(tax.index), columns=GENES, dtype=int)
-pres.loc[counts.index, GENES] = (counts[GENES] > 0).astype(int)
-assert (pres.loc[sorted(heroes)].sum(axis=1) == len(GENES)).all()
+pres = presence().reindex(sorted(tax.index))[GENES]
+assert pres.notna().all().all()
+# five of the six MICP-complete MAGs carry the full module; S26 has no protein-coding
+# urease beta subunit in its Bakta annotation (see _micp_presence)
+hero_score = pres.loc[sorted(heroes)].sum(axis=1)
+assert (hero_score == len(GENES)).sum() == 5, hero_score.to_dict()
+assert pres.loc["S26", "ureB"] == 0 and hero_score["S26"] == len(GENES) - 1
 
 # tip order as drawn, top to bottom
 ordered = []
