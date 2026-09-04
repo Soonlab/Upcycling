@@ -74,7 +74,9 @@ CRIT = [("Alkaline_Osmo::Mrp_complex", "Mrp Na+/H+ antiporter"),
         ("Biofilm_EPS::cellulose", "Cellulose synthesis, bcs")]
 
 # the four alkaliphile-signature features of panel C (category names, not data)
-FEATURES = [("Mrp_count", "Mrp copies"),
+# Mrp_count in Table S15a is a binary presence flag, not a copy count; the axis says so.
+# Asserted below so a future re-export carrying real copy numbers fails the build.
+FEATURES = [("Mrp_count", "Mrp detected (0/1)"),
             ("Nha_count", "Nha copies"),
             ("pI_median", "proteome pI (median)"),
             ("pI_acidic_frac", "acidic-pI fraction")]
@@ -138,6 +140,7 @@ alk_hero = alk.group == "MICP_complete"
 assert sorted(alk.MAG[alk_hero]) == sorted(HEROES)
 n_hero_alk, n_rest_alk = int(alk_hero.sum()), int((~alk_hero).sum())
 assert (n_hero_alk, n_rest_alk) == (N_HERO, N_REST)
+assert set(alk["Mrp_count"].unique()) <= {0, 1}, "Mrp_count is no longer binary"
 mrp_fold = alk.loc[alk_hero, "Mrp_count"].mean() / alk.loc[~alk_hero, "Mrp_count"].mean()
 assert abs(mrp_fold - 11.7) < 0.05, mrp_fold          # the value quoted in the manuscript
 
