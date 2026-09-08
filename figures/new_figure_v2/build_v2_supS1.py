@@ -66,7 +66,9 @@ WRAP_CHARS = 15      # a column label longer than this is wrapped at a space ...
 WRAP_MIN_PITCH = 8.0 # ... but only where the cell pitch can hold a two-line block
 CBAR_W = 3.0
 CBAR_GAP = 6.0       # heat map -> colour bar, mm (unchanged)
-CBAR_LAB_DX = 15.5   # heat map -> colour-bar caption, mm (unchanged)
+CBAR_LAB_PAD = 2.0   # colour-bar tick labels -> caption, mm; the caption is placed
+                     # from the rendered tick-label width, because a 0.45 tick is wider
+                     # than a 0.8 tick and a fixed offset ran the two into each other
 CBAR_H_MAX = 30.0
 
 # ------------------------------------------------------------------ data
@@ -98,10 +100,11 @@ TOP_BC = TOP_A + BLOCK_H + 8.0 + HDR_BC
 TOP_DE = TOP_BC + BLOCK_H + 8.0 + HDR_DE
 H = TOP_DE + BLOCK_H + 10.0
 
-# x geometry: A spans the page, B/C and D/E sit in two columns
-X_A, W_A = 34.0, 112.0
+# x geometry: B/C and D/E sit in two columns; A spans exactly from the left edge of the
+# left column to the right edge of the right column (revision of 2026-09-09)
 X_L, W_HALF = 33.0, 36.0
 X_R = 122.0
+X_A, W_A = X_L, X_R + W_HALF - X_L
 POS = {"A": (X_A, TOP_A, W_A, 4.0, 4.0),
        "B": (X_L, TOP_BC, W_HALF, 4.0, TOP_BC - HDR_BC),
        "C": (X_R, TOP_BC, W_HALF, 88.0, TOP_BC - HDR_BC),
@@ -134,8 +137,12 @@ for key, _cat in PANELS:
     tr.draw_genus_heatmap(fig, ax, cax, table, n_mags)
     if w / table.shape[1] >= WRAP_MIN_PITCH:
         wrap_ticklabels(ax, table)
-    text_mm(x + w + CBAR_LAB_DX, top + cbar_h / 2, CBAR_LABEL, rotation=90,
-            ha="center", va="center", fontsize=st.FS_BODY)
+    fig.canvas.draw()
+    r = fig.canvas.get_renderer()
+    tick_w = max(t.get_window_extent(renderer=r).width for t in cax.get_yticklabels()) \
+        / fig.dpi * 25.4
+    text_mm(x + w + CBAR_GAP + CBAR_W + tick_w + CBAR_LAB_PAD + 1.5, top + cbar_h / 2,
+            CBAR_LABEL, rotation=90, ha="center", va="center", fontsize=st.FS_BODY)
     letter(lx, ly, key)
 
 st.audit(fig)

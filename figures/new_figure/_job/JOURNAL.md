@@ -891,3 +891,13 @@ tip labels is far larger than the glyphs (230 false overlaps on the new Fig 1). 
 rotation that is not a multiple of 90° and `rotation_mode="anchor"` is now tested with its
 oriented box (separating-axis test).  The first version of this fix restored the rotation
 modulo 180 and silently flipped the left-half labels — restore the exact angle.
+
+## 2026-09-09 (2) — Fig S1 and S5 after the user's second review
+- **Fig S1**: A now spans exactly the left edge of the B/D column to the right edge of the
+  C/E column (`X_A = X_L`, `W_A = X_R + W_HALF - X_L` = 125 mm).  The colour-bar caption
+  was placed at a fixed 15.5 mm from the heat map, so B's wider "0.45" ticks ran into it;
+  the caption is now placed from the rendered tick-label width (`CBAR_LAB_PAD`).
+- **Fig S5**: D and E widened from 56 to 70 mm and moved to 18 and 106 mm, so the pair
+  spans 18–176 mm, the same extent as A–C.
+Both pages audit-clean; consistency 19/19 and numbers 90/90 re-run; copied to
+`SUBMISSION_v2/Figures/`.  Legends unchanged (layout only).

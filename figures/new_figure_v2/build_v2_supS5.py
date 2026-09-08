@@ -223,8 +223,9 @@ axC.legend(handles=[Line2D([], [], marker="o", linestyle="none", markerfacecolor
            fontsize=FS_STAT, handletextpad=0.4)
 
 # ------------------------------------------------------------------ D, E: codon usage
-for x0, xl, pan, lt in zip([20.0, 108.0], [6.0, 94.0], codon_panels, "DE"):
-    ax = ax_mm(x0, TOP2, 56.0, PH2)
+# D and E together span the same extent as A-C (18-176 mm; revision of 2026-09-09)
+for x0, xl, pan, lt in zip([18.0, 106.0], [6.0, 94.0], codon_panels, "DE"):
+    ax = ax_mm(x0, TOP2, 70.0, PH2)
     letter(xl, TOP2 - 7.0, lt)
     groups = [("MICP-\ncomplete", pan["h"]), ("Rest", pan["r"])]
     xs, _ = gh.strip_box(ax, groups, [HERO, REST])
