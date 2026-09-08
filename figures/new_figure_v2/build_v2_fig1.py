@@ -5,17 +5,21 @@ Fig 2 become one page, and the page must fit inside a single 180 x 235 mm journa
 
 Panels (reading order, left to right then top to bottom):
   A  maximum-likelihood bac120 tree (midpoint-rooted for display), a genus colour strip,
-     and the MAG identifier with its GTDB species where one was assigned   [old Fig 1A]
-  B  presence of ureA-G and cah for the same rows                          [old Fig 1B]
-  C  MICP module score (ureA-G + cah, 0-8) per GTDB-Tk genus, box + jittered points,
+     the MAG identifier with its GTDB species where one was assigned, and the presence
+     of ureA-G and cah as concentric rings                        [old Fig 1A + 1B]
+  B  MICP module score (ureA-G + cah, 0-8) per GTDB-Tk genus, box + jittered points,
      the six MICP-complete MAGs overplotted as coral rings                 [old Fig 2A]
-  D  per-gene prevalence, MICP-complete group (n = 6) vs the rest (n = 105)[old Fig 2B]
+  C  per-gene prevalence, MICP-complete group (n = 6) vs the rest (n = 105)[old Fig 2B]
+
+Revision of 2026-09-09 (second round): the tree and the presence rings are ONE panel
+(A); the earlier split into A and B put a second letter inside the circle.  The keys sit
+to the right of the circle, titled, and the circle is shifted left to make room.
 
 A and B are drawn as ONE circular layout (revision of 2026-09-09): the tree is a radial
 phylogram from the page centre outwards, the genus strip and the eight presence rings sit
 concentrically outside the tips, and every tip label radiates outwards beyond the rings.
 The 111 tips occupy a 360 - GAP_DEG arc; the gap at twelve o'clock carries the ring
-names, and panel letter B sits at that gap so the letter labels the ring block.  This
+names.  This
 replaced the earlier two-column rectangular layout, whose letter B could only sit over
 the left column while the right column carried the same two element types unlabelled.
 Tip labels carry the MAG identifier and the GTDB species with the genus abbreviated to
@@ -163,7 +167,8 @@ RING_R0, RING_W = 31.2, 1.9      # first presence ring and ring pitch
 RING_R1 = RING_R0 + RING_W * len(GENES)
 R_LAB = RING_R1 + 1.2            # tip labels start here
 TOP = 6.0                        # top of the circle's bounding square
-CX = st.PAGE_W_MM / 2            # circle centre, x
+CX = 76.0                        # circle centre, x; the keys take the right margin
+KEY_X = 150.0                    # left edge of the keys
 
 # the outer radius is the label start plus the widest tip label, measured below; the
 # circle's bounding square is sized from that measurement so nothing is clipped
@@ -187,11 +192,10 @@ w_lab = max(_f.text(0, 0, label_text(m), fontsize=FS_TIP,
             .get_window_extent(renderer=_r).width for m in PANEL) / _f.dpi * 25.4
 plt.close(_f)
 R_OUT = R_LAB + w_lab + 1.0
-assert 2 * R_OUT <= st.PAGE_W_MM - 8.0, (R_OUT, w_lab)
+assert CX - R_OUT >= 3.0 and CX + R_OUT <= KEY_X - 3.0, (CX, R_OUT, KEY_X)
 CY = TOP + R_OUT                 # circle centre, y (mm from the top of the page)
 CIRC_END = TOP + 2 * R_OUT
-LEG_Y = CIRC_END + 3.0           # top of the A/B key
-CD_LET_Y = LEG_Y + 16.0          # panel letters of the second row
+CD_LET_Y = CIRC_END + 6.0        # panel letters of the second row
 CD_TOP = CD_LET_Y + 7.0          # top of the C / D axes
 H = CD_TOP + CD_H + 14.0
 assert H <= 235.0, H             # single-page ceiling
@@ -208,8 +212,8 @@ def fy(y_mm):
 
 
 letter(4.0, 5.0, "A")
-letter(4.0, CD_LET_Y, "C")
-letter(102.0, CD_LET_Y, "D")
+letter(4.0, CD_LET_Y, "B")
+letter(102.0, CD_LET_Y, "C")
 
 # ---- A and B: one square Axes in mm units, y up, centre at (0, 0)
 axR = ax_mm(CX - R_OUT, TOP, 2 * R_OUT, 2 * R_OUT)
@@ -280,13 +284,10 @@ for name in ordered:
                  fontsize=FS_TIP, color=HERO if mag in heroes else TEXT,
                  fontweight="bold" if mag in heroes else "normal"))
 
-# ring names in the gap at twelve o'clock, one per ring, and the panel letter B above
-# the outermost ring so that the letter labels the ring block
+# ring names in the gap at twelve o'clock, one per ring
 for j, gene in enumerate(GENES):
     axR.text(0, RING_R0 + (j + 0.5) * RING_W, gene, ha="center", va="center",
              fontsize=FS_TIP, fontstyle="italic", color=TEXT)
-axR.text(0, RING_R1 + 2.2, "B", ha="center", va="bottom", fontsize=st.FS_PANEL,
-         fontweight="bold", color=TEXT)
 
 # scale bar: a round substitutions-per-site distance, drawn at the tree's radial scale in
 # the free lower-left corner of the circle's bounding square
@@ -298,17 +299,24 @@ axR.plot([sx, sx + bar_mm], [sy, sy], color=TEXT, lw=0.9)
 axR.text(sx, sy - 1.0, f"{bar:g} substitutions/site", ha="left", va="top",
          fontsize=FS_STAT, color=TEXT)
 
-# ---- key for A and B, between the two rows
+# ---- keys for A, to the right of the circle: the genus strip, then the rings
 handles = [Patch(facecolor=GENUS_COL[g], label=f"{g} ({int(gcount_all[g])})")
            for g in sorted(strip_genera, key=lambda g: -gcount_all[g])]
 handles.append(Patch(facecolor=OTHER_COL, label=f"{OTHER_LABEL} ({n_other})"))
-handles.append(Patch(facecolor=GREEN, label="gene present"))
-handles.append(Patch(facecolor="white", edgecolor=LIGHT, lw=0.5, label="gene absent"))
-handles.append(Patch(facecolor="none", edgecolor="none", label="MICP-complete MAG"))
-leg = fig.legend(handles=handles, loc="upper left", ncol=4, fontsize=FS_STAT,
-                 frameon=False, bbox_to_anchor=(fx(10.0), fy(LEG_Y)), handlelength=1.1,
-                 columnspacing=1.2, handletextpad=0.45, labelspacing=0.4)
-for txt in leg.get_texts():
+leg1 = fig.legend(handles=handles, loc="upper left", ncol=1, fontsize=FS_STAT,
+                  frameon=False, bbox_to_anchor=(fx(KEY_X), fy(CY - 34.0)),
+                  handlelength=1.1, handletextpad=0.45, labelspacing=0.4,
+                  title="GTDB-Tk genus (MAGs)", title_fontsize=FS_STAT, alignment="left")
+handles2 = [Patch(facecolor=GREEN, label="present"),
+            Patch(facecolor="white", edgecolor=LIGHT, lw=0.5, label="absent"),
+            Patch(facecolor="none", edgecolor="none", label="MICP-complete MAG")]
+leg2 = fig.legend(handles=handles2, loc="upper left", ncol=1, fontsize=FS_STAT,
+                  frameon=False, bbox_to_anchor=(fx(KEY_X), fy(CY + 10.0)),
+                  handlelength=1.1, handletextpad=0.45, labelspacing=0.4,
+                  title="ureA–G, cah rings", title_fontsize=FS_STAT, alignment="left")
+for leg in (leg1, leg2):
+    leg.get_title().set_fontweight("bold")
+for txt in leg2.get_texts():
     if txt.get_text() == "MICP-complete MAG":
         txt.set_color(HERO)
         txt.set_fontweight("bold")
@@ -349,7 +357,8 @@ axC.set_ylim(-0.7, len(order_c) - 0.3)
 st.style_axis(axC)
 ring = Patch(facecolor="none", edgecolor=HERO, lw=1.1,
              label=f"MICP-complete (n = {n_hero})")
-axC.legend(handles=[ring], loc="upper left", bbox_to_anchor=(0.0, -0.16),
+# the top rows of the box plot carry no data left of score 6, so the key sits there
+axC.legend(handles=[ring], loc="upper left", bbox_to_anchor=(0.01, 0.99),
            fontsize=FS_STAT, handlelength=1.0, borderpad=0.2)
 
 # ---- D: per-gene prevalence
@@ -372,8 +381,10 @@ axD.set_ylabel("MAGs with the gene (%)")
 axD.set_ylim(0, 112)
 axD.set_yticks([0, 25, 50, 75, 100])
 st.style_axis(axD)
-axD.legend(loc="upper right", bbox_to_anchor=(1.02, 1.12), fontsize=FS_STAT,
-           handlelength=1.0, borderpad=0.2)
+hD, lD = axD.get_legend_handles_labels()
+fig.legend(hD, lD, loc="upper left", bbox_to_anchor=(fx(112.0), fy(CD_LET_Y - 0.5)),
+           ncol=2, fontsize=FS_STAT, frameon=False, handlelength=1.0, borderpad=0.2,
+           columnspacing=1.2, handletextpad=0.4)
 
 # the tip labels are the one element st.audit cannot police against a slot (they radiate
 # into empty page), so their rendered extent is checked against the bounding square

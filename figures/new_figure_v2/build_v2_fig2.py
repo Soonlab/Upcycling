@@ -16,8 +16,8 @@ Panels (reading order, top to bottom):
      beside it the MAG's total plasmid- and virus-flagged contig counts as bars
                                                                           [old Fig S15B]
 
-Revision of 2026-09-09: the type of panel A is set 1.3x larger than the page body
-(FS_A_* constants) with the stat block tightened; panel B spans the same width as the
+Revision of 2026-09-09: all type on this page is set 1.3x larger than the page body
+(FS_A_* constants; second round extended it from A to B and C) with the stat block tightened; panel B spans the same width as the
 synteny tracks of A, its stat columns and colour bar sit in the same right-hand block as
 A's stat columns; panel C, previously a table of numbers, is drawn as contig squares plus
 count bars.
@@ -204,7 +204,7 @@ FS_A_BODY, FS_A_STAT = FS_BODY * 1.3, FS_STAT * 1.3      # panel A type, 1.3x th
 FS_A_TITLE = st.FS_TITLE * 1.3
 FS_A_TAB = 9.5                                            # A's stat block, a step larger
 
-ROW_H, GAP = 12.0, 4.5
+ROW_H, GAP = 11.5, 5.0           # GAP holds a row of 9 pt tick labels
 TOP, LEFT, PLOT_W = 12.0, 26.0, 112.0
 STAT_X = LEFT + PLOT_W + 4.0                              # left edge of the stat block
 STAT_C = [STAT_X + 8.0, STAT_X + 22.0, STAT_X + 32.0]     # column centres (A)
@@ -212,11 +212,11 @@ A_END = TOP + len(order) * (ROW_H + GAP)
 A_LEG_Y = A_END + 5.5            # gene key of panel A
 B_LET_Y = A_LEG_Y + 9.0
 B_TOP = B_LET_Y + 7.0
-B_H = 22.0
-C_LET_Y = B_TOP + B_H + 26.0     # clears the rotated column labels of B
+B_H = 24.0
+C_LET_Y = B_TOP + B_H + 28.0     # clears the rotated column labels of B
 C_TOP = C_LET_Y + 7.0
-C_H = 34.0
-H = C_TOP + C_H + 9.0
+C_H = 29.0
+H = C_TOP + C_H + 13.0
 assert H <= 235.0, H             # single-page ceiling
 
 fig, ax_mm, text_mm, letter = st.page(H)
@@ -233,7 +233,8 @@ letter(4.0, 6.0, "A")
 for xc, head in zip(STAT_C, ("ure genes", "MGE", "Δ GC")):
     text_mm(xc, TOP - 5.2, head, fontsize=FS_A_TAB, ha="center", color=TEXT)
 
-LEVELS = (0.42, 1.10, 1.78)  # label rows above the track, used only when labels collide
+LEVELS = (0.42, 1.60, 2.78)  # label rows above the track (one 8.5 pt line apart at
+                             # ROW_H), used only when labels collide
 
 
 def place_levels(items, kb_per_mm):
@@ -275,7 +276,7 @@ for i, mag in enumerate(order):
         else:
             xs, dx = x0, (x1 - x0)
         head = min(0.30, abs(dx) * 0.45)
-        ax.add_patch(FancyArrow(xs, 0, dx, 0, width=0.40, head_width=0.58,
+        ax.add_patch(FancyArrow(xs, 0, dx, 0, width=0.50, head_width=0.72,
                                 head_length=head, length_includes_head=True,
                                 facecolor=col, edgecolor=AXIS, lw=0.35))
     for (xc, text), lv in zip(labelled, levels):
@@ -286,7 +287,7 @@ for i, mag in enumerate(order):
     # each track is scaled to its own window: a shared scale would squeeze the five
     # short clusters into a quarter of the page beside the 32 kb M1 window
     ax.set_xlim(-0.3, t["length_kb"] + 0.3)
-    ax.set_ylim(-0.7, LEVELS[-1] + 0.70)
+    ax.set_ylim(-0.75, LEVELS[-1] + 0.75)
     ax.set_yticks([])
     step = max(1.0, round(t["length_kb"] / 6))
     ax.set_xticks(np.arange(0, t["length_kb"] + 0.01, step))
@@ -320,12 +321,12 @@ axB.imshow(mat, cmap=st.seq_cmap("copies", hi=GREEN), vmin=0, vmax=mat.max(),
            aspect="auto")
 for i in range(mat.shape[0]):
     for j in range(mat.shape[1]):
-        axB.text(j, i, mat[i, j], ha="center", va="center", fontsize=FS_BODY,
+        axB.text(j, i, mat[i, j], ha="center", va="center", fontsize=FS_A_BODY,
                  color="white" if mat[i, j] > mat.max() / 2 else TEXT)
 axB.set_xticks(range(len(COLS)))
-axB.set_xticklabels([NICE.get(c, c) for c in COLS], fontsize=FS_BODY, rotation=90)
+axB.set_xticklabels([NICE.get(c, c) for c in COLS], fontsize=FS_A_BODY, rotation=90)
 axB.set_yticks(range(len(HEROES)))
-axB.set_yticklabels(HEROES)
+axB.set_yticklabels(HEROES, fontsize=FS_A_BODY)
 for tick, mag in zip(axB.get_yticklabels(), HEROES):
     tick.set_color(hero_col(mag))
 axB.tick_params(length=0)
@@ -333,18 +334,19 @@ for s_ in axB.spines.values():
     s_.set_visible(False)
 
 # stat columns bound to the rows, in the same right-hand block as A's stat columns
-B_STAT_C = [STAT_X + 6.0, STAT_X + 18.0]
+B_STAT_C = [STAT_X + 5.0, STAT_X + 16.0]
 for xc, head, vals in zip(B_STAT_C, ("urease\ncore", "Ca\npathway"),
                           (dos.urease_core_complete, dos.Ca_pathway)):
-    text_mm(xc, B_TOP - 6.5, head, fontsize=FS_STAT, ha="center", va="center", color=TEXT)
+    text_mm(xc, B_TOP - 7.5, head, fontsize=FS_A_STAT, ha="center", va="center",
+            color=TEXT)
     for i, v in enumerate(vals):
-        text_mm(xc, B_TOP + (i + 0.5) * B_H / len(HEROES), str(int(v)), fontsize=FS_STAT,
-                ha="center", va="center", color=TEXT)
+        text_mm(xc, B_TOP + (i + 0.5) * B_H / len(HEROES), str(int(v)),
+                fontsize=FS_A_STAT, ha="center", va="center", color=TEXT)
 
-cax = ax_mm(STAT_X + 27.0, B_TOP + 1.0, 2.4, B_H - 2.0)
+cax = ax_mm(STAT_X + 23.5, B_TOP + 1.0, 2.4, B_H - 2.0)
 cb = fig.colorbar(axB.images[0], cax=cax)
-cb.set_label("gene copies", fontsize=FS_BODY)
-cb.ax.tick_params(labelsize=FS_BODY, length=2)
+cb.set_label("gene copies", fontsize=FS_A_BODY)
+cb.ax.tick_params(labelsize=FS_A_BODY, length=2)
 cb.outline.set_visible(False)
 
 # ================================================================== C: MGE cross-check
@@ -352,7 +354,7 @@ letter(4.0, C_LET_Y, "C")
 SQ = 0.78                        # square side in slot units
 GAP_SLOT = 1.6                   # empty slots between the urease and the CA group
 n_slots = n_ure_max + GAP_SLOT + n_ca_max
-W_SQ = 62.0                      # width of the square block (mm)
+W_SQ = 68.0                      # width of the square block (mm)
 axC = ax_mm(LEFT, C_TOP, W_SQ, C_H)
 axC.set_xlim(-0.6, n_slots + 0.2)
 axC.set_ylim(len(HEROES) - 0.4, -1.5)
@@ -369,20 +371,18 @@ for i, mag in enumerate(HEROES):
             k_ca += 1
         axC.add_patch(Rectangle((x - SQ / 2, i - SQ / 2), SQ, SQ,
                                 facecolor=FLAG_COL[flag], edgecolor=AXIS, lw=0.35))
-        if flag is not None:
-            axC.text(x + SQ / 2 + 0.15, i, ctg, ha="left", va="center", fontsize=FS_STAT,
-                     color=HERO)
-    axC.text(-0.55, i, mag, ha="right", va="center", fontsize=FS_BODY, color=hero_col(mag))
+    axC.text(-0.55, i, mag, ha="right", va="center", fontsize=FS_A_BODY,
+             color=hero_col(mag))
 # short block headers over the two contig groups
 axC.text((n_ure_max - 1) / 2, -0.95, "urease-core contigs", ha="center", va="center",
-         fontsize=FS_STAT, color=TEXT)
+         fontsize=FS_A_STAT, color=TEXT)
 axC.text(n_ure_max + GAP_SLOT + (n_ca_max - 1) / 2, -0.95, "CA contigs", ha="center",
-         va="center", fontsize=FS_STAT, color=TEXT)
+         va="center", fontsize=FS_A_STAT, color=TEXT)
 for t in axC.texts:
     t.set_clip_on(False)
 
 # geNomad-flagged contig totals per MAG, as bars on the same rows
-axC2 = ax_mm(LEFT + W_SQ + 10.0, C_TOP, PLOT_W - W_SQ - 10.0, C_H)
+axC2 = ax_mm(LEFT + W_SQ + 8.0, C_TOP, PLOT_W - W_SQ - 8.0, C_H)
 yb = np.arange(len(HEROES))
 hb = 0.36
 axC2.barh(yb - hb / 2, ov.n_plasmid_contigs.values, hb, color=AXIS, label="plasmid")
@@ -394,28 +394,31 @@ xmax_c = float(max(ov.n_plasmid_contigs.max(), ov.n_virus_contigs.max()))
 for yy, v in zip(yb - hb / 2, ov.n_plasmid_contigs.values):
     if v > 0:
         axC2.text(v + xmax_c * 0.02, yy, f"{int(v)}", ha="left", va="center",
-                  fontsize=FS_STAT)
+                  fontsize=FS_A_STAT)
 for yy, v in zip(yb + hb / 2, ov.n_virus_contigs.values):
     if v > 0:
         axC2.text(v + xmax_c * 0.02, yy, f"{int(v)}", ha="left", va="center",
-                  fontsize=FS_STAT)
+                  fontsize=FS_A_STAT)
 axC2.set_ylim(len(HEROES) - 0.4, -1.5)
 axC2.set_yticks([])
 axC2.set_xlim(0, xmax_c * 1.18)
-axC2.set_xlabel("geNomad-flagged contigs per MAG")
+axC2.set_xlabel("geNomad-flagged contigs per MAG", fontsize=FS_A_TITLE)
+axC2.tick_params(axis="x", labelsize=FS_A_BODY)
 st.style_axis(axC2, left=False)
 axC2.legend(handles=[Patch(facecolor=AXIS, label="plasmid-flagged"),
                      Patch(facecolor="white", edgecolor=AXIS, hatch="////",
                            label="virus-flagged")],
-            loc="upper right", bbox_to_anchor=(1.0, 1.06), ncol=1, fontsize=FS_STAT,
+            loc="upper right", bbox_to_anchor=(1.0, 1.06), ncol=1, fontsize=FS_A_STAT,
             handlelength=1.1, handleheight=0.9, borderpad=0.2, labelspacing=0.3)
 # key for the squares, on the panel-letter row so it sits above the block it explains
 fig.legend(handles=[Patch(facecolor=GENE_COL["other"], edgecolor=AXIS, lw=0.35,
                           label="contig, not MGE-flagged"),
                     Patch(facecolor=HERO, edgecolor=AXIS, lw=0.35,
-                          label="contig flagged as plasmid")],
+                          label="contig flagged as plasmid (" + ", ".join(
+                              f"{m} {c}" for m in HEROES for _, c, f in squares[m]
+                              if f is not None) + ")")],
            loc="upper left", bbox_to_anchor=((LEFT + 2.0) / st.PAGE_W_MM, fy(C_LET_Y - 0.5)),
-           ncol=2, fontsize=FS_STAT, frameon=False, handlelength=1.1, columnspacing=1.2,
+           ncol=2, fontsize=FS_A_STAT, frameon=False, handlelength=1.1, columnspacing=1.2,
            handletextpad=0.4)
 
 print(f"  page height {H:.1f} mm")

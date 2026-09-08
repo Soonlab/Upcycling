@@ -901,3 +901,22 @@ modulo 180 and silently flipped the left-half labels — restore the exact angle
   spans 18–176 mm, the same extent as A–C.
 Both pages audit-clean; consistency 19/19 and numbers 90/90 re-run; copied to
 `SUBMISSION_v2/Figures/`.  Legends unchanged (layout only).
+
+## 2026-09-09 (3) — third review round, main Fig 1–5 and Fig S5
+- **Fig 1**: tree and presence rings are ONE panel A (the second letter inside the circle
+  was dropped); old C/D are now B/C.  Manuscript callouts renumbered (`Fig. 1b, c` →
+  `1a, b`; `1d` → `1c`) and the legend merged; `audit_consistency` re-run.  The keys sit
+  to the right of the circle with titles ("GTDB-Tk genus (MAGs)", "ureA–G, cah rings");
+  the circle centre moved to x = 76 mm to free the right margin.  B's ring key sits inside
+  the box plot (upper left, empty there); C's key is on the letter row.
+- **Fig 2**: B and C at A's 1.3× type; C's square block widened to 68 mm and the flagged
+  contig named in the key instead of beside the square (it ran into the bar axes).
+  Track pitch 11.5 + 5 mm so the 9 pt tick labels are not clipped by the next track —
+  clipping is a failure the audit cannot see (text vs axes), so check the PNG.
+- **Fig 3**: A's axis starts at x = 18 mm like C's; letters C/D raised to T2 − 13 so D's
+  two-row key sits below the letter.
+- **Fig 4**: point key moved to C's letter row; page bottom trimmed.
+- **Fig 5**: type 1.2× (page-local SCALE); D 62 → 50 mm; B widened to 70 mm for the
+  three-line tick labels; paired value labels in B staggered when closer than 0.9 %;
+  A's genus key above the bars.
+- **Fig S5**: D/E row moved down 6 mm and the A/C keys up, so the keys clear the letters.

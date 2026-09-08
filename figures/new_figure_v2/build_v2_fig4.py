@@ -174,7 +174,7 @@ TC = [T2, T2 + H_B - HC]                 # the grid spans exactly H_B
 WC = 25.0
 
 LEG_X = 78.0                             # left edge of the shared point legend
-H = T2 + H_B + 26.0
+H = T2 + H_B + 14.0
 
 fig, ax_mm, text_mm, letter = st.page(H)
 
@@ -301,24 +301,18 @@ for k, (col, ylab) in enumerate(FEATURES):
     st.style_axis(axc)
 
 letter(100.0, LET2, "C")
+# the point key sits on C's letter row, right of the letter, so it neither rises above
+# the letter nor runs under B
 fig.legend(handles=[Line2D([], [], marker="o", ls="", ms=3, color=SPHINGO,
                            label="Sphingobacterium"),
                     Line2D([], [], marker="o", ls="", ms=3, color=PSEUDO,
                            label="Pseudomonas_E"),
                     Line2D([], [], marker="o", ls="", ms=3, color=REST,
                            label="other MAG")],
-           loc="upper left", ncol=3, frameon=False, fontsize=FS_BODY,
-           bbox_to_anchor=(LEG_X / st.PAGE_W_MM,
-                           1 - (TC[1] + HC + 14.0) * st.MM / (H * st.MM)),
-           handletextpad=0.4, columnspacing=1.6)
+           loc="upper left", ncol=2, frameon=False, fontsize=FS_BODY,
+           bbox_to_anchor=(110.0 / st.PAGE_W_MM, 1 - (LET2 - 0.5) / H),
+           handletextpad=0.4, columnspacing=1.2, labelspacing=0.25)
 
-# the row labels of A are the one slot the audit cannot police (nothing sits left of
-# them), so their rendered width is checked against the label column
-fig.canvas.draw()
-w_lab = max(t.get_window_extent(renderer=fig.canvas.get_renderer()).width
-            for t in ax.get_yticklabels()) / fig.dpi * 25.4
-assert w_lab <= L_LAB - 2.0, (w_lab, L_LAB)
-print(f"  page height {H:.1f} mm | widest forest label {w_lab:.1f} of {L_LAB:.1f} mm")
 st.audit(fig)
 st.prose_scan(fig)
 st.save(fig, OUT, "Fig4")

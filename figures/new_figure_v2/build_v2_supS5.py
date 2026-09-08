@@ -148,8 +148,8 @@ for col, ylab in [("GC3_pct", "GC at codon position 3 (%)"),
 
 # ================================================================== page
 TOP1, PH1 = 15.0, 46.0
-TOP2, PH2 = 90.0, 42.0
-H = 146.0
+TOP2, PH2 = 96.0, 42.0
+H = 152.0
 fig, ax_mm, text_mm, letter = st.page(H)
 
 # ------------------------------------------------------------------ A: doubling time
@@ -219,7 +219,7 @@ gh.group_counts(axC, xsC, grpC, -0.16)
 axC.legend(handles=[Line2D([], [], marker="o", linestyle="none", markerfacecolor="none",
                            markeredgecolor=TEXT, markersize=5,
                            label="MICP-complete MAG")],
-           loc="upper left", bbox_to_anchor=(0.0, -0.28), frameon=False,
+           loc="upper left", bbox_to_anchor=(0.0, -0.25), frameon=False,
            fontsize=FS_STAT, handletextpad=0.4)
 
 # ------------------------------------------------------------------ D, E: codon usage

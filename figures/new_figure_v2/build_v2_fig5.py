@@ -23,7 +23,7 @@ Sphingobacterium genomes) and old build_fig7.py panel B (trait-module ordination
 dropped from the main set; their numbers survive in the supplementary tables
 (Table S4b, Table S10a/b, Table S2b).
 
-Revision of 2026-09-09: B and C share one height and nothing rises above a panel
+Revision of 2026-09-09: type 1.2x the shared scale (second round); B and C share one height and nothing rises above a panel
 letter; D spans the full width of A (scatter plus genus bars).
 
 Sources
@@ -53,6 +53,7 @@ Colour meanings on this page (one colour, one meaning):
 import sys
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.patches import Patch
@@ -68,6 +69,11 @@ from _style import (HERO, REST, GREEN, GREY, TEXT, AXIS, SOURCE, LIGHT,
                     FS_BODY, FS_STAT, HEROES)
 
 st.setup()
+SCALE = 1.2                             # this page's type, relative to the shared scale
+FS_BODY, FS_STAT, FS_TITLE = FS_BODY * SCALE, FS_STAT * SCALE, st.FS_TITLE * SCALE
+plt.rcParams.update({"font.size": FS_BODY, "axes.labelsize": FS_TITLE,
+                     "xtick.labelsize": FS_BODY, "ytick.labelsize": FS_BODY,
+                     "legend.fontsize": FS_BODY})
 OUT = HERE / "figures_v2"
 SUPP = Path("/data/data/Upcycling/SUBMISSION/Supplementary_tables")
 
@@ -139,16 +145,16 @@ n_src = coords.Source.value_counts()
 
 # ------------------------------------------------------------------ page
 TOP = 10.0
-H_A, W_A, X_A = 46.0, 78.0, 16.0
+H_A, W_A, X_A = 54.0, 78.0, 16.0
 X_A2, W_A2 = 128.0, 42.0         # the genus bars sit beside the scatter, same panel
 A_END = X_A2 + W_A2              # the right edge of panel A; D spans X_A .. A_END
 T2 = TOP + H_A + 24.0            # row 2: panels B and C, one height
 LET2 = T2 - 12.0                 # letters of row 2 sit above the keys of B and C
 H_BC = 44.0
-W_B, X_B = 60.0, 24.0
-W_C, X_C = 38.0, 110.0
+W_B, X_B = 70.0, 18.0
+W_C, X_C = 34.0, 118.0
 T3 = T2 + H_BC + 18.0            # row 3: panel D
-H_D, X_D = 62.0, X_A
+H_D, X_D = 50.0, X_A             # 80 % of the earlier 62 mm
 W_D = A_END - X_A
 H = T3 + H_D + 14.0
 
@@ -202,8 +208,9 @@ axA2.set_xlim(0, gcount.n.max() * 1.25)
 axA2.set_ylim(-0.6, len(gcount) - 0.4)
 axA2.tick_params(axis="y", length=0)
 st.style_axis(axA2, left=False)
-axA2.legend(loc="lower right", fontsize=FS_STAT, handlelength=1.1, handleheight=0.9,
-            borderpad=0.2, labelspacing=0.3)
+# the key sits above the bars: inside, it would cover the short bars of the small genera
+axA2.legend(loc="lower left", bbox_to_anchor=(0.0, 1.0), fontsize=FS_STAT, ncol=1,
+            handlelength=1.1, handleheight=0.9, borderpad=0.2, labelspacing=0.3)
 
 # ---------------------------------------------------------------- panel B
 axB = ax_mm(X_B, T2, W_B, H_BC)
@@ -211,10 +218,11 @@ w = 0.38                       # paired-bar width (style constant)
 xc = np.arange(len(bio_lab))
 axB.bar(xc - w / 2, v_complete, w, color=GREEN, edgecolor=AXIS, linewidth=0.5)
 axB.bar(xc + w / 2, v_single, w, color=GREEN_LT, edgecolor=AXIS, linewidth=0.5)
-for xi, v in zip(xc, v_complete):
-    axB.text(xi - w / 2, v, f"{v:.2f}", ha="center", va="bottom", fontsize=FS_STAT)
-for xi, v in zip(xc, v_single):
-    axB.text(xi + w / 2, v, f"{v:.2f}", ha="center", va="bottom", fontsize=FS_STAT)
+LIFT = 0.9          # y units (%): a pair of value labels closer than this is staggered
+for xi, v1, v2 in zip(xc, v_complete, v_single):
+    axB.text(xi - w / 2, v1, f"{v1:.2f}", ha="center", va="bottom", fontsize=FS_STAT)
+    y2 = v2 if abs(v2 - v1) > LIFT else max(v1, v2) + LIFT
+    axB.text(xi + w / 2, y2, f"{v2:.2f}", ha="center", va="bottom", fontsize=FS_STAT)
 axB.set_xticks(xc)
 axB.set_xticklabels([f"{lab}\nn = {n:,}" for lab, n in zip(bio_lab, bio_n)],
                     fontsize=FS_BODY)

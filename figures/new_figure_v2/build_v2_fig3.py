@@ -144,7 +144,7 @@ T2, PH2 = 74.0, 46.0                     # row 2: C and D, one height
 H = T2 + PH2 + 15.0
 fig, ax_mm, text_mm, letter = st.page(H)
 
-L_A, X_A, W_A = 4.0, 24.0, 80.0
+L_A, X_A, W_A = 4.0, 18.0, 80.0      # A's axis starts where C's does
 L_B, X_B, W_B = 108.0, 120.0, 21.0
 GAP_B = 32.0
 L_C, X_C, W_C = 4.0, 18.0, 36.0
@@ -226,7 +226,7 @@ axB.legend(handles=[Patch(facecolor=SPHINGO, label="Sphingobacterium"),
            handleheight=0.9, columnspacing=1.0, fontsize=FS_BODY)
 
 # ---- C: codeml M0 omega per urease gene, in the gene order of D -------------
-letter(L_C, T2 - 8.0, "C")
+letter(L_C, T2 - 13.0, "C")
 axC = ax_mm(X_C, T2, W_C, PH2)
 m0 = m0.set_index("gene").loc[GENES].reset_index()
 xC = np.arange(len(m0), dtype=float)
@@ -243,7 +243,7 @@ axC.set_ylabel("codeml M0 ω")
 st.style_axis(axC)
 
 # ---- D: yn00 pairwise omega, gene x pair class ---------------------------
-letter(L_D, T2 - 8.0, "D")
+letter(L_D, T2 - 13.0, "D")   # above the two-row key of D
 axD = ax_mm(X_D, T2, W_D, PH2)
 rng = np.random.default_rng(gh.JITTER_SEED)
 step = 0.26
