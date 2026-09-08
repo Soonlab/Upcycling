@@ -920,3 +920,15 @@ Both pages audit-clean; consistency 19/19 and numbers 90/90 re-run; copied to
   three-line tick labels; paired value labels in B staggered when closer than 0.9 %;
   A's genus key above the bars.
 - **Fig S5**: D/E row moved down 6 mm and the A/C keys up, so the keys clear the letters.
+
+## 2026-09-09 (4) — Fig 2 spacing and consistency pass
+- **Fig 2**: B's stat headers (urease core / Ca pathway) moved 4 mm down from A's gene
+  key (`B_LET_Y = A_LEG_Y + 13`); C's bar axis now ends at B's colour-bar block
+  (`C_END = STAT_X + 30`), so B and C have one visible width; track gap 4.5 mm, C 28 mm.
+- **Consistency pass over everything that names a figure**: manuscript callouts (18,
+  each sentence read against the current panel — all agree), legends (Fig 2C wording,
+  header date, provenance line), `consolidation_260904/MAPPING.md` (Fig 1 rows),
+  `DESIGN.md` (revision note), `SUBMISSION_v2/00_README.md` (revision section).  The three
+  supplementary workbooks and the cover letters contain no figure references (grep over
+  every cell / line).  `audit_consistency` 19/19 and `audit_numbers` 90/90 pass; both docx
+  rebuilt.

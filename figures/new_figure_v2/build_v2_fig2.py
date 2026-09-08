@@ -204,18 +204,18 @@ FS_A_BODY, FS_A_STAT = FS_BODY * 1.3, FS_STAT * 1.3      # panel A type, 1.3x th
 FS_A_TITLE = st.FS_TITLE * 1.3
 FS_A_TAB = 9.5                                            # A's stat block, a step larger
 
-ROW_H, GAP = 11.5, 5.0           # GAP holds a row of 9 pt tick labels
+ROW_H, GAP = 11.5, 4.5           # GAP holds a row of 9 pt tick labels
 TOP, LEFT, PLOT_W = 12.0, 26.0, 112.0
 STAT_X = LEFT + PLOT_W + 4.0                              # left edge of the stat block
 STAT_C = [STAT_X + 8.0, STAT_X + 22.0, STAT_X + 32.0]     # column centres (A)
 A_END = TOP + len(order) * (ROW_H + GAP)
 A_LEG_Y = A_END + 5.5            # gene key of panel A
-B_LET_Y = A_LEG_Y + 9.0
+B_LET_Y = A_LEG_Y + 13.0         # clears the key of A and B's own stat headers
 B_TOP = B_LET_Y + 7.0
 B_H = 24.0
 C_LET_Y = B_TOP + B_H + 28.0     # clears the rotated column labels of B
 C_TOP = C_LET_Y + 7.0
-C_H = 29.0
+C_H = 28.0
 H = C_TOP + C_H + 13.0
 assert H <= 235.0, H             # single-page ceiling
 
@@ -354,7 +354,8 @@ letter(4.0, C_LET_Y, "C")
 SQ = 0.78                        # square side in slot units
 GAP_SLOT = 1.6                   # empty slots between the urease and the CA group
 n_slots = n_ure_max + GAP_SLOT + n_ca_max
-W_SQ = 68.0                      # width of the square block (mm)
+W_SQ = 74.0                      # width of the square block (mm)
+C_END = STAT_X + 30.0            # right edge of C = right edge of B's colour-bar block
 axC = ax_mm(LEFT, C_TOP, W_SQ, C_H)
 axC.set_xlim(-0.6, n_slots + 0.2)
 axC.set_ylim(len(HEROES) - 0.4, -1.5)
@@ -382,7 +383,7 @@ for t in axC.texts:
     t.set_clip_on(False)
 
 # geNomad-flagged contig totals per MAG, as bars on the same rows
-axC2 = ax_mm(LEFT + W_SQ + 8.0, C_TOP, PLOT_W - W_SQ - 8.0, C_H)
+axC2 = ax_mm(LEFT + W_SQ + 8.0, C_TOP, C_END - (LEFT + W_SQ + 8.0), C_H)
 yb = np.arange(len(HEROES))
 hb = 0.36
 axC2.barh(yb - hb / 2, ov.n_plasmid_contigs.values, hb, color=AXIS, label="plasmid")

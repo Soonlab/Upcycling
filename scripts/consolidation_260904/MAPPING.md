@@ -1,10 +1,10 @@
-# Old -> new numbering map (2026-09-04 consolidation)
+# Old -> new numbering map (2026-09-04 consolidation; Fig 1 rows revised 2026-09-09)
 
 ## Figures
 | old | new |
 |---|---|
-| Fig 1 (tree, gene matrix) | Fig 1A, 1B |
-| Fig 2a, 2b | Fig 1C, 1D |
+| Fig 1 (tree, gene matrix) | Fig 1A (radial tree with the gene matrix as concentric rings; one panel since 2026-09-09) |
+| Fig 2a, 2b | Fig 1B, 1C (were 1C, 1D until 2026-09-09) |
 | Fig 3 (synteny) | Fig 2A |
 | Fig 4a, 4b | Fig S2A, S2B |
 | Fig 4c | Fig 4B |

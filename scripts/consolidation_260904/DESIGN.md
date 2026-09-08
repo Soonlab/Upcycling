@@ -8,6 +8,11 @@ Interpretation recorded: "7000자" is read as **7,000 words** of body text
 (Introduction -> Conclusions). 7,000 characters would be ~1,100 words, which is not a
 viable research article, and every prior word budget in this project has been in words.
 
+## Revision 2026-09-09
+Fig 1 panels A and B (tree, gene matrix) became one radial panel A; the module-score and
+prevalence panels are B and C.  The table below records the 2026-09-04 design; the
+current numbering is in MAPPING.md.
+
 ## Main figures: 8 -> 5
 
 | new | working title | panels (source) |
