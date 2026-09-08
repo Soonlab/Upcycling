@@ -932,3 +932,19 @@ Both pages audit-clean; consistency 19/19 and numbers 90/90 re-run; copied to
   supplementary workbooks and the cover letters contain no figure references (grep over
   every cell / line).  `audit_consistency` 19/19 and `audit_numbers` 90/90 pass; both docx
   rebuilt.
+
+## 2026-09-09 (5) — graphical abstract redrawn
+`build_v2_graphical_abstract.py` (190 × 105 mm, PNG at 300 dpi) replaces the 2026-04
+`scripts/make_graphical_abstract.py`, whose four boxes carried prose and whose animal
+emoji did not render in the figure font.  Three blocks: a donut of the 111 MAGs by waste
+source; a radial bar of every MAG's MICP module score with the operon schematic; four
+finding tiles.  A reaction chain across the foot ends in a CaCO3 crystal and a brick.
+Sources: Table S9a (source counts), `_micp_presence.presence()` (module score), S15a
+(group flag, Mrp), S12 (active site), S22 (TM-score), S17b (urease contigs on MGE), S10b
+(external ANI), S14a (MGnify).  Nothing is typed in; the printed line reports every value.
+Two guards beyond `st.audit`: a right-edge assertion per registered label (a label running
+past its panel has no other text to collide with, so the audit cannot see it), and
+`prose_scan`, which caught two tile sentences.
+🔴 A draft footnote read "0/6 acquired AMR genes" but reused `n_ure_mge` (urease contigs on
+a mobile element), a different quantity — removed rather than re-sourced.
+Old builder marked superseded; `SUBMISSION_v2/03_Graphical_abstract.{png,svg,pdf}` replaced.

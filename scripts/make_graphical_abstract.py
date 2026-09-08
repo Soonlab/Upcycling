@@ -91,3 +91,7 @@ fig.savefig(out+".png", dpi=300, bbox_inches="tight")
 fig.savefig(out+".pdf", bbox_inches="tight")
 plt.close(fig)
 print("saved", out)
+
+# SUPERSEDED 2026-09-09 — the graphical abstract is now built by
+# figures/new_figure_v2/build_v2_graphical_abstract.py, which draws every value from the
+# supplementary tables instead of carrying it in the script text. Kept for provenance.
