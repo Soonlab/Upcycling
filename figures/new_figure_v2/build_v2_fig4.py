@@ -28,6 +28,10 @@ Sources
   Table_S2c_permutation_statistics.csv            fold change, bootstrap CI, permutation q
   Table_S15a_alkaliphile_signature_per_MAG.csv    Mrp / Nha counts and proteome pI
 
+Revision of 2026-09-09: all type on this page is set 1.2x the shared scale (the page
+is dense and was read as small); panels B and C are the same height and nothing on the
+page rises above its panel letter (B's key moved inside its axes).
+
 Colour meanings on this page:
   coral        q < 0.05 in A, the MICP-complete group in B
   light coral  q < 0.10 in A
@@ -40,6 +44,7 @@ Colour meanings on this page:
 import sys
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from scipy.stats import mannwhitneyu
@@ -55,6 +60,11 @@ from _style import (HERO, REST, SIG_05, SIG_10, SIG_NS, SPHINGO, PSEUDO, GREY, T
                     AXIS, FS_BODY, FS_STAT, HEROES, hero_col)
 
 st.setup()
+SCALE = 1.2                             # this page's type, relative to the shared scale
+FS_BODY, FS_STAT, FS_TITLE = FS_BODY * SCALE, FS_STAT * SCALE, st.FS_TITLE * SCALE
+plt.rcParams.update({"font.size": FS_BODY, "axes.labelsize": FS_TITLE,
+                     "xtick.labelsize": FS_BODY, "ytick.labelsize": FS_BODY,
+                     "legend.fontsize": FS_BODY})
 OUT = HERE / "figures_v2"
 SUPP = Path("/data/data/Upcycling/SUBMISSION/Supplementary_tables")
 
@@ -146,23 +156,25 @@ assert abs(mrp_fold - 11.7) < 0.05, mrp_fold          # the value quoted in the 
 
 # ------------------------------------------------------------------ layout
 ROW_MM = 4.6
-L_LAB, W_AX = 46.0, 90.0                 # A: label column, plot width
+L_LAB, W_AX = 58.0, 78.0                 # A: label column, plot width
 X_AX = L_LAB + 2.0
 X_FC, X_Q = X_AX + W_AX + 5.0, X_AX + W_AX + 21.0
 TOP = 12.0
 H_AX = N_ROW * ROW_MM
 
-T2 = TOP + H_AX + 26.0                   # top of the second row (B and C)
-XB, WB = 34.0, 40.0                      # B: axis box
-H_B = len(CRIT) * 5.6
+T2 = TOP + H_AX + 28.0                   # top of the second row (B and C)
+LET2 = T2 - 9.0                          # panel letters of the second row
+XB, WB = 46.0, 33.0                      # B: axis box
+H_B = 60.0                               # B and C share one height
 XB_STAT = XB + WB + 4.0
 
-XC = [107.0, 147.0]                      # C: 2 x 2 grid of feature blocks
-TC = [T2, T2 + 38.0]
-WC, HC = 29.0, 25.0
+XC = [114.0, 152.0]                      # C: 2 x 2 grid of feature blocks
+HC = 23.0
+TC = [T2, T2 + H_B - HC]                 # the grid spans exactly H_B
+WC = 25.0
 
-LEG_X = 95.0                             # left edge of the shared point legend
-H = TC[1] + HC + 24.0
+LEG_X = 78.0                             # left edge of the shared point legend
+H = T2 + H_B + 26.0
 
 fig, ax_mm, text_mm, letter = st.page(H)
 
@@ -207,7 +219,7 @@ ax.legend(handles=[Line2D([0], [0], marker="o", ls="", ms=4, mec="white", mew=0.
           loc="lower right", bbox_to_anchor=(1.0, -0.005), fontsize=FS_BODY,
           handletextpad=0.4, borderpad=0.2, labelspacing=0.25)
 
-text_mm(X_AX, TOP + H_AX + 10.5, f"MICP-complete n = {N_HERO}   rest n = {N_REST}   "
+text_mm(X_AX, TOP + H_AX + 12.5, f"MICP-complete n = {N_HERO}   rest n = {N_REST}   "
                                  f"error bars, bootstrap 95 % CI",
         fontsize=FS_STAT, color=TEXT)
 letter(4, 4, "A")
@@ -235,19 +247,22 @@ axB.set_xlim(min(rest_mean.min(), hero_mean.min()) * 0.5, 100)
 # the two group means sit in a stat column rather than beside the bars, where the two
 # values of a near-tied row would collide
 text_mm(XB_STAT, T2 - 1.5, "MICP-c.", fontsize=FS_STAT, ha="left", va="bottom")
-text_mm(XB_STAT + 9.5, T2 - 1.5, "rest", fontsize=FS_STAT, ha="left", va="bottom")
+text_mm(XB_STAT + 11.0, T2 - 1.5, "rest", fontsize=FS_STAT, ha="left", va="bottom")
 for yi, k in enumerate(keys):
     yy = T2 + (yi + 0.5) * (H_B / len(keys))
     text_mm(XB_STAT, yy, f"{hero_mean[k]:.2f}", fontsize=FS_STAT, ha="left", va="center",
             color=HERO)
-    text_mm(XB_STAT + 9.5, yy, f"{rest_mean[k]:.2f}", fontsize=FS_STAT, ha="left",
+    text_mm(XB_STAT + 11.0, yy, f"{rest_mean[k]:.2f}", fontsize=FS_STAT, ha="left",
             va="center", color=REST)
 # the legend sits above the axis; inside the panel it would cover the shortest bars
-axB.legend(handles=[Patch(color=HERO, label=f"MICP-complete n = {N_HERO}"),
+# the key sits on the panel-letter row, right of the letter: above the axes it would
+# rise past the letter, and inside the 33 mm axes it would cover the bars
+fig.legend(handles=[Patch(color=HERO, label=f"MICP-complete n = {N_HERO}"),
                     Patch(color=REST, label=f"Rest n = {N_REST}")],
-           loc="lower left", bbox_to_anchor=(0.0, 1.01), ncol=1, fontsize=FS_BODY,
-           handlelength=1.2, handletextpad=0.4, borderpad=0.2, labelspacing=0.25)
-letter(4, T2 - 6.0, "B")
+           loc="upper left", bbox_to_anchor=(16.0 / st.PAGE_W_MM, 1 - (LET2 - 0.5) / H),
+           ncol=1, fontsize=FS_BODY, frameon=False, handlelength=1.2, handletextpad=0.4,
+           borderpad=0.2, labelspacing=0.25)
+letter(4, LET2, "B")
 
 # ---- C: alkaliphile signature --------------------------------------------
 for k, (col, ylab) in enumerate(FEATURES):
@@ -272,7 +287,9 @@ for k, (col, ylab) in enumerate(FEATURES):
     axc.set_ylim(lo - 0.08 * span, hi + 0.30 * span)
     axc.set_xlim(-0.6, 1.6)
     axc.set_xticks([0, 1])
-    axc.set_xticklabels([f"MICP-complete\nn = {n_hero_alk}", f"rest\nn = {n_rest_alk}"])
+    # three lines: at this page's type size the group name alone would run into the
+    # neighbouring tick label inside a 25 mm block
+    axc.set_xticklabels([f"MICP-\ncomplete\nn = {n_hero_alk}", f"rest\n\nn = {n_rest_alk}"])
     txt = f"P = {p:.1e}" if p < 0.01 else f"P = {p:.2f}"
     axc.text(0.5, hi + 0.20 * span, txt, ha="center", va="center", fontsize=FS_STAT,
              color=TEXT)
@@ -283,7 +300,7 @@ for k, (col, ylab) in enumerate(FEATURES):
     axc.set_yticks([t for t in axc.get_yticks() if ylo <= t <= yhi])
     st.style_axis(axc)
 
-letter(97.0, T2 - 6.0, "C")
+letter(100.0, LET2, "C")
 fig.legend(handles=[Line2D([], [], marker="o", ls="", ms=3, color=SPHINGO,
                            label="Sphingobacterium"),
                     Line2D([], [], marker="o", ls="", ms=3, color=PSEUDO,
@@ -292,9 +309,16 @@ fig.legend(handles=[Line2D([], [], marker="o", ls="", ms=3, color=SPHINGO,
                            label="other MAG")],
            loc="upper left", ncol=3, frameon=False, fontsize=FS_BODY,
            bbox_to_anchor=(LEG_X / st.PAGE_W_MM,
-                           1 - (TC[1] + HC + 12.0) * st.MM / (H * st.MM)),
+                           1 - (TC[1] + HC + 14.0) * st.MM / (H * st.MM)),
            handletextpad=0.4, columnspacing=1.6)
 
+# the row labels of A are the one slot the audit cannot police (nothing sits left of
+# them), so their rendered width is checked against the label column
+fig.canvas.draw()
+w_lab = max(t.get_window_extent(renderer=fig.canvas.get_renderer()).width
+            for t in ax.get_yticklabels()) / fig.dpi * 25.4
+assert w_lab <= L_LAB - 2.0, (w_lab, L_LAB)
+print(f"  page height {H:.1f} mm | widest forest label {w_lab:.1f} of {L_LAB:.1f} mm")
 st.audit(fig)
 st.prose_scan(fig)
 st.save(fig, OUT, "Fig4")

@@ -848,3 +848,46 @@ for S26 and inherits the same defect.
 Prose updated to match: manuscript §2.2a, §3.2, §4.4, Highlights, Abstract (both the in-text
 400-word version and `_revision_260904/abstract_250w.md`), Conclusions; and the Figure 1,
 Figure 2 and Table S1 legends.
+
+## 2026-09-09 — main Fig 1–5 revision after the user's figure review (eight items)
+
+Builders `build_v2_fig1..5.py` edited in place (pre-edit copies `*.bak260909`, pre-edit
+pages `figures_v2/_pre260909/`).  All five pages: `st.audit` 0 findings, `prose_scan`
+empty, height ≤ 235 mm; `consolidation_260904/audit_consistency.py` 19/19 and
+`audit_numbers.py` 90/90 re-run and pass; pages copied to `SUBMISSION_v2/Figures/`,
+legends of Fig 1/2/3/5 rewritten in `SUBMISSION_v2/02_Figure_legends.md`, both docx rebuilt.
+
+1. **Fig 1 A/B → circular.** The two-column rectangular layout put letter B over the
+   left column only while the right column repeated both element types unlabelled.  A is
+   now a radial phylogram (root at the centre), the genus strip and eight presence rings
+   are concentric outside the tips, tip labels radiate outwards (MAG id + species with the
+   genus abbreviated to its initial; 5.5 pt), and a 16° gap at twelve o'clock carries the
+   ring names with letter B above the outer ring.  C and D unchanged.  A single tall
+   column of 111 tips was rejected: at 235 mm it forces the tip labels below 5 pt.
+2. **Fig 2A type ×1.3** (`FS_A_*`), the stat block (ure genes / MGE / Δ GC) at 9.5 pt with
+   columns 14 and 10 mm apart instead of spread to the page edge.
+3. **Fig 2B** now spans exactly the track width of A (x = 26–138 mm); its two stat columns
+   and the colour bar sit in the same right-hand block as A's stat columns.
+4. **Fig 2C** was a table of six numbers per MAG.  Redrawn as one square per urease-core
+   contig and per CA contig (coral = geNomad plasmid-flagged, the contig named) plus bars
+   of plasmid-/virus-flagged contig totals per MAG.  The flagged-square count per MAG is
+   asserted against the two stored contamination columns.
+5. **Fig 3A** was uniformly green (42/42 match) and showed nothing.  Each catalytic column
+   is now drawn with ±2 flanking alignment columns from `A2_structure/UreC_aligned.faa`
+   (reference row on top; green identical / light grey differs / white gap; catalytic column
+   outlined).  Table S12's `ref_column` is **0-based** — asserted against the MSA.
+6. **Fig 3C** vertical lollipop in the gene order of D, same height as D (46 mm), both
+   spines.
+7. **Fig 4 type ×1.2** (page-local `SCALE`), B and C one height (60 mm), B's key moved to
+   the letter row so nothing rises above a panel letter; label column of A widened to 58 mm
+   with a rendered-width assert.
+8. **Fig 5A** right-hand list of 21 identifiers replaced by per-genus stacked bars
+   (species-level ANI / none; S13, S16 named on the *Sphingobacterium* bar).  B and C one
+   height (44 mm) with letters above their keys; D spans the full width of A (16–170 mm)
+   with the PERMANOVA block and the key inside the axes.
+
+`_style.audit` fix: rotated text was tested with its axis-aligned box, which for radial
+tip labels is far larger than the glyphs (230 false overlaps on the new Fig 1).  Text with a
+rotation that is not a multiple of 90° and `rotation_mode="anchor"` is now tested with its
+oriented box (separating-axis test).  The first version of this fix restored the rotation
+modulo 180 and silently flipped the left-half labels — restore the exact angle.

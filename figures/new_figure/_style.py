@@ -35,6 +35,8 @@ reserved for the two lineages on every page.
 import re
 from pathlib import Path
 
+import numpy as np
+
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -203,6 +205,48 @@ def _bbox(artist, renderer):
     return bb if bb.width > 0 and bb.height > 0 else None
 
 
+def _corners(bb):
+    return np.array([[bb.x0, bb.y0], [bb.x1, bb.y0], [bb.x1, bb.y1], [bb.x0, bb.y1]])
+
+
+def _obb(t, renderer):
+    """Oriented bounding box (4 corners, display px) of a Text rotated by an angle that
+    is not a multiple of 90 degrees; None when the axis-aligned box is already exact.
+
+    Only rotation_mode='anchor' text is handled: the unrotated box is measured, then
+    rotated about the anchor point, which is how matplotlib lays such text out."""
+    rot = float(t.get_rotation())
+    ang = rot % 180.0
+    if abs(ang) < 1e-6 or abs(ang - 90.0) < 1e-6 or t.get_rotation_mode() != "anchor":
+        return None
+    t.set_rotation(0.0)
+    try:
+        bb = t.get_window_extent(renderer=renderer)
+    finally:
+        t.set_rotation(rot)          # restore exactly: theta and theta + 180 differ
+    anchor = np.array(t.get_transform().transform(t.get_position()))
+    th = np.deg2rad(rot)
+    R = np.array([[np.cos(th), -np.sin(th)], [np.sin(th), np.cos(th)]])
+    return (_corners(bb) - anchor) @ R.T + anchor
+
+
+def _obb_overlap(pa, pb, pad):
+    """Separating-axis test for two convex quadrilaterals, shrunk by pad px."""
+    for poly in (pa, pb):
+        for k in range(4):
+            edge = poly[(k + 1) % 4] - poly[k]
+            axis = np.array([-edge[1], edge[0]])
+            n = np.linalg.norm(axis)
+            if n == 0:
+                continue
+            axis = axis / n
+            a0, a1 = (pa @ axis).min(), (pa @ axis).max()
+            b0, b1 = (pb @ axis).min(), (pb @ axis).max()
+            if min(a1, b1) - max(a0, b0) <= pad:
+                return False
+    return True
+
+
 def audit(fig, pad=1.0, verbose=True):
     """Geometric self-audit of a composed page.
 
@@ -224,7 +268,7 @@ def audit(fig, pad=1.0, verbose=True):
         bb = _bbox(t, r)
         if bb is None:
             continue
-        texts.append((s, bb))
+        texts.append((s, bb, _obb(t, r)))
 
     overlaps = []
     for i in range(len(texts)):
@@ -233,11 +277,19 @@ def audit(fig, pad=1.0, verbose=True):
             ox = min(a.x1, b.x1) - max(a.x0, b.x0)
             oy = min(a.y1, b.y1) - max(a.y0, b.y0)
             if ox > pad and oy > pad:
+                # a rotated label's axis-aligned box is far larger than its glyphs
+                # (radial tip labels on a circular tree); confirm with the oriented
+                # boxes before reporting
+                pa, pb = texts[i][2], texts[j][2]
+                if (pa is not None or pb is not None) and \
+                        not _obb_overlap(pa if pa is not None else _corners(a),
+                                         pb if pb is not None else _corners(b), pad):
+                    continue
                 overlaps.append((texts[i][0][:42], texts[j][0][:42],
                                  round(ox, 1), round(oy, 1)))
 
     outside = [(s[:42], round(bb.x0, 1), round(bb.x1, 1), round(bb.y0, 1), round(bb.y1, 1))
-               for s, bb in texts
+               for s, bb, _ in texts
                if bb.x0 < -pad or bb.y0 < -pad or bb.x1 > W + pad or bb.y1 > H + pad]
 
     axes = [(ax, _bbox(ax, r)) for ax in fig.axes]

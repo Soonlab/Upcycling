@@ -5,8 +5,10 @@ top to bottom).  Every panel is carried over unchanged from a builder of the 8-f
 set; see consolidation_260904/DESIGN.md.
 
   A  novelty screen across the 111-MAG panel: closest-GTDB-reference ANI per MAG with
-     the 95 % species boundary, plus the block of MAGs for which GTDB-Tk returned no
-     species-level ANI at all          (old build_fig5.py panel A)
+     the 95 % species boundary, plus, per GTDB-Tk genus, how many MAGs carry a
+     species-level ANI and how many were left without one (stacked bars; the two
+     MICP-complete MAGs without one are named)   (old build_fig5.py panel A; the
+     right-hand block was a list of the 21 identifiers until 2026-09-09)
   B  MGnify livestock species-cluster rarity of the MICP gene-complete profile and of the
      single-contig ureC + CA architecture, per biome and pooled
                                        (old build_fig8.py panel C)
@@ -21,8 +23,12 @@ Sphingobacterium genomes) and old build_fig7.py panel B (trait-module ordination
 dropped from the main set; their numbers survive in the supplementary tables
 (Table S4b, Table S10a/b, Table S2b).
 
+Revision of 2026-09-09: B and C share one height and nothing rises above a panel
+letter; D spans the full width of A (scatter plus genus bars).
+
 Sources
   Table_S8_novelty_ANI_screen.csv        ANI to closest GTDB reference, novelty flag (A)
+  Table_S1d_GTDB_Tk_classification.tsv   GTDB-Tk genus per MAG (A, right)
   Table_S14a_mgnify_catalog_summary.csv  MGnify per-catalog counts and percentages (B)
   Table_S23b_antismash_hero_vs_rest.csv  BGC class means and Mann-Whitney P (C)
   Table_S9a_PCoA_coordinates.csv         pan-genome PC1-PC3, source, genus, MICP flag (D)
@@ -38,7 +44,8 @@ Colour meanings on this page (one colour, one meaning):
   coral   a MICP-complete MAG - its point and label in A, its bars in C, its ring and
           label in D - and the MICP-complete group everywhere it is a series
   grey    a MAG that is not MICP-complete, the remaining 105 MAGs in C, and every
-          threshold rule
+          threshold rule; in the genus bars of A, dark grey = no species-level ANI and
+          light grey = species-level ANI assigned
   dark / light green   MICP gene-complete and single-contig ureC + CA prevalence in B
   cattle brown / swine pink / sheep green / poultry purple   waste source in D
 """
@@ -57,7 +64,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 import _style as st
-from _style import (HERO, REST, GREEN, GREY, TEXT, AXIS, SOURCE,
+from _style import (HERO, REST, GREEN, GREY, TEXT, AXIS, SOURCE, LIGHT,
                     FS_BODY, FS_STAT, HEROES)
 
 st.setup()
@@ -82,6 +89,21 @@ no_ani = nov[~has_ani].reset_index(drop=True)
 # the novelty flag is exactly "no species-level ANI"; state it by assertion, not in prose
 assert set(nov.user_genome[nov.Novel_sp_candidate]) == set(no_ani.user_genome)
 assert (ranked.ANI >= ANI_SPECIES).all()
+tax = pd.read_csv(SUPP / "Table_S1d_GTDB_Tk_classification.tsv", sep="\t",
+                  index_col="user_genome")
+genus = tax["classification"].str.extract(r"g__([^;]*)")[0].replace("", np.nan)
+genus = genus.fillna("Unclassified").reindex(nov.user_genome).values
+assert len(genus) == len(nov) == 111
+TOP_N = 9                     # style constant, as in Fig 1: genera drawn individually
+gtab = pd.DataFrame({"genus": genus, "no_ani": ~has_ani.values})
+top_g = gtab.genus.value_counts().head(TOP_N).index
+gtab["grp"] = np.where(gtab.genus.isin(top_g), gtab.genus, "Other genera")
+gcount = gtab.groupby("grp").agg(n=("no_ani", "size"), no_ani=("no_ani", "sum"))
+gcount["with_ani"] = gcount.n - gcount.no_ani
+gcount = gcount.sort_values("n", ascending=True)      # largest genus at the top
+assert gcount.no_ani.sum() == len(no_ani) and gcount.with_ani.sum() == len(ranked)
+hero_no_ani = [m for m in HEROES if m in set(no_ani.user_genome)]
+hero_grp = {m: gtab.grp[nov.user_genome == m].iloc[0] for m in hero_no_ani}
 
 # ------------------------------------------------------------------ data: B
 mg = pd.read_csv(SUPP / "Table_S14a_mgnify_catalog_summary.csv")
@@ -118,12 +140,16 @@ n_src = coords.Source.value_counts()
 # ------------------------------------------------------------------ page
 TOP = 10.0
 H_A, W_A, X_A = 46.0, 78.0, 16.0
-X_A2 = X_A + W_A + 14.0          # the no-ANI block sits beside the scatter, same panel
-T2 = TOP + H_A + 22.0            # row 2: panels B and C
-H_B, W_B, X_B = 34.0, 60.0, 24.0
-H_C, W_C, X_C = 46.0, 38.0, 110.0
-T3 = T2 + H_C + 18.0             # row 3: panel D
-H_D, W_D, X_D = 62.0, 76.0, 18.0
+X_A2, W_A2 = 128.0, 42.0         # the genus bars sit beside the scatter, same panel
+A_END = X_A2 + W_A2              # the right edge of panel A; D spans X_A .. A_END
+T2 = TOP + H_A + 24.0            # row 2: panels B and C, one height
+LET2 = T2 - 12.0                 # letters of row 2 sit above the keys of B and C
+H_BC = 44.0
+W_B, X_B = 60.0, 24.0
+W_C, X_C = 38.0, 110.0
+T3 = T2 + H_BC + 18.0            # row 3: panel D
+H_D, X_D = 62.0, X_A
+W_D = A_END - X_A
 H = T3 + H_D + 14.0
 
 fig, ax_mm, text_mm, letter = st.page(H)
@@ -150,21 +176,37 @@ axA.set_xticks([])
 st.style_axis(axA, left=True, bottom=True)
 axA.spines["bottom"].set_visible(False)
 
-# the MAGs GTDB-Tk left without a species-level ANI, as an identifier block
-axA2 = ax_mm(X_A2, TOP, 62.0, H_A)
-axA2.axis("off")
-text_mm(X_A2, TOP - 1.0, f"no species-level ANI  (n = {len(no_ani)})", fontsize=FS_STAT,
-        ha="left", va="bottom", color=TEXT)
-names = list(no_ani.user_genome)
-NCOL = 4
-per = int(np.ceil(len(names) / NCOL))
-for k, name in enumerate(names):
-    col, row = k // per, k % per
-    text_mm(X_A2 + 1.5 + col * 15.0, TOP + 3.0 + row * 4.2, name, fontsize=FS_BODY,
-            ha="left", va="top", color=HERO if name in HEROES else TEXT)
+# per genus: MAGs with a species-level ANI and MAGs GTDB-Tk left without one
+axA2 = ax_mm(X_A2, TOP, W_A2, H_A)
+yg = np.arange(len(gcount))
+DARK = "#4D4D4D"
+axA2.barh(yg, gcount.with_ani, 0.62, color="#CFCFCF", edgecolor=AXIS,
+          linewidth=0.4, label=f"species-level ANI (n = {len(ranked)})")
+axA2.barh(yg, gcount.no_ani, 0.62, left=gcount.with_ani, color=DARK, edgecolor=AXIS,
+          linewidth=0.4, label=f"none (n = {len(no_ani)})")
+for yi, (g, r) in zip(yg, gcount.iterrows()):
+    if r.no_ani > 0:
+        axA2.text(r.n + 0.5, yi, f"{int(r.no_ani)}", ha="left", va="center",
+                  fontsize=FS_STAT, color=DARK)
+# the MICP-complete MAGs without a species-level ANI, named on their genus bar
+for g in set(hero_grp.values()):
+    names = ", ".join(m for m in hero_no_ani if hero_grp[m] == g)
+    yi = list(gcount.index).index(g)
+    n_lab = int(gcount.loc[g, "no_ani"])
+    axA2.text(gcount.loc[g, "n"] + 0.5 + len(str(n_lab)) * 1.4, yi, names, ha="left",
+              va="center", fontsize=FS_STAT, color=HERO)
+axA2.set_yticks(yg)
+axA2.set_yticklabels(gcount.index, fontsize=FS_BODY)
+axA2.set_xlabel("MAGs")
+axA2.set_xlim(0, gcount.n.max() * 1.25)
+axA2.set_ylim(-0.6, len(gcount) - 0.4)
+axA2.tick_params(axis="y", length=0)
+st.style_axis(axA2, left=False)
+axA2.legend(loc="lower right", fontsize=FS_STAT, handlelength=1.1, handleheight=0.9,
+            borderpad=0.2, labelspacing=0.3)
 
 # ---------------------------------------------------------------- panel B
-axB = ax_mm(X_B, T2, W_B, H_B)
+axB = ax_mm(X_B, T2, W_B, H_BC)
 w = 0.38                       # paired-bar width (style constant)
 xc = np.arange(len(bio_lab))
 axB.bar(xc - w / 2, v_complete, w, color=GREEN, edgecolor=AXIS, linewidth=0.5)
@@ -185,7 +227,7 @@ axB.legend(handles=[Patch(facecolor=GREEN, label="MICP gene-complete"),
            handleheight=0.9, columnspacing=1.2, fontsize=FS_BODY)
 
 # ---------------------------------------------------------------- panel C
-axC = ax_mm(X_C, T2, W_C, H_C)
+axC = ax_mm(X_C, T2, W_C, H_BC)
 y = np.arange(len(bgc))
 hb = 0.38
 axC.barh(y + hb / 2, bgc.hero_mean, hb, color=HERO, edgecolor=AXIS, linewidth=0.5)
@@ -243,28 +285,28 @@ axD.xaxis.set_major_locator(MaxNLocator(nbins=5, prune="both"))
 axD.yaxis.set_major_locator(MaxNLocator(nbins=5, prune="both"))
 st.style_axis(axD)
 
-# PERMANOVA result as a stat block bound to panel D
-STAT_T = T3 + 2.0
-STAT_X = X_D + W_D - 32.0        # upper right of the ordination, clear of the point cloud
-text_mm(STAT_X, STAT_T, "PERMANOVA", fontsize=FS_STAT, color=TEXT)
-for k, (lab, f, p) in enumerate((("source", glob.pseudo_F_source, glob.p_source),
-                                 ("genus", glob.pseudo_F_genus, glob.p_genus))):
-    text_mm(STAT_X, STAT_T + 3.4 + k * 3.4,
-            f"{lab}  F = {f:.2f}  p = {p:.3f}", fontsize=FS_STAT, color=TEXT)
+# PERMANOVA result as a stat block bound to panel D, upper right inside the axes
+# (one Text per line: each is a short label, not a sentence)
+stat_lines = ["PERMANOVA"] + [
+    f"{lab}  F = {f:.2f}  p = {p:.3f}"
+    for lab, f, p in (("source", glob.pseudo_F_source, glob.p_source),
+                      ("genus", glob.pseudo_F_genus, glob.p_genus))]
+for k, line in enumerate(stat_lines):
+    axD.text(0.98, 0.96 - k * 0.075, line, transform=axD.transAxes, ha="right", va="top",
+             fontsize=FS_STAT, color=TEXT)
 
 handles, labels = axD.get_legend_handles_labels()
 handles.append(Line2D([0], [0], marker="o", ls="", ms=5, mfc="none", mec=HERO, mew=0.8))
 labels.append(f"MICP-complete n = {len(HEROES)}")
-fig.legend(handles, labels, loc="upper left",
-           bbox_to_anchor=((X_D + W_D + 8.0) * st.MM / (st.PAGE_W_MM * st.MM),
-                           1 - (T3 + 6.0) * st.MM / (H * st.MM)),
-           ncol=1, fontsize=FS_BODY, handletextpad=0.4, borderpad=0.2,
-           labelspacing=0.5)
+# lower right of the ordination is empty (every MAG lies left of PC1 = 0.3 or above
+# PC2 = -0.2 there), so the key sits inside the axes
+axD.legend(handles, labels, loc="lower right", ncol=1, fontsize=FS_BODY,
+           handletextpad=0.4, borderpad=0.2, labelspacing=0.5)
 
 letter(4, 4, "A")
-letter(4, T2 - 9.0, "B")
-letter(99, T2 - 9.0, "C")
-letter(4, T3 - 4.0, "D")
+letter(4, LET2, "B")
+letter(99, LET2, "C")
+letter(4, T3 - 6.0, "D")
 
 st.audit(fig)
 st.prose_scan(fig)

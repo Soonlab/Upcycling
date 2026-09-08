@@ -11,15 +11,15 @@ Panels (reading order, left to right then top to bottom):
      the six MICP-complete MAGs overplotted as coral rings                 [old Fig 2A]
   D  per-gene prevalence, MICP-complete group (n = 6) vs the rest (n = 105)[old Fig 2B]
 
-A and B share one row order and one row height and stay side by side exactly as the old
-Fig 1 drew them.  All 111 tips are kept.  To reach the 235 mm page ceiling the tip rows
-are carried in TWO adjacent tree columns instead of one: the left column holds the top
-part of the tip order and the right column continues it, at an identical row pitch and an
-identical branch-length scale (one scale bar, under the left tree, applies to both).  The
-cut is not arbitrary - CUT_LO..CUT_HI is searched for the tip boundary crossed by the
-fewest clades, so the split falls at a near-natural break in the topology and only a
-handful of backbone edges run off a column edge.  Panel letters A and B sit over the left
-column and label the same two element types in the right column.
+A and B are drawn as ONE circular layout (revision of 2026-09-09): the tree is a radial
+phylogram from the page centre outwards, the genus strip and the eight presence rings sit
+concentrically outside the tips, and every tip label radiates outwards beyond the rings.
+The 111 tips occupy a 360 - GAP_DEG arc; the gap at twelve o'clock carries the ring
+names, and panel letter B sits at that gap so the letter labels the ring block.  This
+replaced the earlier two-column rectangular layout, whose letter B could only sit over
+the left column while the right column carried the same two element types unlabelled.
+Tip labels carry the MAG identifier and the GTDB species with the genus abbreviated to
+its initial (the genus is encoded by the colour strip and named in full in the key).
 
 Sources
   pangenome_work/gtdbtk_results/align/gtdbtk.bac120.renamed.treefile   IQ-TREE topology
@@ -56,7 +56,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from Bio import Phylo
-from matplotlib.patches import Patch, Rectangle
+import matplotlib.pyplot as plt
+from matplotlib.patches import Patch, Wedge
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -144,25 +145,6 @@ assert set(strip_genera) == set(gcount_all.head(len(GENUS_COL)).index), \
     (sorted(strip_genera), sorted(gcount_all.head(len(GENUS_COL)).index))
 n_other = int((~genus.isin(strip_genera)).sum())
 
-# ---- where to break the tip order into two columns.  Every clade covers a contiguous
-# block of the drawn tip order; a boundary crossed by few clades cuts few branches.
-CUT_LO, CUT_HI = 50, 62      # layout constants: keeps both columns near half height
-clade_span = []
-for cl in tree.get_nonterminals():
-    ii = [y_of[x.name] for x in cl.get_terminals()]
-    clade_span.append((min(ii), max(ii)))
-
-
-def n_crossing(i):
-    return sum(1 for lo, hi in clade_span if lo <= i - 1 and hi >= i)
-
-
-SPLIT = min(range(CUT_LO, CUT_HI + 1),
-            key=lambda i: (n_crossing(i), abs(i - len(ordered) / 2)))
-BLOCKS = [(0, SPLIT), (SPLIT, len(ordered))]
-assert sum(hi - lo for lo, hi in BLOCKS) == len(ordered) == 111
-n_rows_max = max(hi - lo for lo, hi in BLOCKS)
-
 # panel C grouping
 df = pd.DataFrame({"genus": genus.reindex(PANEL), "score": score})
 gcount = df["genus"].value_counts()
@@ -172,22 +154,45 @@ df["grp"] = np.where(df["genus"].isin(top), df["genus"], "Other genera")
 order_c = df.groupby("grp")["score"].mean().sort_values(ascending=False).index.tolist()
 
 # ------------------------------------------------------------------ page geometry
-FS_TIP = 5.5                     # tip labels only; 111 rows on one page need a tighter
+FS_TIP = 5.5                     # tip labels only; 111 tips on one page need a tighter
                                  # pitch than the 7 pt body size allows
-ROWS_H = 119.0                   # height of the taller of the two tree columns
-ROW = ROWS_H / n_rows_max        # mm per tip, identical in both columns
-TOP = 11.0
-COL_X = [4.0, 92.0]              # left edge of each tree column block
-TREE_W = 19.0
-STRIP_DX, STRIP_W = 20.0, 2.2
-LAB_DX, LAB_W = 23.4, 40.0
-HEAT_DX, HEAT_W = 64.0, 20.0
+GAP_DEG = 16.0                   # arc left empty at twelve o'clock for the ring names
+R_IN, R_TREE = 3.0, 28.0         # root radius and tip radius of the radial tree (mm)
+STRIP_R0, STRIP_W = 28.6, 2.0    # genus strip
+RING_R0, RING_W = 31.2, 1.9      # first presence ring and ring pitch
+RING_R1 = RING_R0 + RING_W * len(GENES)
+R_LAB = RING_R1 + 1.2            # tip labels start here
+TOP = 6.0                        # top of the circle's bounding square
+CX = st.PAGE_W_MM / 2            # circle centre, x
 
-AB_END = TOP + ROWS_H            # bottom of the taller column
-LEG_Y = AB_END + 10.0            # top of the A/B key (clears the tree scale bar)
+# the outer radius is the label start plus the widest tip label, measured below; the
+# circle's bounding square is sized from that measurement so nothing is clipped
+CD_H = 44.0
+fig = None
+
+
+def label_text(mag):
+    sp = species[mag]
+    if not sp:
+        return mag
+    g, _, rest = sp.partition(" ")
+    return f"{mag}  {g[0]}. {rest}" if rest else f"{mag}  {sp}"
+
+
+# measure the widest tip label on a throw-away figure at the tip size
+_f = plt.figure(figsize=(1, 1))
+_r = _f.canvas.get_renderer()
+w_lab = max(_f.text(0, 0, label_text(m), fontsize=FS_TIP,
+                    fontweight="bold" if m in heroes else "normal")
+            .get_window_extent(renderer=_r).width for m in PANEL) / _f.dpi * 25.4
+plt.close(_f)
+R_OUT = R_LAB + w_lab + 1.0
+assert 2 * R_OUT <= st.PAGE_W_MM - 8.0, (R_OUT, w_lab)
+CY = TOP + R_OUT                 # circle centre, y (mm from the top of the page)
+CIRC_END = TOP + 2 * R_OUT
+LEG_Y = CIRC_END + 3.0           # top of the A/B key
 CD_LET_Y = LEG_Y + 16.0          # panel letters of the second row
 CD_TOP = CD_LET_Y + 7.0          # top of the C / D axes
-CD_H = 50.0
 H = CD_TOP + CD_H + 14.0
 assert H <= 235.0, H             # single-page ceiling
 
@@ -202,89 +207,96 @@ def fy(y_mm):
     return 1.0 - y_mm / H
 
 
-letter(COL_X[0], 6.0, "A")
-letter(COL_X[0] + HEAT_DX - 5.0, 6.0, "B")
+letter(4.0, 5.0, "A")
 letter(4.0, CD_LET_Y, "C")
 letter(102.0, CD_LET_Y, "D")
 
+# ---- A and B: one square Axes in mm units, y up, centre at (0, 0)
+axR = ax_mm(CX - R_OUT, TOP, 2 * R_OUT, 2 * R_OUT)
+axR.set_xlim(-R_OUT, R_OUT)
+axR.set_ylim(-R_OUT, R_OUT)
+axR.set_aspect("equal")
+axR.axis("off")
 
-# ---- A: tree, drawn in full in each column and clipped to that column's tip range
-def draw(ax, clade, x_parent):
-    x = depths[clade]
+n_tip = len(ordered)
+pitch = (360.0 - GAP_DEG) / n_tip                     # degrees per tip
+theta0 = 90.0 - GAP_DEG / 2.0                          # arc starts right of the gap
+# tip i (top to bottom in the rectangular order) runs clockwise from the gap
+ang_of = {name: theta0 - (i + 0.5) * pitch for i, name in enumerate(ordered)}
+# the last tip must end just left of the gap, so the two flanking half-gaps are equal
+assert abs((theta0 - n_tip * pitch) - (90.0 + GAP_DEG / 2.0 - 360.0)) < 1e-9
+
+
+def r_of(clade):
+    return R_IN + depths[clade] / xmax * (R_TREE - R_IN)
+
+
+def pol(r, a_deg):
+    a = np.deg2rad(a_deg)
+    return r * np.cos(a), r * np.sin(a)
+
+
+def draw(clade, r_parent):
+    """Radial phylogram: an arc at the parent radius spanning the children's angles,
+    then a radial spoke to each child.  Returns the clade's angle."""
+    r = r_of(clade)
     if clade.is_terminal():
-        y = y_of[clade.name]
-        ax.plot([x_parent, x], [y, y], color=TEXT, lw=0.4, solid_capstyle="butt")
-        return y
-    ys = [draw(ax, c, x) for c in clade.clades]
-    ax.plot([x, x], [min(ys), max(ys)], color=TEXT, lw=0.4, solid_capstyle="butt")
-    ymid = (min(ys) + max(ys)) / 2
-    ax.plot([x_parent, x], [ymid, ymid], color=TEXT, lw=0.4, solid_capstyle="butt")
-    return ymid
+        a = ang_of[clade.name]
+    else:
+        angs = [draw(c, r) for c in clade.clades]
+        a = (min(angs) + max(angs)) / 2.0
+        arc = np.linspace(min(angs), max(angs), max(2, int(abs(max(angs) - min(angs)) * 2)))
+        xs, ys = pol(r, arc)
+        axR.plot(xs, ys, color=TEXT, lw=0.4, solid_capstyle="butt")
+    x0, y0 = pol(r_parent, a)
+    x1, y1 = pol(r, a)
+    axR.plot([x0, x1], [y0, y1], color=TEXT, lw=0.4, solid_capstyle="butt")
+    return a
 
+
+draw(tree.root, R_IN)
 
 tip_labels = []
-for k, (lo, hi) in enumerate(BLOCKS):
-    x0 = COL_X[k]
-    h = (hi - lo) * ROW
-    ax_t = ax_mm(x0, TOP, TREE_W, h)
-    ax_s = ax_mm(x0 + STRIP_DX, TOP, STRIP_W, h)
-    ax_l = ax_mm(x0 + LAB_DX, TOP, LAB_W, h)
-    ax_h = ax_mm(x0 + HEAT_DX, TOP, HEAT_W, h)
+for name in ordered:
+    mag = mag_of[name]
+    a = ang_of[name]
+    g = genus[mag]
+    axR.add_patch(Wedge((0, 0), STRIP_R0 + STRIP_W, a - pitch / 2, a + pitch / 2,
+                        width=STRIP_W, facecolor=GENUS_COL.get(g, OTHER_COL),
+                        edgecolor="none"))
+    # ---- B: gene presence as concentric rings, one ring per gene, inner to outer
+    for j, gene in enumerate(GENES):
+        r0 = RING_R0 + j * RING_W
+        axR.add_patch(Wedge((0, 0), r0 + RING_W, a - pitch / 2, a + pitch / 2,
+                            width=RING_W,
+                            facecolor=GREEN if pres.loc[mag, gene] else "white",
+                            edgecolor=LIGHT, lw=0.2))
+    # tip label, radiating outwards; flipped on the left half so it reads left to right
+    x, y = pol(R_LAB, a)
+    right = np.cos(np.deg2rad(a)) >= 0
+    tip_labels.append(
+        axR.text(x, y, label_text(mag), rotation=a if right else a - 180,
+                 rotation_mode="anchor", ha="left" if right else "right", va="center",
+                 fontsize=FS_TIP, color=HERO if mag in heroes else TEXT,
+                 fontweight="bold" if mag in heroes else "normal"))
 
-    draw(ax_t, tree.root, 0.0)
-    ax_t.set_xlim(-xmax * 0.02, xmax * 1.02)
-    ax_t.set_ylim(hi - 0.5, lo - 0.5)
-    ax_t.set_xticks([])
-    ax_t.set_yticks([])
-    for s in ax_t.spines.values():
-        s.set_visible(False)
+# ring names in the gap at twelve o'clock, one per ring, and the panel letter B above
+# the outermost ring so that the letter labels the ring block
+for j, gene in enumerate(GENES):
+    axR.text(0, RING_R0 + (j + 0.5) * RING_W, gene, ha="center", va="center",
+             fontsize=FS_TIP, fontstyle="italic", color=TEXT)
+axR.text(0, RING_R1 + 2.2, "B", ha="center", va="bottom", fontsize=st.FS_PANEL,
+         fontweight="bold", color=TEXT)
 
-    if k == 0:
-        # scale bar: a round substitutions-per-site distance, under the left tree only;
-        # both columns share one branch-length scale
-        step = 10 ** np.floor(np.log10(xmax / 4))
-        bar = float(max(kk * step for kk in (1, 2, 5) if kk * step <= xmax / 3))
-        y_bar = hi + 1.6 / ROW
-        ax_t.plot([0, bar], [y_bar, y_bar], color=TEXT, lw=0.9, clip_on=False)
-        ax_t.text(0, y_bar + 1.2 / ROW, f"{bar:g} substitutions/site",
-                  ha="left", va="top", fontsize=FS_STAT, color=TEXT, clip_on=False)
-
-    for name in ordered[lo:hi]:
-        mag = mag_of[name]
-        y = y_of[name]
-        g = genus[mag]
-        ax_s.add_patch(Rectangle((0, y - 0.5), 1, 1,
-                                 facecolor=GENUS_COL.get(g, OTHER_COL), edgecolor="none"))
-        sp = species[mag]
-        label = f"{mag}  {sp}" if sp else mag
-        tip_labels.append(
-            ax_l.text(0, y, label, va="center", ha="left", fontsize=FS_TIP,
-                      color=HERO if mag in heroes else TEXT,
-                      fontweight="bold" if mag in heroes else "normal"))
-
-    for ax in (ax_s, ax_l):
-        ax.set_xlim(0, 1)
-        ax.set_ylim(hi - 0.5, lo - 0.5)
-        ax.set_xticks([])
-        ax.set_yticks([])
-        for s in ax.spines.values():
-            s.set_visible(False)
-
-    # ---- B: gene presence for the same rows
-    mat = np.array([pres.loc[mag_of[n], GENES].values for n in ordered[lo:hi]],
-                   dtype=float)
-    ax_h.imshow(mat, aspect="auto", cmap=st.seq_cmap(), vmin=0, vmax=1,
-                extent=[0, len(GENES), hi - 0.5, lo - 0.5], interpolation="nearest")
-    for kk in range(len(GENES) + 1):
-        ax_h.plot([kk, kk], [lo - 0.5, hi - 0.5], color=LIGHT, lw=0.3)
-    ax_h.set_xticks(np.arange(len(GENES)) + 0.5)
-    ax_h.set_xticklabels(GENES, rotation=90, fontstyle="italic", fontsize=FS_STAT)
-    ax_h.xaxis.set_ticks_position("top")
-    ax_h.tick_params(axis="x", length=0, pad=1.5)
-    ax_h.set_yticks([])
-    ax_h.set_ylim(hi - 0.5, lo - 0.5)
-    for s in ax_h.spines.values():
-        s.set_visible(False)
+# scale bar: a round substitutions-per-site distance, drawn at the tree's radial scale in
+# the free lower-left corner of the circle's bounding square
+step = 10 ** np.floor(np.log10(xmax / 4))
+bar = float(max(kk * step for kk in (1, 2, 5) if kk * step <= xmax / 3))
+bar_mm = bar / xmax * (R_TREE - R_IN)
+sx, sy = -R_OUT + 2.0, -R_OUT + 4.0
+axR.plot([sx, sx + bar_mm], [sy, sy], color=TEXT, lw=0.9)
+axR.text(sx, sy - 1.0, f"{bar:g} substitutions/site", ha="left", va="top",
+         fontsize=FS_STAT, color=TEXT)
 
 # ---- key for A and B, between the two rows
 handles = [Patch(facecolor=GENUS_COL[g], label=f"{g} ({int(gcount_all[g])})")
@@ -294,7 +306,7 @@ handles.append(Patch(facecolor=GREEN, label="gene present"))
 handles.append(Patch(facecolor="white", edgecolor=LIGHT, lw=0.5, label="gene absent"))
 handles.append(Patch(facecolor="none", edgecolor="none", label="MICP-complete MAG"))
 leg = fig.legend(handles=handles, loc="upper left", ncol=4, fontsize=FS_STAT,
-                 frameon=False, bbox_to_anchor=(fx(8.0), fy(LEG_Y)), handlelength=1.1,
+                 frameon=False, bbox_to_anchor=(fx(10.0), fy(LEG_Y)), handlelength=1.1,
                  columnspacing=1.2, handletextpad=0.45, labelspacing=0.4)
 for txt in leg.get_texts():
     if txt.get_text() == "MICP-complete MAG":
@@ -363,17 +375,19 @@ st.style_axis(axD)
 axD.legend(loc="upper right", bbox_to_anchor=(1.02, 1.12), fontsize=FS_STAT,
            handlelength=1.0, borderpad=0.2)
 
-# the tip label column is the one slot st.audit cannot police (a label that runs past it
-# would sit over the presence matrix, where there is no other text to collide with), so
-# its rendered width is measured against the slot it was given
+# the tip labels are the one element st.audit cannot police against a slot (they radiate
+# into empty page), so their rendered extent is checked against the bounding square
 fig.canvas.draw()
-w_mm = max(t.get_window_extent(renderer=fig.canvas.get_renderer()).width
-           for t in tip_labels) / fig.dpi * 25.4
-assert w_mm <= LAB_W, (w_mm, LAB_W)
+_r = fig.canvas.get_renderer()
+_box = axR.get_window_extent(renderer=_r)
+for t in tip_labels:
+    bb = t.get_window_extent(renderer=_r)
+    assert bb.x0 >= _box.x0 - 1 and bb.x1 <= _box.x1 + 1 and \
+        bb.y0 >= _box.y0 - 1 and bb.y1 <= _box.y1 + 1, (t.get_text(), bb, _box)
 
-print(f"  page height {H:.1f} mm | tip columns {[hi - lo for lo, hi in BLOCKS]} "
-      f"split at tip {SPLIT} ({n_crossing(SPLIT)} clades crossed) | row pitch "
-      f"{ROW:.2f} mm | widest tip label {w_mm:.1f} of {LAB_W:.1f} mm")
+print(f"  page height {H:.1f} mm | circle radius {R_OUT:.1f} mm | tip pitch "
+      f"{2 * np.pi * R_LAB * (360 - GAP_DEG) / 360 / n_tip:.2f} mm at the label ring | "
+      f"widest tip label {w_lab:.1f} mm")
 st.audit(fig)
 st.prose_scan(fig)
 st.save(fig, OUT, "Fig1")

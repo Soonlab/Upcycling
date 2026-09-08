@@ -4,12 +4,17 @@ Consolidation of 2026-09-04 (see /data/data/Upcycling/consolidation_260904/DESIG
 Old panels -> new page:
 
   old Fig 8A  ->  A  UreC active-site residues, 6 MICP-complete MAGs x 7 canonical
-                     catalytic sites (Table S12); cell colour encodes agreement with the
-                     S. pasteurii reference
+                     catalytic sites (Table S12), each shown with its FLANK flanking
+                     alignment columns on either side so that the invariant catalytic
+                     column stands against its variable neighbours (revision of
+                     2026-09-09: the seven-column version was uniformly green and showed
+                     nothing).  The reference sequence is the top row; cell colour
+                     encodes identity to the reference residue in that column.
   old Fig 8B  ->  B  ESMFold UreC backbone agreement with PDB 4CEU chain C (Table S22):
                      TM-score (left sub-axis) and all-residue backbone RMSD (right
                      sub-axis).  The two sub-axes are one lettered panel.
-  old S17C    ->  C  PAML codeml M0 omega per urease gene (Table S19b)
+  old S17C    ->  C  PAML codeml M0 omega per urease gene (Table S19b), a vertical
+                     lollipop in the gene order of D and at the height of D
   old S17D    ->  D  yn00 pairwise omega by gene and pair class, log10 omega axis,
                      drawn from the per-pair yn00 output rather than the stored medians
 
@@ -20,17 +25,19 @@ script (`run_dnds_v3.py`: 0 < omega < 99 and dS > 0.01) and asserts that it repr
 every count, median and Mann-Whitney P stored in Table S19c.
 
 Sources
-  Table_S12_UreC_active_site_residues.csv        7 sites x 6 MAGs + expected residue
+  Table_S12_UreC_active_site_residues.csv        7 sites x 6 MAGs + expected residue and
+                                                 the 0-based MSA column of each site
+  research/additional/A2_structure/UreC_aligned.faa   the MSA behind Table S12 (A)
   Table_S22_ureC_vs_4CEU_tm.csv                  TM-score and backbone RMSD per MAG
   Table_S19b_codeml_M0_summary.csv               4 genes, codeml M0 omega
   Table_S19c_yn00_hero_vs_rest_summary.csv       stored medians / n / MWU P (asserted)
   research/additional/C3_dnds_codon/yn00_pairwise.csv   the pairwise distribution in D
 
 Colour meanings on this page (one meaning per colour):
-  green        observed residue matches the reference (A)
-  coral        observed residue differs from the reference (A, legend entry only), and in
-               D a pair whose two members are both MICP-complete; in C the coral lollipop
-               marks the urease genes of the MICP-complete lineages under study
+  green        residue identical to the reference residue in that column (A)
+  light grey   residue differs from the reference (A); white, an alignment gap
+  coral        in D a pair whose two members are both MICP-complete; in C the coral
+               lollipop marks the urease genes of the MICP-complete lineages under study
   light coral  a MICP-complete x rest pair (D)
   blue         Sphingobacterium lineage (row labels in A, bars in B)
   orange       Pseudomonas_E lineage (row labels in A, bars in B)
@@ -43,7 +50,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from scipy.stats import mannwhitneyu
-from matplotlib.patches import Patch
+from Bio import SeqIO
+from matplotlib.patches import Patch, Rectangle
 from matplotlib.lines import Line2D
 
 HERE = Path(__file__).resolve().parent
@@ -52,7 +60,7 @@ sys.path.insert(0, str(HERE))
 import _style as st
 import _grp_supp_hi as gh
 from _style import (HERO, HERO_LT, REST, SPHINGO, PSEUDO, GREEN, GREY, TEXT, AXIS,
-                    FS_BODY, FS_STAT, HEROES, hero_col)
+                    LIGHT, FS_BODY, FS_STAT, HEROES, hero_col)
 
 st.setup()
 OUT = HERE / "figures_v2"
@@ -67,12 +75,29 @@ PAIR_LABEL = {"hero-hero": "MICP-complete × MICP-complete",
               "hero-rest": "MICP-complete × rest", "rest-rest": "rest × rest"}
 
 # ------------------------------------------------------------------ data: A
+FLANK = 2                    # alignment columns drawn either side of each catalytic site
 sites = pd.read_csv(SUPP / "Table_S12_UreC_active_site_residues.csv")
 sites["pos"] = sites.site.str.extract(r"(\d+)").astype(int)
 sites = sites.sort_values("pos").reset_index(drop=True)      # reading order by position
-obs = sites[HEROES].values.T                                  # rows = MAG, cols = site
-exp = sites.expected.values
-match = obs == exp[None, :]
+msa = {r.id.split("__")[0]: str(r.seq)
+       for r in SeqIO.parse(Path(gh.ADDITIONAL) / "A2_structure/UreC_aligned.faa", "fasta")}
+REF = [k for k in msa if "P41020" in k][0]
+ROWS = [REF] + HEROES
+assert all(m in msa for m in HEROES), sorted(msa)
+assert len({len(v) for v in msa.values()}) == 1
+# the stored table records, per site, the 0-based MSA column and the residue read there
+for _, r in sites.iterrows():
+    c = int(r.ref_column)
+    assert msa[REF][c] == r.ref_aa == r.expected, (r.site, msa[REF][c], r.ref_aa)
+    for m in HEROES:
+        assert msa[m][c] == r[m], (r.site, m)
+blocks = []                  # per site: list of (residue per row) for the FLANK window
+for _, r in sites.iterrows():
+    c = int(r.ref_column)
+    blocks.append([[msa[m][k] for m in ROWS] for k in range(c - FLANK, c + FLANK + 1)])
+n_match = sum(msa[m][int(r.ref_column)] == r.expected
+              for _, r in sites.iterrows() for m in HEROES)
+assert n_match == len(sites) * len(HEROES)                     # the 42/42 of the text
 
 # ------------------------------------------------------------------ data: B
 tm = pd.read_csv(SUPP / "Table_S22_ureC_vs_4CEU_tm.csv")
@@ -114,39 +139,61 @@ for g in GENES:
     yn_p[g] = p
 
 # ------------------------------------------------------------------ page
-T1, PH1 = 15.0, 32.0                     # row 1: A and B
-T2, PH2 = 72.0, 46.0                     # row 2: C and D
+T1, PH1 = 15.0, 34.0                     # row 1: A and B
+T2, PH2 = 74.0, 46.0                     # row 2: C and D, one height
 H = T2 + PH2 + 15.0
 fig, ax_mm, text_mm, letter = st.page(H)
 
-L_A, X_A, W_A = 4.0, 22.0, 56.0
-L_B, X_B, W_B = 92.0, 106.0, 24.0
-GAP_B = 34.0
-L_C, X_C, W_C = 4.0, 20.0, 28.0
-L_D, X_D, W_D = 58.0, 70.0, 99.0
+L_A, X_A, W_A = 4.0, 24.0, 80.0
+L_B, X_B, W_B = 108.0, 120.0, 21.0
+GAP_B = 32.0
+L_C, X_C, W_C = 4.0, 18.0, 36.0
+L_D, X_D, W_D = 60.0, 72.0, 97.0
 
-# ---- A: active-site residue match matrix ---------------------------------
+# ---- A: active-site residues with their flanking alignment columns ---------
 letter(L_A, 4, "A")
 axA = ax_mm(X_A, T1, W_A, PH1)
-axA.imshow(np.where(match, 1, 0), cmap=st.seq_cmap("match", hi=GREEN),
-           vmin=0, vmax=1, aspect="auto")
-for i in range(obs.shape[0]):
-    for j in range(obs.shape[1]):
-        axA.text(j, i, obs[i, j], ha="center", va="center", fontsize=FS_BODY,
-                 color="white" if match[i, j] else TEXT)
-axA.set_xticks(range(len(sites)))
+n_col = 2 * FLANK + 1
+BLOCK_GAP = 1.0                          # empty column between site blocks
+xpos = []                                # x of every drawn column
+for b in range(len(blocks)):
+    x0 = b * (n_col + BLOCK_GAP)
+    xpos.append([x0 + k for k in range(n_col)])
+ref_seq = msa[REF]
+for b, (blk, xs) in enumerate(zip(blocks, xpos)):
+    c = int(sites.ref_column.iloc[b])
+    for k, (col, x) in enumerate(zip(blk, xs)):
+        ref_aa = ref_seq[c - FLANK + k]
+        for i, aa in enumerate(col):
+            if aa == "-":
+                fc, tc = "white", GREY
+            elif aa == ref_aa:
+                fc, tc = GREEN, "white"
+            else:
+                fc, tc = LIGHT, TEXT
+            axA.add_patch(Rectangle((x - 0.5, i - 0.5), 1, 1, facecolor=fc,
+                                    edgecolor="white", lw=0.4))
+            axA.text(x, i, aa, ha="center", va="center", fontsize=FS_STAT, color=tc)
+    # the catalytic column is outlined
+    axA.add_patch(Rectangle((xs[FLANK] - 0.5, -0.5), 1, len(ROWS), facecolor="none",
+                            edgecolor=TEXT, lw=0.8, zorder=3))
+axA.set_xlim(-0.6, xpos[-1][-1] + 0.6)
+axA.set_ylim(len(ROWS) - 0.5, -0.5)
+axA.set_xticks([xs[FLANK] for xs in xpos])
 axA.set_xticklabels(sites.site, fontsize=FS_BODY)
-axA.set_yticks(range(len(HEROES)))
-axA.set_yticklabels(HEROES, fontsize=FS_BODY)
-for tick, mag in zip(axA.get_yticklabels(), HEROES):
-    tick.set_color(hero_col(mag))
-axA.set_xlabel("UreC active-site residue (P41020 / 4CEU numbering)")
+axA.set_yticks(range(len(ROWS)))
+axA.set_yticklabels(["P41020"] + HEROES, fontsize=FS_BODY)
+for tick, m in zip(axA.get_yticklabels(), ROWS):
+    tick.set_color(TEXT if m == REF else hero_col(m))
+axA.set_xlabel(f"UreC active-site residue ± {FLANK} alignment columns "
+               "(P41020 / 4CEU numbering)")
 axA.tick_params(length=0)
-for s in axA.spines.values():
-    s.set_visible(False)
-axA.legend(handles=[Patch(facecolor=GREEN, label="matches reference"),
-                    Patch(facecolor=HERO, label="differs")],
-           loc="lower left", bbox_to_anchor=(0, 1.02), ncol=2, handlelength=1.1,
+for sp in axA.spines.values():
+    sp.set_visible(False)
+axA.legend(handles=[Patch(facecolor=GREEN, label="identical to reference"),
+                    Patch(facecolor=LIGHT, label="differs"),
+                    Patch(facecolor="white", edgecolor=LIGHT, label="gap")],
+           loc="lower left", bbox_to_anchor=(0, 1.02), ncol=3, handlelength=1.1,
            handleheight=0.9, columnspacing=1.2, fontsize=FS_BODY)
 
 # ---- B: ESMFold TM-score and backbone RMSD (two sub-axes, one panel) ------
@@ -175,28 +222,28 @@ for ax_, ylab, top in ((axB, "TM-score (norm. 4CEU chain C)", float(tm.tm_norm_r
 axB.legend(handles=[Patch(facecolor=SPHINGO, label="Sphingobacterium"),
                     Patch(facecolor=PSEUDO, label="Pseudomonas_E"),
                     Line2D([], [], color=GREY, ls="--", lw=0.8, label="TM = 0.5")],
-           loc="lower left", bbox_to_anchor=(0, 1.02), ncol=3, handlelength=1.1,
+           loc="lower left", bbox_to_anchor=(0, 1.02), ncol=2, handlelength=1.1,
            handleheight=0.9, columnspacing=1.0, fontsize=FS_BODY)
 
-# ---- C: codeml M0 omega per urease gene ----------------------------------
-letter(L_C, T2 - 6.0, "C")
-axC = ax_mm(X_C, T2, W_C, PH1)
-yC = np.arange(len(m0), dtype=float)
-axC.hlines(yC, 0, m0.omega_M0, color=HERO, lw=1.0, zorder=2)
-axC.scatter(m0.omega_M0, yC, s=20, color=HERO, zorder=3)
-for yy, v in zip(yC, m0.omega_M0):
-    axC.text(v + m0.omega_M0.max() * 0.06, yy, f"{v:.3f}", ha="left", va="center",
+# ---- C: codeml M0 omega per urease gene, in the gene order of D -------------
+letter(L_C, T2 - 8.0, "C")
+axC = ax_mm(X_C, T2, W_C, PH2)
+m0 = m0.set_index("gene").loc[GENES].reset_index()
+xC = np.arange(len(m0), dtype=float)
+axC.vlines(xC, 0, m0.omega_M0, color=HERO, lw=1.2, zorder=2)
+axC.scatter(xC, m0.omega_M0, s=26, color=HERO, zorder=3)
+for xx, v in zip(xC, m0.omega_M0):
+    axC.text(xx, v + m0.omega_M0.max() * 0.06, f"{v:.3f}", ha="center", va="bottom",
              fontsize=FS_STAT, color=TEXT)
-axC.set_yticks(yC)
-axC.set_yticklabels(m0.gene, style="italic")
-axC.invert_yaxis()
-axC.set_xlim(0, m0.omega_M0.max() * 1.75)
-axC.set_xlabel("codeml M0 ω")
-st.style_axis(axC, left=False)
-axC.tick_params(left=False)
+axC.set_xticks(xC)
+axC.set_xticklabels(m0.gene, style="italic")
+axC.set_xlim(-0.6, len(m0) - 0.4)
+axC.set_ylim(0, m0.omega_M0.max() * 1.35)
+axC.set_ylabel("codeml M0 ω")
+st.style_axis(axC)
 
 # ---- D: yn00 pairwise omega, gene x pair class ---------------------------
-letter(L_D, T2 - 6.0, "D")
+letter(L_D, T2 - 8.0, "D")
 axD = ax_mm(X_D, T2, W_D, PH2)
 rng = np.random.default_rng(gh.JITTER_SEED)
 step = 0.26
