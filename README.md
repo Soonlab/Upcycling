@@ -10,29 +10,30 @@ Comparative-genomic analysis of 111 metagenome-assembled genomes (MAGs) recovere
 
 ```
 .
-├── figures/
-│   ├── main/                          Fig. 1–6 (PNG 300 dpi + PDF vector)
-│   └── supplementary/                 Fig. S1–S7
+├── figures/                           Final manuscript figures (PDF vector + PNG, 180 mm wide)
+│   ├── Fig1 … Fig5                    Main figures
+│   ├── Fig_S1 … Fig_S5                Supplementary figures
+│   ├── Graphical_abstract
+│   └── build/                         build_v2_*.py + shared modules; `run_all.sh` rebuilds all pages
 ├── results/
+│   ├── supplementary_tables/          Table S1–S3 workbooks (per-MAG measurements, statistics,
+│   │                                  reference panels/methods) + Table S5b raw DRAM export
 │   ├── main/                          Pangenome + GTDB-Tk summaries
 │   ├── extra/                         Trait-module scans, ANI, AAI, novelty screen
-│   └── revision/                      Cluster audit, permutation stats, dbCAN HMMER, ureC tree
+│   ├── revision/                      Cluster audit, permutation stats, dbCAN HMMER (final pass), ureC tree
+│   └── additional/                    Reviewer-defence analyses A1–A7, B, C1–C6 (+ re-export logs)
 └── scripts/                           All Python / shell code used to produce the above
-    ├── 01_main_figures.py             Fig. 1–3 (tree + MICP heatmap, synteny)
-    ├── 02_trait_module_scans.py       Bakta keyword scan for six trait categories
-    ├── 03_ANI_novelty_skani.py        Whole-genome ANI + novelty screen
-    ├── 04_novel_species_AAI.py        S13/S16 AAI vs other Sphingobacterium
-    ├── 05_dram_figure.py              DRAM distillate heatmap (Fig. 4)
-    ├── 06_dram_distill.sh             DRAM distill pipeline wrapper
-    ├── 07_dram_hero_annotate.sh       DRAM annotate for hero MAGs
-    └── revision/                      Scripts #1–5 from the methodological revision
-        ├── 01_cluster_and_quality.py
-        ├── 02_ureC_gene_tree.py
-        ├── 02b_hero_topology_check.py
-        ├── 03_permutation_stats.py
-        ├── 04_dbcan_reanalysis.py
-        └── 04b_dbcan_final.py
+    ├── 01_ … 07_                      Original pipeline (annotation scans, ANI, AAI, DRAM)
+    ├── revision/                      Methodological revision (cluster QC, ureC tree, permutation, dbCAN)
+    ├── additional/                    A1–A7, B, C1–C6 analyses + table re-export
+    └── consolidation_260904/          Display-item consolidation: DESIGN.md, MAPPING.md (old → new
+                                       figure/table numbering), audit_consistency.py, audit_numbers.py
 ```
+
+Only the final display items are kept in `figures/` and `results/`. Earlier figure sets
+(April 2026 `figures/main|supplementary|additional`, the 29-page set of 2026-09-04 and the
+editable PPTX) and the pre-correction result tables remain available in the git history
+(≤ commit 02de6ab).
 
 
 > **Note on manuscript files**
@@ -62,8 +63,8 @@ conda activate dram_env
 pip install pandas numpy matplotlib seaborn biopython scipy ete3 six
 conda install -c bioconda mafft iqtree skani mmseqs2 hmmer -y
 
-# example (main figures)
-python scripts/01_main_figures.py
+# final figure pages (Fig 1–5, S1–S5, graphical abstract)
+bash figures/build/run_all.sh
 
 # revision pipeline
 python scripts/revision/01_cluster_and_quality.py
@@ -80,10 +81,10 @@ Paths inside the scripts are set to `/data/data/Upcycling/` (original analysis h
 
 | Finding | Evidence | File |
 |---|---|---|
-| Six MICP-complete MAGs across two convergent lineages (4 *Sphingobacterium* + 2 *Pseudomonas*\_E) | Bakta gene presence + IQ-TREE phylogeny | `results/main/MICP_Pangenome_Final_Summary.csv`, `figures/main/Fig1_*` |
+| Six MICP-complete MAGs across two convergent lineages (4 *Sphingobacterium* + 2 *Pseudomonas*\_E) | Bakta gene presence + IQ-TREE phylogeny | `results/main/MICP_Pangenome_Final_Summary.csv`, `figures/Fig1.pdf` |
 | *ureABCDEFG* operon on a single contig in M1 / S13 / S16 (5.9–28.6 kb span) | GFF3 contig audit | `results/revision/hero_cluster_audit.csv` |
 | No transposase / integrase / prophage / relaxase in ± 15 kb of any hero *ure* cluster; Δ GC ≤ 1.5 % | Bakta window scan | `results/extra/HGT_ureCah_cluster.csv` |
-| Nine trait modules enriched in hero lineages at BH-FDR q < 0.05 (Mrp 10.9×, CBM 9.8×, GH 4.7×, …) | 10 000-perm test + bootstrap CI | `results/revision/Hero_vs_Rest_permutation_stats.csv`, `figures/main/Fig_Permutation_forest.*` |
+| Nine trait modules enriched in hero lineages at BH-FDR q < 0.05 (Mrp 10.9×, CBM 9.8×, GH 4.7×, …) | 10 000-perm test + bootstrap CI | `results/revision/Hero_vs_Rest_permutation_stats.csv`, `figures/Fig4.pdf` (panel A) |
 | Rigorous dbCAN HMMER confirms GH / PL / CBM / CE hero enrichment (q < 0.01) | hmmsearch E < 1e-15 + DRAM | `results/revision/dbCAN_final_hero_vs_rest_class.csv` |
 | S13 and S16 candidate novel *Sphingobacterium* species (max congeneric AAI 93.2 % / 93.5 %) | skani ANI + mmseqs2 AAI | `results/extra/novel_species/AAI_S13_S16_vs_Sphingobacterium.csv` |
 | UreC gene tree incongruent with species tree (normRF = 0.58; SH / AU p < 10⁻³⁷) | IQ-TREE gene tree + `-z` test | `results/revision/ureC_tree/` |

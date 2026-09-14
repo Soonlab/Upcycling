@@ -20,3 +20,6 @@ working_dir/
 # Manuscript + cover letters are kept off the public repo until publication
 manuscript/
 
+
+# local rebuild output of figures/build/*.py (the committed pages live in figures/)
+figures/build/figures_v2/

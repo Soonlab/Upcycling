@@ -93,5 +93,5 @@ plt.close(fig)
 print("saved", out)
 
 # SUPERSEDED 2026-09-09 — the graphical abstract is now built by
-# figures/new_figure_v2/build_v2_graphical_abstract.py, which draws every value from the
+# figures/build/build_v2_graphical_abstract.py, which draws every value from the
 # supplementary tables instead of carrying it in the script text. Kept for provenance.

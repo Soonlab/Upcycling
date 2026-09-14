@@ -1,5 +1,7 @@
 # Additional in-silico analyses for Livestock Waste Upcycling MICP project
 
+> **Note (2026-09-14).** The stand-alone figures referenced below (`figures/additional/*`, `figures/A*/B*/C*`) were consolidated into main Fig 1–5 / Suppl Fig S1–S5 on 2026-09-04 and removed from the repository; the panel mapping is in `scripts/consolidation_260904/MAPPING.md`, and the old files remain in the git history (≤ 02de6ab).
+
 **Date**: 2026-04-18
 **Context**: Pre-revision additions beyond the submitted manuscript. All analyses are in-silico on the existing 111 MAG collection (or downloaded public MAG catalogs). No wet-lab work.
 

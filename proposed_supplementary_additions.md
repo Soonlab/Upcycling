@@ -1,5 +1,7 @@
 # Proposed supplementary additions for Manuscript revision
 
+> **Note (2026-09-14).** The stand-alone figures referenced below (`figures/additional/*`, `figures/A*/B*/C*`) were consolidated into main Fig 1–5 / Suppl Fig S1–S5 on 2026-09-04 and removed from the repository; the panel mapping is in `scripts/consolidation_260904/MAPPING.md`, and the old files remain in the git history (≤ 02de6ab).
+
 Based on analyses in `/data/data/Upcycling/research/additional/`, for inclusion in a revised submission.
 
 > **Status 2026-04-22: SUPERSEDED — fully integrated into the initial submission.** Every figure, table and paragraph listed below is now part of the main manuscript body (Methods §2.11–2.24, Results §3.9–3.12, Discussion §4.6–4.10) and supplementary package (Figures S8–S21, Tables S11–S23) at `/data/data/Upcycling/SUBMISSION/` (gitignored until publication). This document is retained as a historical planning artefact and for reviewer-response convenience.

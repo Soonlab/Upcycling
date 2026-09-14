@@ -1,5 +1,7 @@
 # C1-C6 reviewer-defense additions (extended panel)
 
+> **Note (2026-09-14).** The stand-alone figures referenced below (`figures/additional/*`, `figures/A*/B*/C*`) were consolidated into main Fig 1–5 / Suppl Fig S1–S5 on 2026-09-04 and removed from the repository; the panel mapping is in `scripts/consolidation_260904/MAPPING.md`, and the old files remain in the git history (≤ 02de6ab).
+
 **Date**: 2026-04-20 (initial) / 2026-04-21 (C1 re-run + C3 v3 + C4 HF ESMFold) / **2026-04-22 (integrated into main manuscript)**
 
 All in-silico, no wet-lab.
