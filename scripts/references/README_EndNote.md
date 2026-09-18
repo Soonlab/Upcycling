@@ -7,9 +7,9 @@
 
 | 파일 | 내용 |
 |---|---|
-| `Upcycling_MICP_library.ris` | **검증된 61편**(인용 58 + 미인용 실재 3). 전 저자·권·호·쪽·DOI를 CrossRef에서 DOI로 받아 생성(수기 입력 없음). Label 필드 = 원고 번호(`MS-R03`) |
+| `Upcycling_MICP_library.ris` | **검증된 60편**(전부 본문 인용). 전 저자·권·호·쪽·DOI를 CrossRef에서 DOI로 받아 생성(수기 입력 없음). Label 필드 = 원고 번호(`MS-R03`) |
 | `Upcycling_MICP_candidates.ris` | (비어 있음 — 대체 확정으로 후보 없음) |
-| `01_Manuscript_EndNote.docx` | 본문 인용 전부를 EndNote 임시 인용 `{Bowers, 2017}`으로 바꾼 원고(50군데·65건, 미검증 0) |
+| `01_Manuscript_EndNote.docx` | 본문 인용 전부를 EndNote 임시 인용 `{Bowers, 2017}`으로 바꾼 원고(52군데·67건, 미검증 0) |
 | `ref_decisions.tsv` | 63편 각각의 판정(keep / manual / pending)·DOI·대체 후보·사유 — **원장** |
 | `library_audit_original_list_260918.tsv` | (기록) 수정 전 목록의 연도·권·첫 쪽 vs CrossRef 대조 |
 | `04_apply_to_master.py` | 판정을 정본 md에 반영(본문 인용 교체 + Harvard 목록 재생성), 멱등 |
@@ -22,7 +22,7 @@
    `Upcycling_MICP_library.ris`, Import Option = **Reference Manager (RIS)**, Text Translation = **Unicode (UTF-8)**.
 2. `01_Manuscript_EndNote.docx`를 Word로 열고 EndNote 탭 ▸ Style = **Microbiological Research**
    (없으면 endnote.com/downloads/styles 에서 받거나 `Elsevier Harvard (with titles)`).
-3. EndNote 탭 ▸ **Update Citations and Bibliography**. `{저자, 연도}` 50군데(개별 인용 65건)가 정식 필드로 바뀌고
+3. EndNote 탭 ▸ **Update Citations and Bibliography**. `{저자, 연도}` 52군데(개별 인용 67건)가 정식 필드로 바뀌고
    참고문헌 목록이 문서 맨 끝의 `References` 제목 아래에 생긴다(그래서 이 docx에서는 표를 References 앞으로 옮겨 두었다).
    동명·동년 문헌이 없어 선택 창은 뜨지 않아야 한다.
 
@@ -48,18 +48,18 @@
 본문 6,999→6,997단어(§2.7의 중복 Biopython 인용 1개 제거로 상쇄). `audit_consistency.py`·`audit_numbers.py` 정본 기준 전항 PASS
 (`UPCYCLING_MAN_DIR=/data/data/Upcycling/SUBMISSION_v2` 지정 — 기본 경로는 09-04 사본을 읽는다).
 
-### 아직 저자 판단이 필요한 것
+### 2026-09-19 (2) 저자 결정 반영
 
-* **Stegen et al., 2013**: "축분은 유용 기능의 저장소" 문장에 인용돼 있으나 논문 내용(지하 미생물 군집 조립 과정)은 그 주장과 무관. 같은 괄호의 Gupta 2016이 주장을 받치므로, Stegen은 빼거나 다른 위치로 옮기는 것을 권장.
-* 본문 미인용이라 목록에서 빠진 실재 문헌 3편(라이브러리 `.ris`에는 남겨 둠): Parks 2020(GTDB 분류체계), Zheng 2023(dbCAN3), Yang & Nielsen 2000(yn00).
-  Methods에서 도구명만 쓰고 인용이 없다. 넣으려면 단어 예산(현재 6,997/7,000)을 먼저 확보해야 한다.
+* **Stegen et al., 2013 삭제** — 인용 문장("축분은 유용 기능의 저장소")과 무관한 논문이라 본문·목록·라이브러리에서 제거. 해당 문장은 Gupta et al., 2016 단독 인용.
+* **Methods 도구 인용 3건 추가** — GTDB r220 `(r220; Parks et al., 2020; Chaumeil et al., 2022)`, `dbCAN v12 (Zheng et al., 2023)`, `PAML yn00 (Yang and Nielsen, 2000)`.
+* 결과: 참고문헌 **60편**(전부 본문 인용·DOI 검증), 본문 **7,005단어**(자체 목표 7,000은 저자 결정으로 인용에 한해 초과 허용, 감사 상한 7,050), 임시 인용 52군데·67건.
 
 ## 실재하지만 원고 기재가 틀렸던 것 (정정 완료)
 
 * **R8 Dhami**: 2014 → **2013** (*J Microbiol Biotechnol* 23:707–714), 저자 3인은 PubMed 기준(CrossRef는 제1저자만 보유).
 * **R56 TM-align**: CrossRef가 Zhang만 보유 → PubMed 기준 Zhang & Skolnick.
 * **R38 dbCAN3**: 제1저자 Zhang H → **Zheng J**.
-* **R32 Stegen**: 제목(2012 논문)과 서지(2013 논문)가 섞여 있던 것을 2013 논문으로 통일.
+* **R32 Stegen**: 제목(2012 논문)과 서지(2013 논문)가 섞여 있던 항목 — 이후 인용 자체를 삭제.
 * R3 Bowers(컨소시엄이 제1저자로 등록 → 사람 저자 우선), R7 DeJong(대문자 저자명), R59 Mitchell·R27 Schwengers(권·쪽 PubMed 보충), R9·R55(정식 제목).
 
 ## 재빌드

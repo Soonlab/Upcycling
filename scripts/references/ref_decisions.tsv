@@ -22,7 +22,7 @@ n	action	doi	replacement_doi	note
 21	keep	10.1038/s41587-020-0718-6		
 22	replace		10.1016/j.conbuildmat.2019.116828	CHOSEN 260919: the real Omoregie 2019 Constr Build Mater paper (sand biocementation) - fits the application list; in-text year 2022 -> 2019 || was: Title/volume/pages match no record. In-text year is 2022 but list says 2019. Real Omoregie papers: 2022 Lett Appl Microbiol 74:671 (dairy manure pellets as S. pasteurii nutrient source - closest to this study); 2019 Constr Build Mater 228:116828 (sand biocementation)
 23	keep	10.1038/s41564-017-0012-7		
-24	uncited	10.1038/s41587-020-0501-8		listed but NOT cited in the text
+24	keep	10.1038/s41587-020-0501-8		cited in Methods since 260919 || was: listed but NOT cited in the text
 25	keep	10.1080/08927014.2013.796550		
 26	keep	10.1128/microbe.9.111.1		
 27	keep	10.1099/mgen.0.000685		
@@ -30,13 +30,13 @@ n	action	doi	replacement_doi	note
 29	keep	10.1038/s41592-023-02018-3		
 30	keep	10.1080/10635150290069913		
 31	keep	10.1093/oxfordjournals.molbev.a026201		
-32	keep	10.1038/ismej.2013.93		CORRECTED: manuscript entry is a hybrid - title of Stegen 2012 (ISME J 6:1653) with year/vol/pages of Stegen 2013 (ISME J 7:2069, 'Quantifying community assembly processes...'). Library uses the 2013 record. CLAIM CHECK NEEDED: cited for 'livestock manure as reservoir of useful function', which neither Stegen paper addresses
+32	drop	10.1038/ismej.2013.93		DROPPED 260919 by author decision: cited for a statement the paper does not address || was: CORRECTED: manuscript entry is a hybrid - title of Stegen 2012 (ISME J 6:1653) with year/vol/pages of Stegen 2013 (ISME J 7:2069, 'Quantifying community assembly processes...'). Library uses the 2013 record. CLAIM CHECK NEEDED: cited for 'livestock manure as reservoir of useful function', which neither Stegen paper addresses
 33	keep	10.1038/nbt.3988		
 34	keep	10.1186/s13059-020-02090-4		
 35	keep	10.1080/01490450701436505		
 36	drop			never cited in the text || was: NOT FOUND (no Sphingobacterium review by Xu in Appl Microbiol Biotechnol 2021). Listed but NOT cited in the text -> simply drop
 37	replace		10.1186/s40643-016-0105-9	CHOSEN 260919: Gupta, Aneja, Rana 2016 Bioresour Bioprocess 3:28 - cow dung as a bioresource (microbial enzymes, bioremediation) || was: NOT FOUND (no Zamanzadeh paper in Environ Microbiol; only Zamanzadeh 2017 Sci Rep on food-waste biogas). No replacement proposed - needs an author-chosen source for 'manure as reservoir of function'
-38	uncited	10.1093/nar/gkad328		CORRECTED: first author is Zheng J (manuscript says Zhang H). Listed but NOT cited in the text
+38	keep	10.1093/nar/gkad328		cited in Methods since 260919 || was: CORRECTED: first author is Zheng J (manuscript says Zhang H). Listed but NOT cited in the text
 39	keep	10.1111/j.2517-6161.1995.tb02031.x		
 40	keep	10.1016/0025-5564(81)90043-2		
 41	keep	10.1093/molbev/msw046		
@@ -51,7 +51,7 @@ n	action	doi	replacement_doi	note
 50	keep	10.1093/nar/gkad344		
 51	keep	10.1073/pnas.2016810118		
 52	keep	10.1093/molbev/msm088		
-53	uncited	10.1093/oxfordjournals.molbev.a026236		listed but NOT cited in the text
+53	keep	10.1093/oxfordjournals.molbev.a026236		cited in Methods since 260919 || was: listed but NOT cited in the text
 54	keep	10.1371/journal.pone.0009490		
 55	keep	10.1126/science.ade2574		"full title ends ""...with a language model"""
 56	keep	10.1093/nar/gki524		

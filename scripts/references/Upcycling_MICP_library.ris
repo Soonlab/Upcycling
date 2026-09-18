@@ -823,7 +823,7 @@ SN  - 1087-0156
 DO  - 10.1038/s41587-020-0501-8
 UR  - https://doi.org/10.1038/s41587-020-0501-8
 LB  - MS-R24
-N1  - listed but NOT cited in the text
+N1  - cited in Methods since 260919
 ER  - 
 
 TY  - JOUR
@@ -964,29 +964,6 @@ LB  - MS-R31
 ER  - 
 
 TY  - JOUR
-AU  - Stegen, James C
-AU  - Lin, Xueju
-AU  - Fredrickson, Jim K
-AU  - Chen, Xingyuan
-AU  - Kennedy, David W
-AU  - Murray, Christopher J
-AU  - Rockhold, Mark L
-AU  - Konopka, Allan
-PY  - 2013
-TI  - Quantifying community assembly processes and identifying features that impose them
-T2  - The ISME Journal
-VL  - 7
-IS  - 11
-SP  - 2069
-EP  - 2079
-SN  - 1751-7362
-DO  - 10.1038/ismej.2013.93
-UR  - https://doi.org/10.1038/ismej.2013.93
-LB  - MS-R32
-N1  - CORRECTED: manuscript entry is a hybrid - title of Stegen 2012 (ISME J 6:1653) with year/vol/pages of Stegen 2013 (ISME J 7:2069, 'Quantifying community assembly processes...'). Library uses the 2013 record. CLAIM CHECK NEEDED: cited for 'livestock manure as reservoir of useful function', which neither Stegen paper addresses
-ER  - 
-
-TY  - JOUR
 AU  - Steinegger, Martin
 AU  - Söding, Johannes
 PY  - 2017
@@ -1085,7 +1062,7 @@ SN  - 0305-1048
 DO  - 10.1093/nar/gkad328
 UR  - https://doi.org/10.1093/nar/gkad328
 LB  - MS-R38
-N1  - CORRECTED: first author is Zheng J (manuscript says Zhang H). Listed but NOT cited in the text
+N1  - cited in Methods since 260919
 ER  - 
 
 TY  - JOUR
@@ -1438,7 +1415,7 @@ SN  - 1537-1719
 DO  - 10.1093/oxfordjournals.molbev.a026236
 UR  - https://doi.org/10.1093/oxfordjournals.molbev.a026236
 LB  - MS-R53
-N1  - listed but NOT cited in the text
+N1  - cited in Methods since 260919
 ER  - 
 
 TY  - JOUR

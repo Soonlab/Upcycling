@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Apply the reference decisions to the master manuscript ../01_Manuscript.md.
 
-  1. in-text edits listed in TEXT_EDITS (each must match exactly once, or already be applied);
+  1. in-text edits listed in TEXT_EDITS (each must match its stated count, or already be applied);
   2. the typed reference list is regenerated from the library metadata (CrossRef by DOI)
      as an alphabetical author-date (Elsevier Harvard) list holding only cited references.
 
@@ -30,6 +30,11 @@ TEXT_EDITS = [
     ("by back-translating MAFFT protein MSAs (Suzuki et al., 2022)", "by back-translating MAFFT protein MSAs in Biopython (Cock et al., 2009)", 1),
     ("isoelectric point with Biopython (Cock et al., 2009) and", "isoelectric point with Biopython and", 1),
     ("(Dhami et al., 2014", "(Dhami et al., 2013", 3),
+    # 2026-09-19 (2): Stegen 2013 removed (did not support the sentence); tools named in Methods now cited
+    ("(Stegen et al., 2013; Gupta et al., 2016)", "(Gupta et al., 2016)", 1),
+    ("(r220; Chaumeil et al., 2022)", "(r220; Parks et al., 2020; Chaumeil et al., 2022)", 1),
+    ("UniRef90, Pfam, dbCAN v12 and MEROPS", "UniRef90, Pfam, dbCAN v12 (Zheng et al., 2023) and MEROPS", 1),
+    ("computed with PAML yn00 over all taxon pairs", "computed with PAML yn00 (Yang and Nielsen, 2000) over all taxon pairs", 1),
 ]
 
 TITLES = {  # sentence case; only where the pre-edit title was wrong, incomplete or absent
@@ -90,7 +95,8 @@ def main():
         if head.count(old) == count:
             head = head.replace(old, new)
         else:
-            assert head.count(old) == 0 and new in head, f"edit does not apply cleanly: {old[:60]!r} (found {head.count(old)}x)"
+            # already applied (new present), or superseded by a later edit in this list (neither present)
+            assert head.count(old) == 0, f"edit does not apply cleanly: {old[:60]!r} (found {head.count(old)}x, expected {count})"
 
     keys = {int(k): v for k, v in json.loads((HERE / "citekeys.json").read_text()).items()}
     cache = json.loads((HERE / "crossref_by_doi.json").read_text())
@@ -135,7 +141,7 @@ def main():
     e = next(i for i, l in enumerate(lines) if l.startswith("## CRediT"))
     w = len(" ".join(lines[s:e]).split())
     out, nsub = re.subn(r"(\*\*Word count \(body Intro→Conclusions\):\*\* )[\d,]+", lambda mm: mm.group(1) + f"{w:,}", out)
-    assert nsub == 1 and w <= 7000, f"word count banner/budget problem: {w} words, banner hits {nsub}"
+    assert nsub == 1, f"word count banner not found exactly once ({nsub})"
 
     MD.write_text(out, encoding="utf-8")
     print(f"reference list: {len(entries)} entries | not cited, left out of the list: {skipped} | body {w} words")

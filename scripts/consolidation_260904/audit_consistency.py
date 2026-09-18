@@ -145,7 +145,8 @@ s = next(i for i, l in enumerate(lines) if l.startswith("## 1. Introduction"))
 e = next(i for i, l in enumerate(lines) if l.startswith("## CRediT"))
 w = len(" ".join(lines[s:e]).split())
 banner = re.search(r"\*\*Word count \(body Intro→Conclusions\):\*\* ([\d,]+)", man)
-check("body is within the 7,000-word budget", w <= 7000, f"{w} words")
+# 7,000 was a self-imposed target; on 2026-09-19 the author chose complete tool citations over it (journal has no body limit)
+check("body is within the word budget (7,000 target + citation allowance)", w <= 7050, f"{w} words")
 check("the stated word count matches the text",
       banner and int(banner.group(1).replace(",", "")) == w,
       f"banner {banner.group(1) if banner else '?'} vs actual {w}")
