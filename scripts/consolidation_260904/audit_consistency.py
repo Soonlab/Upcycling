@@ -10,8 +10,11 @@ from pathlib import Path
 import openpyxl
 
 BASE = Path("/data/data/Upcycling")
-MAN = BASE / "consolidation_260904/manuscript/01_Manuscript.md"
-LEG = BASE / "consolidation_260904/manuscript/02_Figure_legends.md"
+# UPCYCLING_MAN_DIR=/data/data/Upcycling/SUBMISSION_v2 audits the submission master instead of the 09-04 copy
+import os
+MAN_DIR = Path(os.environ.get("UPCYCLING_MAN_DIR", BASE / "consolidation_260904/manuscript"))
+MAN = MAN_DIR / "01_Manuscript.md"
+LEG = MAN_DIR / "02_Figure_legends.md"
 FIGDIR = BASE / "new_figure/figures_v2"
 TABDIR = BASE / "SUBMISSION/Supplementary_tables_v2"
 MAX_H_MM = 235.0
@@ -123,8 +126,10 @@ check("every § cross-reference resolves to a section that exists",
 
 # ---------------------------------------------------------------- 6 references
 ref_block = man.split("## References")[1].split("## Table 1")[0]
-entries = re.findall(r"^\d+\.\s+([A-Z][A-Za-z\u00C0-\u024F\-']+)", ref_block, re.M)
-surnames = set(entries)
+# author-date list since 2026-09-19 ("Family, I., ... Year. Title"); the numbered form is still accepted
+entries = re.findall(r"^(?:\d+\.\s+)?([A-Z][A-Za-z\u00C0-\u024F\-']+),? [A-Z].*?\b(\d{4})\b", ref_block, re.M)
+check("the reference list was parsed", len(entries) > 0, f"{len(entries)} entries")
+surnames = {e[0] for e in entries}
 NAME = r"[A-Z][A-Za-z\u00C0-\u024F\-']+"
 cited = {m.group(1) for m in re.finditer(
     rf"({NAME})(?:\s+and\s+{NAME}|,\s+{NAME}(?:,\s+{NAME})*)?(?:\s+et al\.?)?,\s*\d{{4}}", body)}

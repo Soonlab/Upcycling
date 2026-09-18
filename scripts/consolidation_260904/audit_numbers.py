@@ -13,7 +13,8 @@ import pandas as pd
 from scipy.stats import mannwhitneyu
 
 SUPP = Path("/data/data/Upcycling/SUBMISSION/Supplementary_tables")
-MAN = Path("/data/data/Upcycling/consolidation_260904/manuscript/01_Manuscript.md")
+import os
+MAN = Path(os.environ.get("UPCYCLING_MAN_DIR", "/data/data/Upcycling/consolidation_260904/manuscript")) / "01_Manuscript.md"
 man = MAN.read_text()
 fails, checked = [], 0
 

@@ -1,0 +1,64 @@
+n	action	doi	replacement_doi	note
+1	keep	10.1016/j.conbuildmat.2015.04.051		
+2	keep	10.1038/ncomms13219		
+3	keep	10.1038/nbt.3893		
+4	keep	10.1080/01490451.2010.499929		
+5	keep	10.1093/bioinformatics/btac672		
+6	replace		10.1016/bs.aambs.2015.12.002	CHOSEN 260919: review of MICP toxic-metal immobilisation = the claim it supports || was: NOT FOUND in CrossRef or PubMed (no Cheng 2017 ESPR 24:23625 with this title). Candidates: Kumari 2016 Adv Appl Microbiol (MICP toxic-metal review); Achal 2011 Ecol Eng (Cu soil remediation)
+7	keep	10.1680/geot.sip13.p.017		
+8	keep	10.4014/jmb.1212.11087		CORRECTED: published 2013 (J Microbiol Biotechnol 23:707-714), manuscript says 2014
+9	keep	10.1016/j.jenvman.2019.109938		"full title has subtitle "": Challenges to future industrial application"""
+10	keep	10.1371/journal.pcbi.1002195		
+11	keep	10.1016/j.gca.2003.12.018		
+12	keep	10.1080/01490451.2016.1154117		
+13	replace		10.1002/2014wr016503	CHOSEN 260919: MICP porous-media model (WRR) || was: NOT FOUND (DOI 10.1029/2021WR031437 does not resolve; J. Jimenez-Martinez has no MICP paper in WRR). Candidates: Hommel 2015 WRR (revised MICP model); Ebigbo 2012 WRR (Darcy-scale MICP model)
+14	keep	10.1093/molbev/mst010		
+15	keep	10.1073/pnas.0409727102		
+16	replace		10.1038/s41598-020-79904-9	"CHOSEN 260919: S. pasteurii auxotrophies / complex-media dependence; Introduction sentence reworded to what this paper shows (old ""pH 7-8, freshwater"" claim had no source) || was: NOT FOUND (DOI 10.3389/fbioe.2021.745904 does not resolve; no Krawczyk + S. pasteurii paper in PubMed). Candidate: Lapierre 2020 Sci Rep (nutritional requirements of S. pasteurii DSM33)"
+17	keep	10.1093/nar/gkm160		
+18	replace		10.1093/bioinformatics/btv231	CHOSEN 260919: difficulty of assembling 16S rRNA genes from metagenomes || was: NOT FOUND (PeerJ e13919 is a fossil-bird paper; Lee/Kuo/Lennon have no such article). Candidate: Yuan 2015 Bioinformatics (reconstructing 16S rRNA genes from metagenomes)
+19	replace		10.1038/s41467-021-21295-0	CHOSEN 260919: livestock (pig gut) MAG catalogue; keeps in-text year 2021 || was: NOT FOUND (mra.00318-22 is a Lactococcus genome announcement). In-text year is 2021 but list says 2022. Candidates: Chen 2021 Nat Commun (pig gut MAG catalog); Stewart 2018 Nat Commun (913 cow rumen MAGs)
+20	keep	10.1093/molbev/msaa015		
+21	keep	10.1038/s41587-020-0718-6		
+22	replace		10.1016/j.conbuildmat.2019.116828	CHOSEN 260919: the real Omoregie 2019 Constr Build Mater paper (sand biocementation) - fits the application list; in-text year 2022 -> 2019 || was: Title/volume/pages match no record. In-text year is 2022 but list says 2019. Real Omoregie papers: 2022 Lett Appl Microbiol 74:671 (dairy manure pellets as S. pasteurii nutrient source - closest to this study); 2019 Constr Build Mater 228:116828 (sand biocementation)
+23	keep	10.1038/s41564-017-0012-7		
+24	uncited	10.1038/s41587-020-0501-8		listed but NOT cited in the text
+25	keep	10.1080/08927014.2013.796550		
+26	keep	10.1128/microbe.9.111.1		
+27	keep	10.1099/mgen.0.000685		
+28	keep	10.1093/nar/gkaa621		
+29	keep	10.1038/s41592-023-02018-3		
+30	keep	10.1080/10635150290069913		
+31	keep	10.1093/oxfordjournals.molbev.a026201		
+32	keep	10.1038/ismej.2013.93		CORRECTED: manuscript entry is a hybrid - title of Stegen 2012 (ISME J 6:1653) with year/vol/pages of Stegen 2013 (ISME J 7:2069, 'Quantifying community assembly processes...'). Library uses the 2013 record. CLAIM CHECK NEEDED: cited for 'livestock manure as reservoir of useful function', which neither Stegen paper addresses
+33	keep	10.1038/nbt.3988		
+34	keep	10.1186/s13059-020-02090-4		
+35	keep	10.1080/01490450701436505		
+36	drop			never cited in the text || was: NOT FOUND (no Sphingobacterium review by Xu in Appl Microbiol Biotechnol 2021). Listed but NOT cited in the text -> simply drop
+37	replace		10.1186/s40643-016-0105-9	CHOSEN 260919: Gupta, Aneja, Rana 2016 Bioresour Bioprocess 3:28 - cow dung as a bioresource (microbial enzymes, bioremediation) || was: NOT FOUND (no Zamanzadeh paper in Environ Microbiol; only Zamanzadeh 2017 Sci Rep on food-waste biogas). No replacement proposed - needs an author-chosen source for 'manure as reservoir of function'
+38	uncited	10.1093/nar/gkad328		CORRECTED: first author is Zheng J (manuscript says Zhang H). Listed but NOT cited in the text
+39	keep	10.1111/j.2517-6161.1995.tb02031.x		
+40	keep	10.1016/0025-5564(81)90043-2		
+41	keep	10.1093/molbev/msw046		
+42	manual			software, no DOI (GitHub)
+43	keep	10.1093/nar/gkac920		
+44	keep	10.1093/nar/gkab1107		
+45	keep	10.1093/jac/dkaa345		
+46	keep	10.1128/aac.02412-14		
+47	keep	10.1038/s41587-023-01953-y		
+48	keep	10.1038/s41467-022-30269-9		
+49	keep	10.1186/1471-2105-8-209		
+50	keep	10.1093/nar/gkad344		
+51	keep	10.1073/pnas.2016810118		
+52	keep	10.1093/molbev/msm088		
+53	uncited	10.1093/oxfordjournals.molbev.a026236		listed but NOT cited in the text
+54	keep	10.1371/journal.pone.0009490		
+55	keep	10.1126/science.ade2574		"full title ends ""...with a language model"""
+56	keep	10.1093/nar/gki524		
+57	keep	10.1093/bioinformatics/btq066		
+58	keep	10.1016/s0969-2126(99)80026-4		
+59	keep	10.1093/nar/gkz1035		
+60	keep	10.1074/jbc.r112.446526		
+61	keep	10.1093/bioinformatics/btp163		
+62	keep	10.1016/0378-1119(90)90491-9		
+63	drop			back-translation was a custom Biopython routine (scripts/additional/C3_dnds_codon/run_dnds_v2.py msa_codon) -> cite Biopython (ref 61), no PAL2NAL/TranslatorX was run || was: NOT FOUND (no 'TranslatorX update' by Suzuki in Bioinformatics Advances). Real tools: PAL2NAL = Suyama, Torrents, Bork 2006 NAR 34:W609; TranslatorX = Abascal 2010 NAR 38:W7. Cite whichever tool was actually run (no back-translation script found in the repo; if done with Biopython, ref 61 already covers it)
