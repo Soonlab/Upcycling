@@ -1,0 +1,362 @@
+{
+ "1": {
+  "family": "Achal",
+  "year": "2015",
+  "status": "keep",
+  "doi": "10.1016/j.conbuildmat.2015.04.051"
+ },
+ "2": {
+  "family": "Anantharaman",
+  "year": "2016",
+  "status": "keep",
+  "doi": "10.1038/ncomms13219"
+ },
+ "3": {
+  "family": "Bowers",
+  "year": "2017",
+  "status": "keep",
+  "doi": "10.1038/nbt.3893"
+ },
+ "4": {
+  "family": "Burbank",
+  "year": "2011",
+  "status": "keep",
+  "doi": "10.1080/01490451.2010.499929"
+ },
+ "5": {
+  "family": "Chaumeil",
+  "year": "2022",
+  "status": "keep",
+  "doi": "10.1093/bioinformatics/btac672"
+ },
+ "6": {
+  "family": "Kumari",
+  "year": "2016",
+  "status": "replace",
+  "doi": "10.1016/bs.aambs.2015.12.002"
+ },
+ "7": {
+  "family": "DeJong",
+  "year": "2013",
+  "status": "keep",
+  "doi": "10.1680/geot.sip13.p.017"
+ },
+ "8": {
+  "family": "Dhami",
+  "year": "2013",
+  "status": "keep",
+  "doi": "10.4014/jmb.1212.11087"
+ },
+ "9": {
+  "family": "Duarte-Nass",
+  "year": "2020",
+  "status": "keep",
+  "doi": "10.1016/j.jenvman.2019.109938"
+ },
+ "10": {
+  "family": "Eddy",
+  "year": "2011",
+  "status": "keep",
+  "doi": "10.1371/journal.pcbi.1002195"
+ },
+ "11": {
+  "family": "Fujita",
+  "year": "2004",
+  "status": "keep",
+  "doi": "10.1016/j.gca.2003.12.018"
+ },
+ "12": {
+  "family": "Hamdan",
+  "year": "2017",
+  "status": "keep",
+  "doi": "10.1080/01490451.2016.1154117"
+ },
+ "13": {
+  "family": "Hommel",
+  "year": "2015",
+  "status": "replace",
+  "doi": "10.1002/2014wr016503"
+ },
+ "14": {
+  "family": "Katoh",
+  "year": "2013",
+  "status": "keep",
+  "doi": "10.1093/molbev/mst010"
+ },
+ "15": {
+  "family": "Konstantinidis",
+  "year": "2005",
+  "status": "keep",
+  "doi": "10.1073/pnas.0409727102"
+ },
+ "16": {
+  "family": "Lapierre",
+  "year": "2020",
+  "status": "replace",
+  "doi": "10.1038/s41598-020-79904-9"
+ },
+ "17": {
+  "family": "Lagesen",
+  "year": "2007",
+  "status": "keep",
+  "doi": "10.1093/nar/gkm160"
+ },
+ "18": {
+  "family": "Yuan",
+  "year": "2015",
+  "status": "replace",
+  "doi": "10.1093/bioinformatics/btv231"
+ },
+ "19": {
+  "family": "Chen",
+  "year": "2021",
+  "status": "replace",
+  "doi": "10.1038/s41467-021-21295-0"
+ },
+ "20": {
+  "family": "Minh",
+  "year": "2020",
+  "status": "keep",
+  "doi": "10.1093/molbev/msaa015"
+ },
+ "21": {
+  "family": "Nayfach",
+  "year": "2021",
+  "status": "keep",
+  "doi": "10.1038/s41587-020-0718-6"
+ },
+ "22": {
+  "family": "Omoregie",
+  "year": "2019",
+  "status": "replace",
+  "doi": "10.1016/j.conbuildmat.2019.116828"
+ },
+ "23": {
+  "family": "Parks",
+  "year": "2017",
+  "status": "keep",
+  "doi": "10.1038/s41564-017-0012-7"
+ },
+ "24": {
+  "family": "Parks",
+  "year": "2020",
+  "status": "keep",
+  "doi": "10.1038/s41587-020-0501-8"
+ },
+ "25": {
+  "family": "Phillips",
+  "year": "2013",
+  "status": "keep",
+  "doi": "10.1080/08927014.2013.796550"
+ },
+ "26": {
+  "family": "Rodriguez-R",
+  "year": "2014",
+  "status": "keep",
+  "doi": "10.1128/microbe.9.111.1"
+ },
+ "27": {
+  "family": "Schwengers",
+  "year": "2021",
+  "status": "keep",
+  "doi": "10.1099/mgen.0.000685"
+ },
+ "28": {
+  "family": "Shaffer",
+  "year": "2020",
+  "status": "keep",
+  "doi": "10.1093/nar/gkaa621"
+ },
+ "29": {
+  "family": "Shaw",
+  "year": "2023",
+  "status": "keep",
+  "doi": "10.1038/s41592-023-02018-3"
+ },
+ "30": {
+  "family": "Shimodaira",
+  "year": "2002",
+  "status": "keep",
+  "doi": "10.1080/10635150290069913"
+ },
+ "31": {
+  "family": "Shimodaira",
+  "year": "1999",
+  "status": "keep",
+  "doi": "10.1093/oxfordjournals.molbev.a026201"
+ },
+ "33": {
+  "family": "Steinegger",
+  "year": "2017",
+  "status": "keep",
+  "doi": "10.1038/nbt.3988"
+ },
+ "34": {
+  "family": "Tonkin-Hill",
+  "year": "2020",
+  "status": "keep",
+  "doi": "10.1186/s13059-020-02090-4"
+ },
+ "35": {
+  "family": "Whiffin",
+  "year": "2007",
+  "status": "keep",
+  "doi": "10.1080/01490450701436505"
+ },
+ "37": {
+  "family": "Gupta",
+  "year": "2016",
+  "status": "replace",
+  "doi": "10.1186/s40643-016-0105-9"
+ },
+ "38": {
+  "family": "Zheng",
+  "year": "2023",
+  "status": "keep",
+  "doi": "10.1093/nar/gkad328"
+ },
+ "39": {
+  "family": "Benjamini",
+  "year": "1995",
+  "status": "keep",
+  "doi": "10.1111/j.2517-6161.1995.tb02031.x"
+ },
+ "40": {
+  "family": "Robinson",
+  "year": "1981",
+  "status": "keep",
+  "doi": "10.1016/0025-5564(81)90043-2"
+ },
+ "41": {
+  "family": "Huerta-Cepas",
+  "year": "2016",
+  "status": "keep",
+  "doi": "10.1093/molbev/msw046"
+ },
+ "42": {
+  "family": "Seemann",
+  "year": "2020",
+  "status": "manual",
+  "doi": ""
+ },
+ "43": {
+  "family": "Alcock",
+  "year": "2023",
+  "status": "keep",
+  "doi": "10.1093/nar/gkac920"
+ },
+ "44": {
+  "family": "Liu",
+  "year": "2022",
+  "status": "keep",
+  "doi": "10.1093/nar/gkab1107"
+ },
+ "45": {
+  "family": "Bortolaia",
+  "year": "2020",
+  "status": "keep",
+  "doi": "10.1093/jac/dkaa345"
+ },
+ "46": {
+  "family": "Carattoli",
+  "year": "2014",
+  "status": "keep",
+  "doi": "10.1128/aac.02412-14"
+ },
+ "47": {
+  "family": "Camargo",
+  "year": "2024",
+  "status": "keep",
+  "doi": "10.1038/s41587-023-01953-y"
+ },
+ "48": {
+  "family": "Tesson",
+  "year": "2022",
+  "status": "keep",
+  "doi": "10.1038/s41467-022-30269-9"
+ },
+ "49": {
+  "family": "Bland",
+  "year": "2007",
+  "status": "keep",
+  "doi": "10.1186/1471-2105-8-209"
+ },
+ "50": {
+  "family": "Blin",
+  "year": "2023",
+  "status": "keep",
+  "doi": "10.1093/nar/gkad344"
+ },
+ "51": {
+  "family": "Weissman",
+  "year": "2021",
+  "status": "keep",
+  "doi": "10.1073/pnas.2016810118"
+ },
+ "52": {
+  "family": "Yang",
+  "year": "2007",
+  "status": "keep",
+  "doi": "10.1093/molbev/msm088"
+ },
+ "53": {
+  "family": "Yang",
+  "year": "2000",
+  "status": "keep",
+  "doi": "10.1093/oxfordjournals.molbev.a026236"
+ },
+ "54": {
+  "family": "Price",
+  "year": "2010",
+  "status": "keep",
+  "doi": "10.1371/journal.pone.0009490"
+ },
+ "55": {
+  "family": "Lin",
+  "year": "2023",
+  "status": "keep",
+  "doi": "10.1126/science.ade2574"
+ },
+ "56": {
+  "family": "Zhang",
+  "year": "2005",
+  "status": "keep",
+  "doi": "10.1093/nar/gki524"
+ },
+ "57": {
+  "family": "Xu",
+  "year": "2010",
+  "status": "keep",
+  "doi": "10.1093/bioinformatics/btq066"
+ },
+ "58": {
+  "family": "Benini",
+  "year": "1999",
+  "status": "keep",
+  "doi": "10.1016/s0969-2126(99)80026-4"
+ },
+ "59": {
+  "family": "Mitchell",
+  "year": "2020",
+  "status": "keep",
+  "doi": "10.1093/nar/gkz1035"
+ },
+ "60": {
+  "family": "Farrugia",
+  "year": "2013",
+  "status": "keep",
+  "doi": "10.1074/jbc.r112.446526"
+ },
+ "61": {
+  "family": "Cock",
+  "year": "2009",
+  "status": "keep",
+  "doi": "10.1093/bioinformatics/btp163"
+ },
+ "62": {
+  "family": "Wright",
+  "year": "1990",
+  "status": "keep",
+  "doi": "10.1016/0378-1119(90)90491-9"
+ }
+}

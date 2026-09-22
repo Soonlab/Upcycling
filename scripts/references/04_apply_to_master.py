@@ -29,12 +29,30 @@ TEXT_EDITS = [
     ("(Stegen et al., 2013; Zamanzadeh et al., 2023)", "(Stegen et al., 2013; Gupta et al., 2016)", 1),
     ("by back-translating MAFFT protein MSAs (Suzuki et al., 2022)", "by back-translating MAFFT protein MSAs in Biopython (Cock et al., 2009)", 1),
     ("isoelectric point with Biopython (Cock et al., 2009) and", "isoelectric point with Biopython and", 1),
-    ("(Dhami et al., 2014", "(Dhami et al., 2013", 3),
+    ("(Dhami et al., 2014", "(Dhami et al., 2013", None),  # every occurrence (3 in the 09-19 master, 2 in the revised text)
     # 2026-09-19 (2): Stegen 2013 removed (did not support the sentence); tools named in Methods now cited
     ("(Stegen et al., 2013; Gupta et al., 2016)", "(Gupta et al., 2016)", 1),
     ("(r220; Chaumeil et al., 2022)", "(r220; Parks et al., 2020; Chaumeil et al., 2022)", 1),
     ("UniRef90, Pfam, dbCAN v12 and MEROPS", "UniRef90, Pfam, dbCAN v12 (Zheng et al., 2023) and MEROPS", 1),
     ("computed with PAML yn00 over all taxon pairs", "computed with PAML yn00 (Yang and Nielsen, 2000) over all taxon pairs", 1),
+    # 2026-09-23: the same decisions re-applied to the authors' revised text (port_revised_260923.py)
+    ("Achal and Mukherjee, 2015; Cheng et al., 2017; Hamdan et al., 2017; Omoregie et al., 2022)",
+     "Achal and Mukherjee, 2015; Kumari et al., 2016; Hamdan et al., 2017; Omoregie et al., 2019)", 1),
+    # Krawczyk 2021 does not exist; Lapierre 2020 documents S. pasteurii's complex-medium dependence (09-19 decision)
+    ("adapted to chemically complex waste environments (Krawczyk et al., 2021)",
+     "adapted to chemically complex waste environments (Lapierre et al., 2020)", 1),
+    ("(Anantharaman et al., 2016; Parks et al., 2017; Nayfach et al., 2021; Li et al., 2021)",
+     "(Anantharaman et al., 2016; Parks et al., 2017; Chen et al., 2021; Nayfach et al., 2021)", 1),
+    # Zamanzadeh 2023 does not exist; its replacement Gupta 2016 supports the "reservoir" statement in the Discussion
+    ("(Tonkin-Hill et al., 2020; Shaffer et al., 2020; Zamanzadeh et al., 2023)",
+     "(Tonkin-Hill et al., 2020; Shaffer et al., 2020)", 1),
+    ("reservoir of useful microbial functions, not merely a waste stream.",
+     "reservoir of useful microbial functions, not merely a waste stream (Gupta et al., 2016).", 1),
+    # tool citations decided on 2026-09-19 (GTDB taxonomy, dbCAN3, yn00) plus skani, dropped in the revision
+    ("GTDB-Tk v2.4 (r220) (Chaumeil et al., 2022)", "GTDB-Tk v2.4 (r220) (Parks et al., 2020; Chaumeil et al., 2022)", 1),
+    ("calculated with skani v0.3, and", "calculated with skani v0.3 (Shaw and Yu, 2023), and", 1),
+    ("KOfam, UniRef90, Pfam, dbCAN v12, and MEROPS", "KOfam, UniRef90, Pfam, dbCAN v12 (Zheng et al., 2023), and MEROPS", 1),
+    ("calculated with PAML yn00 and compared", "calculated with PAML yn00 (Yang and Nielsen, 2000) and compared", 1),
 ]
 
 TITLES = {  # sentence case; only where the pre-edit title was wrong, incomplete or absent
@@ -92,7 +110,9 @@ def main():
     _old, tail = rest.split("\n---", 1)
 
     for old, new, count in TEXT_EDITS:
-        if head.count(old) == count:
+        if count is None:
+            head = head.replace(old, new)
+        elif head.count(old) == count:
             head = head.replace(old, new)
         else:
             # already applied (new present), or superseded by a later edit in this list (neither present)

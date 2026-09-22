@@ -17,6 +17,9 @@ MAN = MAN_DIR / "01_Manuscript.md"
 LEG = MAN_DIR / "02_Figure_legends.md"
 FIGDIR = BASE / "new_figure/figures_v2"
 TABDIR = BASE / "SUBMISSION/Supplementary_tables_v2"
+# since 2026-09-23 the master ships its own workbooks (S1 = reference panels, S2 = per-MAG, S3 = statistics; sheets S1A ...)
+if (MAN_DIR / "Supplementary_tables").is_dir() and list((MAN_DIR / "Supplementary_tables").glob("Table_S1_*.xlsx")):
+    TABDIR = MAN_DIR / "Supplementary_tables"
 MAX_H_MM = 235.0
 PAGE_W_MM = 180.0
 
@@ -92,24 +95,29 @@ print("      heights (mm): " + ", ".join(f"{s} {geo[s][1]:.1f}" for s in expecte
 
 # ---------------------------------------------------------------- 4 table callouts
 wb = {}
-for tag, fname in (("S1", "Table_S1_per_MAG_measurements.xlsx"),
-                   ("S2", "Table_S2_comparative_statistics.xlsx"),
-                   ("S3", "Table_S3_reference_panels_and_methods.xlsx")):
-    wb[tag] = set(openpyxl.load_workbook(TABDIR / fname, read_only=True).sheetnames)
+for tag in ("S1", "S2", "S3"):
+    fname = sorted(TABDIR.glob(f"Table_{tag}_*.xlsx"))
+    assert len(fname) == 1, f"expected one Table_{tag}_*.xlsx in {TABDIR}, found {fname}"
+    wb[tag] = set(openpyxl.load_workbook(fname[0], read_only=True).sheetnames)
 
-sheet_calls = set(re.findall(r"sheets?\s+((?:S\d+\.\d+(?:\s*[–-]\s*S\d+\.\d+)?)(?:\s+and\s+S\d+\.\d+)?)", man + leg))
 named = set()
-for s in sheet_calls:
-    named |= set(re.findall(r"S\d+\.\d+", s))
-    rng = re.match(r"S(\d+)\.(\d+)\s*[–-]\s*S(\d+)\.(\d+)", s)
+# legacy scheme "sheet S1.1", "sheets S3.7–S3.8"
+for s_ in set(re.findall(r"sheets?\s+((?:S\d+\.\d+(?:\s*[–-]\s*S\d+\.\d+)?)(?:\s+and\s+S\d+\.\d+)?)", man + leg)):
+    named |= set(re.findall(r"S\d+\.\d+", s_))
+    rng = re.match(r"S(\d+)\.(\d+)\s*[–-]\s*S(\d+)\.(\d+)", s_)
     if rng and rng.group(1) == rng.group(3):
         named |= {f"S{rng.group(1)}.{i}" for i in range(int(rng.group(2)), int(rng.group(4)) + 1)}
+# lettered scheme since 2026-09-23: "Table S1A", "Table S3G,H", "(S1A–S1B)"
+for m in re.finditer(r"\bS(\d)([A-Z])((?:\s*,\s*[A-Z]\b)*)(?:\s*[–-]{1,2}\s*S\1([A-Z]))?", man + leg):
+    d, a, more, b = m.group(1), m.group(2), m.group(3), m.group(4)
+    named |= {f"S{d}{chr(c)}" for c in range(ord(a), ord(b) + 1)} if b else {f"S{d}{a}"}
+    named |= {f"S{d}{x}" for x in re.findall(r"[A-Z]", more or "")}
 
 all_sheets = {sh.split("_")[0]: tag for tag, shs in wb.items() for sh in shs if sh != "README"}
 unknown = sorted(n for n in named if n not in all_sheets)
 check("every cited workbook sheet exists", not unknown, f"unknown: {unknown or 'none'}")
 
-tab_calls = set(re.findall(r"Table\s+(S?\d+)\b", body))
+tab_calls = set(re.findall(r"Table\s+(S?\d+)[A-Z]?\b", body))  # "Table S2A" counts as S2
 check("no callout to a table outside Table 1, 2, S1, S2, S3",
       tab_calls <= {"1", "2", "S1", "S2", "S3"},
       f"stray: {sorted(tab_calls - {'1','2','S1','S2','S3'}) or 'none'}")
@@ -131,8 +139,9 @@ entries = re.findall(r"^(?:\d+\.\s+)?([A-Z][A-Za-z\u00C0-\u024F\-']+),? [A-Z].*?
 check("the reference list was parsed", len(entries) > 0, f"{len(entries)} entries")
 surnames = {e[0] for e in entries}
 NAME = r"[A-Z][A-Za-z\u00C0-\u024F\-']+"
+cite_body = body.split("## 1. Introduction", 1)[1] if "## 1. Introduction" in body else body  # skip title page / affiliations
 cited = {m.group(1) for m in re.finditer(
-    rf"({NAME})(?:\s+and\s+{NAME}|,\s+{NAME}(?:,\s+{NAME})*)?(?:\s+et al\.?)?,\s*\d{{4}}", body)}
+    rf"({NAME})(?:\s+and\s+{NAME}|,\s+{NAME}(?:,\s+{NAME})*)?(?:\s+et al\.?)?,\s*\d{{4}}", cite_body)}
 orphan = sorted(s for s in surnames if s not in cited)
 missing_ref = sorted(c for c in cited if c not in surnames)
 check("every citation in the body has a reference entry",

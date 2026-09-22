@@ -223,13 +223,50 @@ vals = [round(float(v), 2) for v in nums.values()]
 ck("pan-genome genus pseudo-F 8.21 present", True, 8.21 in vals)
 ck("pan-genome source pseudo-F 1.25 present", True, 1.25 in vals)
 
-print("\n== text-only assertions ==")
-says("**27 of the 111 MAGs carry all eight genes as protein-coding sequences**",
-     "text states the 27-MAG module count")
-says("2 of the 6 MICP-complete MAGs (S13, S16) against 3 of the remaining 105",
-     "text states Mrp as a prevalence, not a dosage")
-says("**42/42 identical matches**", "text states the 42/42 active-site result")
-says("no protein-coding urease β-subunit", "text states the S26 ureB gap")
+print("\n== single-contig ure operons ==")
+# the shipped S3b covers the six candidates only; the panel-wide count comes from the definition audit
+# (rule C: Bakta GFF3, ureA-G on one shared contig, evaluated over all 111 MAGs)
+da = open("/data/data/Upcycling/SUBMISSION/_revision_260904/DEFINITION_AUDIT.md").read()
+mC = re.search(r"^\| C \| Bakta GFF3: \*ureA–G\* on one shared contig \| (\d+) \|", da, re.M)
+ck("MAGs with all seven ure genes on one contig (definition audit, rule C)", 26, int(mC.group(1)) if mC else -1)
+
+print("\n== novelty of S13 / S16 (revised text) ==")
+aai = rd("Table_S4b_AAI_S13_S16.csv")
+ck("S13 closest congeneric AAI (%)", 93.15, round(float(aai[aai.Query == "S13"].AAI.max()), 2), 0.01)
+ck("S16 closest congeneric AAI (%)", 93.49, round(float(aai[aai.Query == "S16"].AAI.max()), 2), 0.01)
+ext = rd("Table_S10b_ext_Sphingobacterium_novelty.csv").set_index("MAG")
+for mag, v in (("S13", 94.57), ("S16", 93.85), ("S23", 98.96), ("C22", 99.16)):
+    ck(f"{mag} max ANI to RefSeq Sphingobacterium (%)", v, round(float(ext.loc[mag, "Nearest_ANI"]), 2), 0.01)
+ck("S13 nearest RefSeq species", "detergens", ext.loc["S13", "Nearest_organism"].split()[-1])
+ck("S16 nearest RefSeq species", "multivorum", ext.loc["S16", "Nearest_organism"].split()[-1])
+ck("unresolved MAGs (%)", 18.9, round(100 * 21 / 111, 1), 0.05)
+
+print("\n== gene-tree congruence ==")
+rf = open(SUPP / "Table_S7a_RF_distance.txt").read()
+ck("normalised RF distance", 0.58, round(float(re.search(r"normalized_RF = ([\d.]+)", rf).group(1)), 2), 0.005)
+iq = open(SUPP / "Table_S7f_SH_AU_test.iqtree").read()
+rows = [[t for t in l.split() if t not in "+-"] for l in iq.splitlines() if re.match(r"\s*2\s+-\d", l)]
+# columns after dropping the +/- markers: tree, logL, deltaL, bp-RELL, p-KH, p-SH, p-WKH, p-WSH, c-ELW, p-AU
+ck("SH test rejects the species-tree topology (p-SH < 0.001)", True, bool(rows) and float(rows[0][5]) < 0.001)
+
+print("\n== yn00 ureG partition (revised text) ==")
+yn = rd("Table_S19c_yn00_hero_vs_rest_summary.csv").set_index("gene")
+ck("ureG within-candidate median omega", 0.31, round(float(yn.loc["ureG", "hero_hero_median"]), 2), 0.005)
+ck("ureG within-rest median omega", 0.074, round(float(yn.loc["ureG", "rest_rest_median"]), 3), 0.0005)
+ck("ureG MWU P", 7.7e-8, float(f"{yn.loc['ureG', 'MWU_hh_vs_rr_p']:.1e}"), 1e-9)
+for g in ("ureA", "ureB", "ureC"):
+    ck(f"{g} MWU P not significant", True, bool(yn.loc[g, "MWU_hh_vs_rr_p"] > 0.05))
+
+print("\n== gRodon P (revised text) ==")
+gr2 = rd("Table_S16_gRodon_growth_rates_per_MAG.csv")
+gh2 = gr2[gr2.group != "rest"]; gr_2 = gr2[gr2.group == "rest"]
+ck("gRodon MWU P", 0.58, round(float(mannwhitneyu(gh2.d_hours, gr_2.d_hours).pvalue), 2), 0.01)
+
+print("\n== text-only assertions (revised wording) ==")
+says("27 MAGs encoded all seven *ure* genes plus at least one protein-coding *cah*", "text states the 27-MAG module count")
+says("2 of 6 vs. 3 of 105; 33.3% vs. 2.9%", "text states Mrp as a prevalence, not a dosage")
+says("with 42/42 matches", "text states the 42/42 active-site result")
+says("S26 lacked protein-coding *ureB*", "text states the S26 ureB gap")
 
 print()
 print(f"{checked} checks run")

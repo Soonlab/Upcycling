@@ -1,4 +1,8 @@
-# EndNote 참고문헌 패키지 (2026-09-18 작성 · 09-19 대체 확정)
+# EndNote 참고문헌 패키지 (2026-09-18 작성 · 09-19 대체 확정 · 09-23 저자 개정본 이식)
+
+## 2026-09-23 저자 개정본 이식 후 상태
+
+정본 본문이 저자 개정본(`../Manuscript_revised.docx`, `../port_revised_260923.py`로 이식)으로 바뀌었다. 09-19 판정을 개정 문장에 다시 적용했고(`04_apply_to_master.py`의 09-23 항목: Cheng→Kumari, Krawczyk→Lapierre, Omoregie 2019, Dhami 2013, Li→Chen, Zamanzadeh 삭제·Gupta는 Discussion "reservoir" 문장으로, 도구 인용 Parks 2020·Zheng 2023·Yang and Nielsen 2000·Shaw and Yu 2023 재부착), 개정본이 더 이상 인용하지 않는 Hommel 2015·Lagesen 2007·Yuan 2015는 목록에서 빠져 **본문 인용 57편**이다. 라이브러리 `.ris`는 60편 그대로(3편 미인용, EndNote가 목록에 넣지 않음). `01_Manuscript_EndNote.docx` 임시 인용 37군데·61건·미검증 0. 상세는 `../REVISED_PORT_REPORT_260923.md` §2.
 
 `../01_Manuscript.md`가 계속 정본이다. 이 폴더의 산출물은 전부 스크립트 생성물이므로 직접 편집하지 말고,
 `ref_decisions.tsv`를 고친 뒤 재빌드한다.
