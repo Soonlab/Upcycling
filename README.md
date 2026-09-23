@@ -1,8 +1,20 @@
-# Upcycling livestock waste into MICP chassis — comparative genomics of 111 MAGs
+# Upcycling cattle manure into MICP chassis — comparative genomics of 111 MAGs
 
-Comparative-genomic analysis of 111 metagenome-assembled genomes (MAGs) recovered from four livestock-waste microbiomes (cattle, swine, sheep, poultry). The study identifies two functionally convergent lineages (four *Sphingobacterium* + two *Pseudomonas*\_E MAGs) that retain a complete *ureABCDEFG*–carbonic-anhydrase (*cah*) module, and nominates two candidate novel *Sphingobacterium* species (S13, S16) as priority chassis for alkali-tolerant microbially induced carbonate precipitation (MICP).
+Comparative-genomic re-analysis of the 111 metagenome-assembled genomes (MAGs) published by
+Pérez-Valera and Elhottová (2025, *Data in Brief* 61:111748; NCBI BioProject PRJNA1231077;
+Zenodo 10.5281/zenodo.15309541): enrichment-culture MAGs (CHROMagar Acinetobacter) from
+dairy-cattle manure, manure-amended soil and soil microcosms. The MAG prefixes C / M / S / V
+denote the binning tool (COMEbin / MaxBin+MetaBAT / SemiBin2 / AVAMB), **not** an animal
+source; see `results/data_provenance_260923/`. The study identifies two functionally
+convergent lineages (four *Sphingobacterium* + two *Pseudomonas*\_E MAGs) that retain a
+complete *ureABCDEFG*–carbonic-anhydrase (*cah*) module, and nominates two candidate novel
+*Sphingobacterium* species (S13, S16) as priority chassis for alkali-tolerant microbially
+induced carbonate precipitation (MICP).
 
 > **Status:** In-silico analysis complete. Wet-lab validation is planned but not part of the current release.
+> **2026-09-23:** every analysis that used the former "livestock source" variable was removed
+> (`scripts/submission_v4/REFRAME_REPORT_260923.md`); Fig 5, Fig S5 and the graphical abstract
+> were rebuilt (`figures/build/build_v4_*.py`), Table S2/S3 workbooks were updated.
 
 ---
 

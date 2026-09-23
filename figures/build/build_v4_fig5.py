@@ -1,0 +1,293 @@
+"""Main Fig 5 (SUBMISSION_v4, 2026-09-23) - novelty, secondary metabolism and pan-genome structure.
+
+Derived from build_v2_fig5.py.  The MGnify livestock-catalog panel (old B) is removed: the
+111 MAGs are enrichment-culture MAGs from dairy-cattle manure and soil microcosms
+(Perez-Valera and Elhottova, 2025), not four livestock microbiomes, so a comparison with
+rumen and gut catalogs no longer has a rationale.  The PCoA (old D, now C) is coloured by
+lineage group instead of the former "waste source", which was in fact the binning tool.
+Panels: A novelty (unchanged), B antiSMASH (old C), C PCoA (old D).
+
+
+One composed page, 180 mm wide, four panels (reading order A -> D, left to right then
+top to bottom).  Every panel is carried over unchanged from a builder of the 8-figure
+set; see consolidation_260904/DESIGN.md.
+
+  A  novelty screen across the 111-MAG panel: closest-GTDB-reference ANI per MAG with
+     the 95 % species boundary, plus, per GTDB-Tk genus, how many MAGs carry a
+     species-level ANI and how many were left without one (stacked bars; the two
+     MICP-complete MAGs without one are named)   (old build_fig5.py panel A; the
+     right-hand block was a list of the 21 identifiers until 2026-09-09)
+  B  MGnify livestock species-cluster rarity of the MICP gene-complete profile and of the
+     single-contig ureC + CA architecture, per biome and pooled
+                                       (old build_fig8.py panel C)
+  C  antiSMASH 7 per-MAG BGC region count by class, MICP-complete vs rest, with the
+     Mann-Whitney P of each class as a stat column
+                                       (old build_fig8.py panel D)
+  D  Jaccard PCoA of the Panaroo gene presence/absence matrix, coloured by waste source,
+     MICP-complete ringed               (old build_fig7.py panel A)
+
+Old build_fig5.py panels B (AAI of S13 / S16) and C (skani vs the 63 RefSeq
+Sphingobacterium genomes) and old build_fig7.py panel B (trait-module ordination) are
+dropped from the main set; their numbers survive in the supplementary tables
+(Table S4b, Table S10a/b, Table S2b).
+
+Revision of 2026-09-09: type 1.2x the shared scale (second round); B and C share one height and nothing rises above a panel
+letter; D spans the full width of A (scatter plus genus bars).
+
+Sources
+  Table_S8_novelty_ANI_screen.csv        ANI to closest GTDB reference, novelty flag (A)
+  Table_S1d_GTDB_Tk_classification.tsv   GTDB-Tk genus per MAG (A, right)
+  Table_S14a_mgnify_catalog_summary.csv  MGnify per-catalog counts and percentages (B)
+  Table_S23b_antismash_hero_vs_rest.csv  BGC class means and Mann-Whitney P (C)
+  Table_S9a_PCoA_coordinates.csv         pan-genome PC1-PC3, source, genus, MICP flag (D)
+  Table_S9b_PERMANOVA_global.csv         pan-genome pseudo-F / p and PC variance (D)
+
+Provenance: no value is hard-coded.  The novelty flag of A is asserted to be exactly
+"no species-level ANI"; the MGnify percentages of B are recomputed from the per-catalog
+counts and asserted against the stored pct columns before the pooled bar is derived from
+the same counts; the ten BGC classes of C are asserted present in the stored table; the
+MICP-complete set of D is asserted against the Hero flag of the coordinate table.
+
+Colour meanings on this page (one colour, one meaning):
+  coral   a MICP-complete MAG - its point and label in A, its bars in C, its ring and
+          label in D - and the MICP-complete group everywhere it is a series
+  grey    a MAG that is not MICP-complete, the remaining 105 MAGs in C, and every
+          threshold rule; in the genus bars of A, dark grey = no species-level ANI and
+          light grey = species-level ANI assigned
+  dark / light green   MICP gene-complete and single-contig ureC + CA prevalence in B
+  cattle brown / swine pink / sheep green / poultry purple   waste source in D
+"""
+
+import sys
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from matplotlib.patches import Patch
+from matplotlib.lines import Line2D
+from matplotlib.colors import to_rgb
+from matplotlib.ticker import MaxNLocator
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+
+import _style as st
+from _style import (HERO, REST, GREEN, GREY, TEXT, AXIS, LIGHT, SPHINGO, PSEUDO,
+                    FS_BODY, FS_STAT, HEROES, PROVENANCE)
+
+st.setup()
+SCALE = 1.2                             # this page's type, relative to the shared scale
+FS_BODY, FS_STAT, FS_TITLE = FS_BODY * SCALE, FS_STAT * SCALE, st.FS_TITLE * SCALE
+plt.rcParams.update({"font.size": FS_BODY, "axes.labelsize": FS_TITLE,
+                     "xtick.labelsize": FS_BODY, "ytick.labelsize": FS_BODY,
+                     "legend.fontsize": FS_BODY})
+OUT = HERE / "figures_v4"
+SUPP = Path("/data/data/Upcycling/SUBMISSION/Supplementary_tables")
+
+ANI_SPECIES = 95.0          # species boundary, ANI
+GREEN_LT = tuple(0.45 + 0.55 * c for c in to_rgb(GREEN))   # light tint of GREEN
+CLUSTER_PX = 28             # marker separation below which two MAG labels would collide
+LINE_PT = 7                 # vertical step used to fan out a cluster of labels
+
+# the ten BGC classes carried by the shipped Fig 8d (category names, not data)
+BGC_CLASSES = ["BGC_T3PKS", "BGC_RRE-containing", "BGC_arylpolyene", "BGC_terpene",
+               "BGC_betalactone", "BGC_RiPP-like", "BGC_NAGGN", "BGC_NRPS",
+               "BGC_hydrogen-cyanide", "BGC_NRP-metallophore"]
+
+# ------------------------------------------------------------------ data: A
+nov = pd.read_csv(SUPP / "Table_S8_novelty_ANI_screen.csv")
+has_ani = nov.ANI.notna()
+ranked = nov[has_ani].sort_values("ANI").reset_index(drop=True)
+no_ani = nov[~has_ani].reset_index(drop=True)
+# the novelty flag is exactly "no species-level ANI"; state it by assertion, not in prose
+assert set(nov.user_genome[nov.Novel_sp_candidate]) == set(no_ani.user_genome)
+assert (ranked.ANI >= ANI_SPECIES).all()
+tax = pd.read_csv(SUPP / "Table_S1d_GTDB_Tk_classification.tsv", sep="\t",
+                  index_col="user_genome")
+genus = tax["classification"].str.extract(r"g__([^;]*)")[0].replace("", np.nan)
+genus = genus.fillna("Unclassified").reindex(nov.user_genome).values
+assert len(genus) == len(nov) == 111
+TOP_N = 9                     # style constant, as in Fig 1: genera drawn individually
+gtab = pd.DataFrame({"genus": genus, "no_ani": ~has_ani.values})
+top_g = gtab.genus.value_counts().head(TOP_N).index
+gtab["grp"] = np.where(gtab.genus.isin(top_g), gtab.genus, "Other genera")
+gcount = gtab.groupby("grp").agg(n=("no_ani", "size"), no_ani=("no_ani", "sum"))
+gcount["with_ani"] = gcount.n - gcount.no_ani
+gcount = gcount.sort_values("n", ascending=True)      # largest genus at the top
+assert gcount.no_ani.sum() == len(no_ani) and gcount.with_ani.sum() == len(ranked)
+hero_no_ani = [m for m in HEROES if m in set(no_ani.user_genome)]
+hero_grp = {m: gtab.grp[nov.user_genome == m].iloc[0] for m in hero_no_ani}
+
+# ------------------------------------------------------------------ data: C
+bgc = pd.read_csv(SUPP / "Table_S23b_antismash_hero_vs_rest.csv").set_index("metric")
+missing = [c for c in BGC_CLASSES if c not in bgc.index]
+assert not missing, missing
+bgc = bgc.loc[BGC_CLASSES].copy()
+bgc["diff"] = bgc.hero_mean - bgc.rest_mean
+bgc = bgc.sort_values("diff")            # most hero-enriched ends up at the top
+bgc_lab = [i.replace("BGC_", "") for i in bgc.index]
+
+# ------------------------------------------------------------------ data: D
+coords = pd.read_csv(SUPP / "Table_S9a_PCoA_coordinates.csv").set_index("MAG")
+glob = pd.read_csv(SUPP / "Table_S9b_PERMANOVA_global.csv").iloc[0]
+assert set(coords.index[coords.Hero]) == set(HEROES)
+prov = pd.read_csv(PROVENANCE, sep="\t").set_index("MAG")
+assert set(prov.index) == set(coords.index)
+# lineage group of every MAG from its GTDB-Tk genus (the coordinate table's Genus column)
+LIN_ORDER = ["Sphingobacterium", "Pseudomonas_E", "other genera"]
+coords["lineage"] = np.where(coords.Genus.isin(LIN_ORDER[:2]), coords.Genus, LIN_ORDER[2])
+COL = {"Sphingobacterium": SPHINGO, "Pseudomonas_E": PSEUDO, "other genera": REST}
+n_lin = coords.lineage.value_counts()
+assert n_lin.sum() == 111
+
+# ------------------------------------------------------------------ page
+TOP = 10.0
+H_A, W_A, X_A = 54.0, 78.0, 16.0
+X_A2, W_A2 = 128.0, 42.0         # the genus bars sit beside the scatter, same panel
+A_END = X_A2 + W_A2              # the right edge of panel A
+T2 = TOP + H_A + 24.0            # row 2: panels B (antiSMASH) and C (PCoA), one height
+LET2 = T2 - 12.0
+H_BC = 52.0
+W_B, X_B = 40.0, 36.0
+X_C = 100.0
+W_C = A_END - X_C
+H = T2 + H_BC + 14.0
+
+fig, ax_mm, text_mm, letter = st.page(H)
+
+# ---------------------------------------------------------------- panel A
+axA = ax_mm(X_A, TOP, W_A, H_A)
+is_hero = ranked.user_genome.isin(HEROES).values
+axA.scatter(np.arange(len(ranked))[~is_hero], ranked.ANI[~is_hero], s=5, color=REST,
+            linewidth=0, zorder=2)
+axA.scatter(np.arange(len(ranked))[is_hero], ranked.ANI[is_hero], s=20, color=HERO,
+            edgecolor="white", linewidth=0.4, zorder=3)
+hero_idx = list(np.where(is_hero)[0])
+for k, i in enumerate(hero_idx):
+    prev_close = k > 0 and (i - hero_idx[k - 1]) < 6
+    dy = -7 if prev_close else 3
+    axA.annotate(ranked.user_genome[i], (i, ranked.ANI[i]), xytext=(3, dy),
+                 textcoords="offset points", fontsize=FS_STAT, color=HERO)
+axA.axhline(ANI_SPECIES, ls="--", lw=0.7, color=GREY)
+axA.text(len(ranked) - 1, ANI_SPECIES, f"{ANI_SPECIES:g} % species boundary",
+         fontsize=FS_STAT, color=GREY, ha="right", va="bottom")
+axA.set_xlabel(f"MAGs with a species-level ANI, ranked (n = {len(ranked)})")
+axA.set_ylabel("ANI to closest GTDB reference (%)")
+axA.set_xticks([])
+st.style_axis(axA, left=True, bottom=True)
+axA.spines["bottom"].set_visible(False)
+
+# per genus: MAGs with a species-level ANI and MAGs GTDB-Tk left without one
+axA2 = ax_mm(X_A2, TOP, W_A2, H_A)
+yg = np.arange(len(gcount))
+DARK = "#4D4D4D"
+axA2.barh(yg, gcount.with_ani, 0.62, color="#CFCFCF", edgecolor=AXIS,
+          linewidth=0.4, label=f"species-level ANI (n = {len(ranked)})")
+axA2.barh(yg, gcount.no_ani, 0.62, left=gcount.with_ani, color=DARK, edgecolor=AXIS,
+          linewidth=0.4, label=f"none (n = {len(no_ani)})")
+for yi, (g, r) in zip(yg, gcount.iterrows()):
+    if r.no_ani > 0:
+        axA2.text(r.n + 0.5, yi, f"{int(r.no_ani)}", ha="left", va="center",
+                  fontsize=FS_STAT, color=DARK)
+# the MICP-complete MAGs without a species-level ANI, named on their genus bar
+for g in set(hero_grp.values()):
+    names = ", ".join(m for m in hero_no_ani if hero_grp[m] == g)
+    yi = list(gcount.index).index(g)
+    n_lab = int(gcount.loc[g, "no_ani"])
+    axA2.text(gcount.loc[g, "n"] + 0.5 + len(str(n_lab)) * 1.4, yi, names, ha="left",
+              va="center", fontsize=FS_STAT, color=HERO)
+axA2.set_yticks(yg)
+axA2.set_yticklabels(gcount.index, fontsize=FS_BODY)
+axA2.set_xlabel("MAGs")
+axA2.set_xlim(0, gcount.n.max() * 1.25)
+axA2.set_ylim(-0.6, len(gcount) - 0.4)
+axA2.tick_params(axis="y", length=0)
+st.style_axis(axA2, left=False)
+# the key sits above the bars: inside, it would cover the short bars of the small genera
+axA2.legend(loc="lower left", bbox_to_anchor=(0.0, 1.0), fontsize=FS_STAT, ncol=1,
+            handlelength=1.1, handleheight=0.9, borderpad=0.2, labelspacing=0.3)
+
+# ---------------------------------------------------------------- panel B (antiSMASH)
+axC = ax_mm(X_B, T2, W_B, H_BC)
+y = np.arange(len(bgc))
+hb = 0.38
+axC.barh(y + hb / 2, bgc.hero_mean, hb, color=HERO, edgecolor=AXIS, linewidth=0.5)
+axC.barh(y - hb / 2, bgc.rest_mean, hb, color=REST, edgecolor=AXIS, linewidth=0.5)
+axC.set_yticks(y)
+axC.set_yticklabels(bgc_lab, fontsize=FS_BODY)
+axC.set_xlabel("BGC regions per MAG (mean)")
+axC.set_ylim(-0.7, len(bgc) - 0.3)
+xmax = float(max(bgc.hero_mean.max(), bgc.rest_mean.max()))
+axC.set_xlim(0, xmax * 1.05)
+st.style_axis(axC)
+axC.legend(handles=[Patch(facecolor=HERO, label="MICP-complete (n = 6)"),
+                    Patch(facecolor=REST, label="rest (n = 105)")],
+           loc="lower left", bbox_to_anchor=(0, 1.02), ncol=1, handlelength=1.1,
+           handleheight=0.9, fontsize=FS_BODY)
+# stat column: Mann-Whitney P per class, bound to its row
+px = xmax * 1.14
+axC.text(px, len(bgc) - 0.35, "MWU P", fontsize=FS_STAT, ha="left", va="bottom",
+         color=TEXT)
+for yi, p in zip(y, bgc.MWU_p):
+    txt = f"{p:.0e}" if p < 0.001 else f"{p:.2f}"
+    axC.text(px, yi, txt, fontsize=FS_STAT, ha="left", va="center", color=TEXT)
+axC.set_clip_on(False)
+for t in axC.texts:
+    t.set_clip_on(False)
+
+# ---------------------------------------------------------------- panel C (PCoA)
+axD = ax_mm(X_C, T2, W_C, H_BC)
+for s in LIN_ORDER:
+    idx = coords.index[coords.lineage == s]
+    axD.scatter(coords.loc[idx, "PC1"], coords.loc[idx, "PC2"], s=9, color=COL[s],
+                linewidth=0, alpha=0.9, zorder=2, label=f"{s} n = {n_lin[s]}")
+axD.scatter(coords.loc[HEROES, "PC1"], coords.loc[HEROES, "PC2"], s=34,
+            facecolor="none", edgecolor=HERO, linewidth=0.8, zorder=4)
+# several MICP-complete MAGs project onto nearly the same point, so their labels are
+# fanned out: MAGs whose markers fall within CLUSTER_PX of one another get successive
+# vertical offsets instead of printing on top of each other
+fig.canvas.draw()
+pts = {m: axD.transData.transform((coords.loc[m, "PC1"], coords.loc[m, "PC2"]))
+       for m in HEROES}
+placed = []
+for m in sorted(HEROES, key=lambda k: (-pts[k][1], pts[k][0])):
+    k = sum(1 for q in placed
+            if abs(pts[q][0] - pts[m][0]) < CLUSTER_PX
+            and abs(pts[q][1] - pts[m][1]) < CLUSTER_PX)
+    placed.append(m)
+    axD.annotate(m, (coords.loc[m, "PC1"], coords.loc[m, "PC2"]),
+                 xytext=(4, 2 - k * LINE_PT), textcoords="offset points",
+                 fontsize=FS_STAT, color=HERO, zorder=5)
+axD.set_xlabel(f"PC1  {glob.PC1_var:.1f} %")
+axD.set_ylabel(f"PC2  {glob.PC2_var:.1f} %")
+# prune the extreme ticks: the first x tick and the first y tick otherwise print on top
+# of each other in the corner where the two spines meet
+axD.xaxis.set_major_locator(MaxNLocator(nbins=5, prune="both"))
+axD.yaxis.set_major_locator(MaxNLocator(nbins=5, prune="both"))
+st.style_axis(axD)
+
+# PERMANOVA result as a stat block bound to panel D, upper right inside the axes
+# (one Text per line: each is a short label, not a sentence)
+stat_lines = ["PERMANOVA"] + [
+    f"{lab}  F = {f:.2f}  p = {p:.3f}"
+    for lab, f, p in (("genus", glob.pseudo_F_genus, glob.p_genus),)]
+for k, line in enumerate(stat_lines):
+    axD.text(0.98, 0.96 - k * 0.075, line, transform=axD.transAxes, ha="right", va="top",
+             fontsize=FS_STAT, color=TEXT)
+
+handles, labels = axD.get_legend_handles_labels()
+handles.append(Line2D([0], [0], marker="o", ls="", ms=5, mfc="none", mec=HERO, mew=0.8))
+labels.append(f"MICP-complete n = {len(HEROES)}")
+# lower right of the ordination is empty (every MAG lies left of PC1 = 0.3 or above
+# PC2 = -0.2 there), so the key sits inside the axes
+axD.legend(handles, labels, loc="lower right", ncol=1, fontsize=FS_BODY,
+           handletextpad=0.4, borderpad=0.2, labelspacing=0.5)
+
+letter(4, 4, "A")
+letter(4, LET2, "B")
+letter(X_C - 12.0, LET2, "C")
+
+st.audit(fig)
+st.prose_scan(fig)
+st.save(fig, OUT, "Fig5")

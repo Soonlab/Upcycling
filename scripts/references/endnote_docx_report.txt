@@ -1,5 +1,5 @@
-temporary citation groups in docx : 37  (individual citations 61)
+temporary citation groups in docx : 41  (individual citations 65)
 unverified markers highlighted    : 0  (refs [])
-library records cited             : 57
-listed but never cited in text    : [13, 17, 18]
+library records cited             : 58
+listed but never cited in text    : [13, 17, 18, 59]
 year / key notes:

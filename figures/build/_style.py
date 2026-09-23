@@ -56,6 +56,10 @@ HERO_LT  = "#EBC5BC"   # light coral (q < 0.10 tier, secondary hero series)
 SPHINGO_LT = "#A6C8E0"
 PSEUDO_LT  = "#F2CBA5"
 SOURCE = {"cattle": "#8E6C3A", "swine": "#D46A9E", "sheep": "#2E8B57", "poultry": "#7B4F9D"}
+# 2026-09-23: the MAG prefixes are binning tools, not animals (Perez-Valera and Elhottova, 2025);
+# the real sample origins of the 111 MAGs, three categorical colours reusing none of the above
+ORIGIN = {"Manure": "#8E6C3A", "Manured soil": "#B08D57", "Soil": "#5B7F95"}
+PROVENANCE = "/data/data/Upcycling/SUBMISSION_v4/data_provenance_260923/MAG_provenance.tsv"
 SIG_05, SIG_10, SIG_NS = HERO, HERO_LT, REST
 
 # the six MICP-complete MAGs and their lineage (category names, not data)

@@ -66,6 +66,9 @@ TITLES = {  # sentence case; only where the pre-edit title was wrong, incomplete
     32: "Quantifying community assembly processes and identifying features that impose them",
     37: "Current status of cow dung as a bioresource for sustainable development",
     55: "Evolutionary-scale prediction of atomic-level protein structure with a language model",
+    # 2026-09-23 (SUBMISSION_v4): the public dataset and its companion study
+    64: "Dataset of 111 metagenome-assembled genomes from cattle manure, soil and manured soil samples",
+    65: "Soil-specific responses in the antibiotic resistome of culturable *Acinetobacter* spp. and other non-fermentative Gram-negative bacteria following experimental manure application",
 }
 JOURNAL_FIX = {"Proceedings of the National Academy of Sciences": "Proceedings of the National Academy of Sciences of the United States of America",
                "Journal of the Royal Statistical Society Series B: Statistical Methodology": "Journal of the Royal Statistical Society: Series B (Methodological)"}

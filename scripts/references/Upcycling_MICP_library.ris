@@ -1609,3 +1609,36 @@ DO  - 10.1016/0378-1119(90)90491-9
 UR  - https://doi.org/10.1016/0378-1119(90)90491-9
 LB  - MS-R62
 ER  - 
+
+TY  - JOUR
+AU  - Pérez-Valera, Eduardo
+AU  - Elhottová, Dana
+PY  - 2025
+TI  - Dataset of 111 metagenome-assembled genomes from cattle manure, soil and manured soil samples
+T2  - Data in Brief
+J2  - Data in Brief
+VL  - 61
+SP  - 111748
+SN  - 2352-3409
+DO  - 10.1016/j.dib.2025.111748
+UR  - https://doi.org/10.1016/j.dib.2025.111748
+LB  - MS-R64
+N1  - ADDED 260923: the public dataset re-analysed here (data provenance established 2026-09-23)
+ER  - 
+
+TY  - JOUR
+AU  - Sardar, Puspendu
+AU  - Elhottová, Dana
+AU  - Pérez-Valera, Eduardo
+PY  - 2023
+TI  - Soil-specific responses in the antibiotic resistome of culturable Acinetobacter spp. and other non-fermentative Gram-negative bacteria following experimental manure application
+T2  - FEMS Microbiology Ecology
+VL  - 99
+IS  - 12
+SP  - fiad148
+SN  - 1574-6941
+DO  - 10.1093/femsec/fiad148
+UR  - https://doi.org/10.1093/femsec/fiad148
+LB  - MS-R65
+N1  - ADDED 260923: related cultivation study of the same manure-soil microcosms
+ER  - 
