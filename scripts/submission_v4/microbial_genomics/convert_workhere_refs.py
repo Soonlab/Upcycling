@@ -3,6 +3,7 @@ author-date to Microbial Genomics Vancouver style, editing the .docx in place an
 
 Same rules as build_micgen_package.py: square-bracket numbers in order of first citation, ranges only for >= 3
 consecutive numbers, "N. Surname AB, ... Title. Journal Year;Vol:Pages. DOI" with full journal names.
+Citations before the Introduction (Data Summary) are removed, so numbering starts in the Introduction.
 Only the characters of each citation and of each reference entry's author/journal/volume segment are rewritten;
 run formatting elsewhere (for example italic species names in titles) is kept.
 
@@ -111,9 +112,31 @@ def main(src, dst):
             order.append(key)
         return order.index(key) + 1
 
+    # front matter (title page to Data Summary / Impact Statement): no citations; numbering starts in the Introduction
+    ii = [i for i, p in enumerate(P[:ri]) if re.fullmatch(r"(?:1\. )?Introduction", p.text.strip())]
+    assert len(ii) == 1, ii
+    ii = ii[0]
+    n_removed = 0
+    for p in P[:ii]:
+        t = ptext(p)
+        reps = []
+        for m in PAREN.finditer(t):
+            keep = [x.strip() for x in m.group(1).split(";") if not CITE.match(x.strip())]
+            if len(keep) < len(m.group(1).split(";")):
+                a, b = m.span()
+                if not keep and t[a - 1:a] == " ":
+                    a -= 1
+                reps.append((a, b, f"({'; '.join(keep)})" if keep else ""))
+        for m in NARR.finditer(t):
+            if CITE.match(f"{m.group(1)}, {m.group(2)}"):
+                reps.append((m.start(), m.end(), m.group(1)))
+        for a, b, new in sorted(reps, reverse=True):
+            rewrite(p, a, b, new)
+        n_removed += len(reps)
+
     # in-text citations, document order (paragraph by paragraph, left to right)
     n_groups = 0
-    for p in P[:ri]:
+    for p in P[ii:ri]:
         t = ptext(p)
         found = []
         for m in PAREN.finditer(t):
@@ -168,7 +191,7 @@ def main(src, dst):
         el.getparent().remove(el)
         anchor.addnext(el)
     d.save(dst)
-    print(f"citation groups converted: {n_groups}; references numbered: {len(order)}")
+    print(f"front-matter citations removed: {n_removed}; citation groups converted: {n_groups}; references numbered: {len(order)}")
 
 
 if __name__ == "__main__":

@@ -76,3 +76,10 @@ Each open item is marked `AUTHOR VERIFICATION REQUIRED` in the files.
 **The working copy is now ahead of the markdown master.** Rerunning `build_micgen_package.py` does not include the authors' 09-25 edits. Port the edits into `../01_Manuscript.md` before any rebuild.
 
 The authors' new origin counts are 44 manure, 38 manured soil and 29 soil MAGs. They match `../data_provenance_260923/MAG_provenance.tsv`. The other edited numbers have not been audited yet.
+
+## 2026-09-26 — numbering starts in the Introduction
+
+The Data Summary no longer carries a citation. It keeps the names of the data producers but drops "(2025)". Reference numbering therefore starts in the Introduction, and Fujita et al. 2004 is reference 1. The same rule is applied in `convert_workhere_refs.py`, which was rerun from the original in `_backup_260926/`, and in `build_micgen_package.py`.
+
+- The working copy: 1 front-matter citation removed, 41 citation groups converted, 58 references. The verifier gained a check that the front matter lost only the citation, and all 11 checks pass.
+- The build: 23 structural checks and 129 numeric checks pass.

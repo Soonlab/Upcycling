@@ -50,8 +50,18 @@ cb, crest = split_refs(conv)
 check("same number of paragraphs before References", len(ob) == len(cb), f"{len(ob)} vs {len(cb)}")
 
 # 1-2 body text
+intro = [i for i, p in enumerate(ob) if re.fullmatch(r"(?:1\. )?Introduction", p.text.strip())][0]
 ogroups, changed_other = [], []
-for i, (po, pc) in enumerate(zip(ob, cb)):
+# front matter: citations removed (names kept for narrative ones), nothing else changed, no bracket numbers
+front_bad = []
+for i, (po, pc) in enumerate(zip(ob[:intro], cb[:intro])):
+    to, tc = text(po), text(pc)
+    exp = re.sub(rf"({NAME}(?: and {NAME}| et al\.)?) \((?:19|20)\d\d[a-z]?\)", r"\1", to)
+    exp = re.sub(rf" ?\((?:{NAME}(?: and {NAME}| et al\.)?, (?:19|20)\d\d[a-z]?(?:; )?)+\)", "", exp)
+    if exp != tc or re.search(r"\[\d", tc):
+        front_bad.append(i)
+check("front matter: citations removed, nothing else changed", not front_bad, f"paragraphs: {front_bad or 'none'}")
+for i, (po, pc) in enumerate(zip(ob[intro:], cb[intro:]), intro):
     to, tc = text(po), text(pc)
     go = list(AD_GROUP.finditer(to))
     go = [m for m in go if AD_ITEM.search(m.group(0).strip("()")) or re.search(r"\((?:19|20)\d\d\)$", m.group(0))]
