@@ -21,7 +21,7 @@ The build is idempotent. Guideline comparison: `../MICGEN_GUIDELINE_CHECK_260923
 
 ## What changed from the v4 master
 
-The science, numbers and references are unchanged. There are 58 references.
+The science, numbers and the 58 cited papers are unchanged.
 
 - **Removed:** Highlights, which are an Elsevier item, the drafting banner, and the date line.
 - **Added Data Summary**, which the Society's open-data policy requires. It covers the source data (BioProject PRJNA1231077 and Zenodo 10.5281/zenodo.15309541, with per-MAG accessions in Table S2P), the derived data, the code and the supplementary files. It replaces "Data and code availability". The Microbiological Research draft had said the Zenodo DOI would come at acceptance. That is not allowed here. The derived-data DOI must exist at submission and may stay restricted during review.
@@ -29,6 +29,7 @@ The science, numbers and references are unchanged. There are 58 references.
 - **Back matter** follows the Society order: Conflicts of interest (standard sentence), Funding information, Ethical approval and biosafety, Author contributions, Acknowledgements, and the GenAI declaration. The Acknowledgements credit the data producers, because the Society requires that externally obtained materials be acknowledged.
 - **Figure callouts** changed from "Fig. 1a" to "Fig. 1A" in 22 places. This fixes an existing mismatch: the figures and legends use capital panel letters.
 - **Spelling:** "labelled" is now "labeled".
+- **References are now in Vancouver style**, the journal's house style (converted 2026-09-26). The text uses numbered citations in square brackets, in order of first citation, with ranges only for three or more consecutive numbers. The list format is "1. Surname AB, Surname CD. Title. Journal Year;Vol:Pages. DOI". This follows a 2026 Microbial Genomics article (PMC13580827). Full journal names are kept, because the journal applies its own abbreviations at production. The conversion is a build step, so the v4 master stays in Harvard style. Numbered citations are shorter, so the body is now 4,332 words.
 - **Supplementary files:** DRAM metabolism summary (Table S5b) and IQ-TREE SH/AU report (Table S7f) are not in the supplement. Sheet S1O already defines them as repository deposits, and they go in the Zenodo record named in the Data Summary.
 
 ## Audits (run 2026-09-23)
@@ -38,7 +39,9 @@ The audits in `audit/` are copies of `../audit/` with two adaptations. They acce
     UPCYCLING_MAN_DIR=$PWD/_build/audit_view /home/soon/miniconda3/envs/dram_env/bin/python audit/audit_consistency.py
     UPCYCLING_MAN_DIR=$PWD/_build/audit_view /home/soon/miniconda3/envs/dram_env/bin/python audit/audit_numbers.py
 
-Results: 19 structural checks pass, and 129 of 129 numeric checks pass.
+The reference checks were rewritten for numbered style and are independent of the builder. They re-read the v4 master's author-date citations. Each of the 39 citation groups in the body must point to the same papers as in the master, and each numbered entry must match a master entry by first author, year and DOI. The checks also cover numbering without gaps, order of first citation, and no leftover author-date citation.
+
+Results (2026-09-26): 23 structural checks pass, and 129 of 129 numeric checks pass.
 
 ## Open items before submission (author)
 
@@ -47,13 +50,13 @@ Each open item is marked `AUTHOR VERIFICATION REQUIRED` in the files.
 1. **Zenodo record for derived data and code.** Reserve the DOI and put it in the Data Summary and the cover letter. The record should hold Bakta, Panaroo, GTDB-Tk and DRAM outputs, Table S5b, Table S7f, the trait tables and the scripts. The Editorial Office checks DOIs before peer review.
 2. Corresponding-author institutional e-mail. The fee-free OA route under an institutional agreement requires it. Check whether the University of Suwon has a Microbiology Society agreement.
 3. CRediT roles.
+   - Also: the date you accessed ABRicate. It is reference 48, a GitHub page, and the Society asks for an access date on websites.
 4. Funder-role sentence.
 5. Further acknowledgements.
 6. GenAI wording. Also check the Society's AI policy, which the author-guideline page does not cover.
 7. Cover letter: date, Editor, three suggested reviewers.
-8. Word and length limits for Research Articles could not be verified. The article-types page is bot-blocked and not archived. Check it in a browser. The body is 4,526 words.
+8. Word and length limits for Research Articles could not be verified. The article-types page is bot-blocked and not archived. Check it in a browser. The body is 4,332 words.
 9. Revision-stage items that the Society will request later, left as is now:
    - lowercase panel letters "(a)". This needs the figure builders.
    - unnumbered Methods/Results/Discussion headings.
-   - Vancouver references.
    - the category label "Oxidative-stress defence", which Fig. 4, Table 2 and the workbooks share. Change it in all three at once.

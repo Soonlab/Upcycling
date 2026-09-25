@@ -136,21 +136,68 @@ dangling = sorted(s for s in sec_cited if s not in sec_defined)
 check("every § cross-reference resolves to a section that exists",
       not dangling, f"dangling: {dangling or 'none'}")
 
-# ---------------------------------------------------------------- 6 references
+# ---------------------------------------------------------------- 6 references (MGen copy: Vancouver numbered)
+# Independent of the builder: the v4 master's author-date citations are re-read and every numbered citation group of
+# the MGen text must point to the same papers, in the same order, with the same DOIs.
+MASTER = Path(__file__).resolve().parents[2] / "01_Manuscript.md"
+mtext = MASTER.read_text()
 ref_block = man.split("## References")[1].split("## Table 1")[0]
-# author-date list since 2026-09-19 ("Family, I., ... Year. Title"); the numbered form is still accepted
-entries = re.findall(r"^(?:\d+\.\s+)?([A-Z][A-Za-z\u00C0-\u024F\-']+),? [A-Z].*?\b(\d{4})\b", ref_block, re.M)
-check("the reference list was parsed", len(entries) > 0, f"{len(entries)} entries")
-surnames = {e[0] for e in entries}
-NAME = r"[A-Z][A-Za-z\u00C0-\u024F\-']+"
-cite_body = body.split("## 1. Introduction", 1)[1] if "## 1. Introduction" in body else body  # skip title page / affiliations
-cited = {m.group(1) for m in re.finditer(
-    rf"({NAME})(?:\s+and\s+{NAME}|,\s+{NAME}(?:,\s+{NAME})*)?(?:\s+et al\.?)?,\s*\d{{4}}", cite_body)}
-orphan = sorted(s for s in surnames if s not in cited)
-missing_ref = sorted(c for c in cited if c not in surnames)
-check("every citation in the body has a reference entry",
-      not missing_ref, f"no entry: {missing_ref or 'none'}")
-check("no reference entry is uncited", not orphan, f"orphan: {orphan or 'none'}")
+ventries = re.findall(r"^(\d+)\. (.+)$", ref_block, re.M)
+nums = [int(n) for n, _ in ventries]
+check("the reference list is numbered 1..N without gaps", nums == list(range(1, len(nums) + 1)), f"{len(nums)} entries")
+vkey = {}
+for n, e in ventries:
+    fa = re.match(r"(.+?) [A-Z]+[,.]", e).group(1)
+    yr = re.findall(r"[ (]((?:19|20)\d\d)[;)]", e)[-1]
+    doi = re.search(r"https://doi\.org/\S+", e)
+    vkey[int(n)] = (fa, yr, doi.group(0) if doi else None)
+hblock = mtext.split("## References")[1].split("## Table 1")[0]
+hentries = [l for l in hblock.split("\n") if l.strip() and l.strip() != "---"]
+hkey = {}
+for e in hentries:
+    hkey[(e.split(", ")[0], re.search(r", ((?:19|20)\d\d)[a-z]?\. ", e).group(1))] = (
+        re.search(r"https://doi\.org/\S+", e).group(0) if "doi.org" in e else None)
+check("same number of references as the v4 master", len(vkey) == len(hkey), f"{len(vkey)} vs {len(hkey)}")
+bad_doi = [n for n, (fa, yr, d) in vkey.items() if hkey.get((fa, yr), "MISSING") != d]
+check("every numbered entry matches a master entry (first author, year, DOI)", not bad_doi, f"mismatch: {bad_doi or 'none'}")
+
+
+def expand(g):
+    out = []
+    for part in g.split(","):
+        part = part.strip()
+        if "–" in part:
+            a, b = map(int, part.split("–"))
+            out += list(range(a, b + 1))
+        else:
+            out.append(int(part))
+    return out
+
+
+text_before_refs = man.split("## References")[0]
+groups = [expand(g) for g in re.findall(r"\[(\d+(?:\s*[,–]\s*\d+)*)\]", text_before_refs)]
+flat = [n for g in groups for n in g]
+first_seen = list(dict.fromkeys(flat))
+check("every reference is cited and none beyond the list", sorted(first_seen) == nums, f"cited {len(first_seen)} of {len(nums)}")
+check("numbers follow order of first citation", first_seen == sorted(first_seen))
+check("no leftover author-date citation", not re.search(r"(?:et al\.|[A-Z][a-z]+), (?:19|20)\d\d[a-z]?[;)]", text_before_refs))
+
+# group-by-group fidelity, Introduction -> Conclusions
+NAME = r"[A-Z][A-Za-zÀ-ɏ'\-]+(?: [A-Z][A-Za-zÀ-ɏ'\-]+)*"
+def master_groups(t):
+    t = t.split("## 1. Introduction", 1)[1].split("## CRediT", 1)[0]
+    out = []
+    for m in re.finditer(r"\(([^()]*?, (?:19|20)\d\d[a-z]?(?=[;)])[^()]*)\)", t):
+        ks = [(c.group(1), c.group(2)) for c in re.finditer(rf"({NAME})(?: and {NAME}| et al\.)?, ((?:19|20)\d\d)[a-z]?(?=;|$)", m.group(1))]
+        if ks:
+            out.append(sorted(ks))
+    return out
+mg = master_groups(mtext)
+seg = man.split("## 1. Introduction", 1)[1].split("## Conflicts of interest", 1)[0]
+ng = [sorted((vkey[n][0], vkey[n][1]) for n in expand(g)) for g in re.findall(r"\[(\d+(?:\s*[,–]\s*\d+)*)\]", seg)]
+diff = [i for i, (a, b) in enumerate(zip(mg, ng)) if a != b]
+check("each citation group in the body points to the same papers as in the v4 master",
+      len(mg) == len(ng) and not diff, f"{len(ng)} groups; {len(mg)} in master; differing: {diff or 'none'}")
 
 # ---------------------------------------------------------------- 7 word count
 lines = man.split("\n")

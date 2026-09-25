@@ -32,3 +32,8 @@
 - 해소: 1 원고 단일 파일(그림·표·범례 삽입) · 2 줄번호 · 3 Impact Statement · 4 Data Summary(문안; Zenodo DOI는 저자) · 7 보충자료 PDF 1개 + Excel 1개 · 10 Highlights 삭제 · 11 GA 제외 · 13 콜아웃 대문자로 그림·범례와 통일 · 15 경쟁이익 표준 문장 · 16 펀더 역할 문장(저자 확인).
 - 남음: 4 Zenodo DOI · 17 CRediT · 19 GenAI 정책 · 21 단어 수 한도 · 22 교신 이메일 · revision 단계 항목(소문자 패널, 헤딩 번호, Vancouver, "defence" 범주명).
 - 감사: 구조 19/19 · 수치 129/129 PASS.
+
+## 2026-09-26 참고문헌 Vancouver 전환
+- 항목 12 해소: 빌더 변환 단계로 번호 인용 [n]·첫 인용 순·Vancouver 목록(게재 논문 PMC13580827 형식 대조). v4 master는 Harvard 유지.
+- 감사 사본 참고문헌 검사를 번호형으로 교체(v4 원본 대조: 39 인용 묶음·DOI 일치). 구조 23/23·수치 129/129 PASS. 본문 4,332단어.
+- 남음: ref 48 ABRicate 접속 날짜(저자).

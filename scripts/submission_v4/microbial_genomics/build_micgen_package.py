@@ -135,6 +135,120 @@ new_back = (
 man = man[:old_block.start()] + new_back + man[old_block.end():]
 assert "## Data and code availability" not in man
 
+# ------------------------------------------------------------------ 1b references: Harvard author-date -> Vancouver numbered
+# Microbial Genomics house style (checked against a 2026 MGen article, PMC13580827): numbers in square brackets in
+# order of first citation, "[3, 17]", ranges only for >= 3 consecutive numbers "[4-8]"; list "1. Surname AB, ... Title.
+# Journal Year;Vol:Pages. DOI". Full journal names are kept (the journal applies its own abbreviations at production).
+NAME = r"[A-Z][A-Za-zÀ-ɏ'\-]+(?: [A-Z][A-Za-zÀ-ɏ'\-]+)*"
+CITE = re.compile(rf"^({NAME}|van [A-Z][\w'\-]+)(?: and ({NAME}))?(?: et al\.)?, ((?:19|20)\d\d)[a-z]?$")
+HARV = re.compile(r"^(?P<auth>.+?), (?P<year>\d{4})[a-z]?\. (?P<title>.+?[.?!]) \*(?P<jour>[^*]+)\* "
+                  r"(?P<vol>\d+)(?P<iss>\(\d+\))?, (?P<pages>[A-Za-z]*\d+(?:–[A-Za-z]*\d+)?)\.(?: (?P<doi>https://doi\.org/\S+))?$")
+
+
+def vanc_authors(auth):
+    etal = auth.endswith(", et al.")
+    auth = auth[:-len(", et al.")] if etal else auth
+    names = re.findall(r"([^,]+), ((?:[A-Z][a-z]?\.-?)+)(?:, |$)", auth)
+    rebuilt = ", ".join(f"{a}, {b}" for a, b in names)
+    assert rebuilt == auth, (auth, rebuilt)
+    out = ", ".join(f"{a.strip()} {b.replace('.', '').replace('-', '')}" for a, b in names)
+    return out + (", et al." if etal else ".")
+
+
+def to_vancouver(text):
+    head, rest = text.split("## References\n", 1)
+    reflist, tail = rest.split("\n\n## Table 1 |", 1)
+    tail = "\n\n## Table 1 |" + tail
+    entries = [l for l in reflist.split("\n") if l.strip() and l.strip() != "---"]
+    keyed = {}
+    for e in entries:
+        first = e.split(", ")[0]
+        year = re.search(r", (\d{4})[a-z]?\. ", e).group(1)
+        second = re.match(r"[^,]+, [A-Z.\-]+, ([^,]+), ", e)
+        assert (first, year) not in keyed, (first, year)
+        keyed[(first, year)] = (e, second.group(1) if second else None)
+    order = []
+
+    def num(item):
+        m = CITE.match(item.strip())
+        if not m:
+            return None
+        key = (m.group(1), m.group(3))
+        assert key in keyed, f"citation without entry: {item}"
+        if m.group(2):
+            assert keyed[key][1] == m.group(2), f"second author mismatch: {item}"
+        if key not in order:
+            order.append(key)
+        return order.index(key) + 1
+
+    def fmt(nums):
+        nums = sorted(set(nums))
+        out, i = [], 0
+        while i < len(nums):
+            j = i
+            while j + 1 < len(nums) and nums[j + 1] == nums[j] + 1:
+                j += 1
+            out.append(f"{nums[i]}–{nums[j]}" if j - i >= 2 else ", ".join(map(str, nums[i:j + 1])))
+            i = j + 1
+        return "[" + ", ".join(out) + "]"
+
+    def paren(m):
+        items = [x.strip() for x in m.group(1).split(";")]
+        nums, keep = [], []
+        for it in items:
+            n = num(it)
+            (nums.append(n) if n else keep.append(it))
+        if not nums:
+            return m.group(0)
+        return (f"({'; '.join(keep)}) " if keep else "") + fmt(nums)
+
+    def narrative(m):
+        return f"{m.group(1)} {fmt([num(m.group(1) + ', ' + m.group(2))])}"
+
+    # walk the text in document order so that numbering follows first appearance
+    pieces, pos = [], 0
+    rx = re.compile(rf"\(([^()]*?, (?:19|20)\d\d[a-z]?(?=[;)])[^()]*)\)|({NAME}(?: and {NAME}| et al\.)?) \(((?:19|20)\d\d)[a-z]?\)")
+    for m in rx.finditer(head):
+        pieces.append(head[pos:m.start()])
+        if m.group(1) is not None:
+            pieces.append(paren(m))
+        else:
+            n = num(f"{m.group(2)}, {m.group(3)}")
+            pieces.append(f"{m.group(2)} {fmt([n])}" if n else m.group(0))
+        pos = m.end()
+    pieces.append(head[pos:])
+    head = "".join(pieces)
+    leftover = re.findall(r"\([^()]*\b(?:19|20)\d\d[a-z]?\)", head)
+    assert not [x for x in leftover if CITE.match(x.strip("()").split(";")[-1].strip())], leftover
+    assert len(order) == len(entries), f"{len(entries) - len(order)} entries never cited"
+
+    lines = []
+    for i, key in enumerate(order, 1):
+        e = keyed[key][0]
+        m = HARV.match(e)
+        if m:
+            iss = m.group("iss") or ""
+            line = (f"{i}. {vanc_authors(m.group('auth'))} {m.group('title')} {m.group('jour')} "
+                    f"{m.group('year')};{m.group('vol')}{iss}:{m.group('pages')}.")
+            if m.group("doi"):
+                line += f" {m.group('doi')}"
+        else:  # software / web resource
+            sm = re.match(r"^(?P<auth>.+?), (?P<year>\d{4})[a-z]?\. (?P<rest>.+) (?P<url>https?://\S+)$", e)
+            assert sm, e
+            line = (f"{i}. {vanc_authors(sm.group('auth'))} {sm.group('rest')} {sm.group('url')} "
+                    f"({sm.group('year')}; accessed {AVR})")
+        lines.append(line)
+    return head + "## References\n\n" + "\n\n".join(lines) + "\n\n---" + tail, len(order)
+
+
+man, n_refs = to_vancouver(man)
+# the banner states the body word count after conversion (numbered citations are shorter)
+_l = man.split("\n")
+_s = next(i for i, l in enumerate(_l) if l.startswith("## 1. Introduction"))
+_e = next(i for i, l in enumerate(_l) if l.startswith("## Conflicts of interest"))
+body_words = len(" ".join(_l[_s:_e]).split())
+man = sub1(r"(\*\*Word count \(body Intro→Conclusions\):\*\* )[\d,]+", rf"\g<1>{body_words:,}", man)
+
 # ------------------------------------------------------------------ 2 figures + legends appended to the manuscript
 BUILD.mkdir(exist_ok=True)
 fig_block = ["## Figures\n"]  # page breaks are set on the paragraphs in style_doc (no empty break paragraphs)
@@ -301,5 +415,5 @@ cl = (HERE / "03_Cover_letter_MicrobialGenomics.md")
 subprocess.run([PANDOC, str(cl), "-o", str(cl.with_suffix(".docx"))], check=True)
 style_doc(cl.with_suffix(".docx"), line_numbers=False)
 
-print(f"body words {body_words}; callouts upper-cased {n_call}")
+print(f"body words {body_words}; callouts upper-cased {n_call}; references numbered {n_refs}")
 print("built:", out_md.name, out_docx.name, sm1_pdf.name, "Supplementary_Material_2_Tables_S1-S3.xlsx", "Figures/", cl.name)

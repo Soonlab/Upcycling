@@ -232,8 +232,27 @@ aai = rd("Table_S4b_AAI_S13_S16.csv")
 ck("S13-S16 AAI (%)", 82.5, round(float(aai[(aai.Query == "S13") & (aai.Target == "S16")].AAI.iloc[0]), 1), 0.05)
 says("PRJNA1231077", "text cites the source BioProject")
 says("10.5281/zenodo.15309541", "text cites the source Zenodo record")
-says("(Pérez-Valera and Elhottová, 2025)", "text cites the data paper")
-says("(Sardar et al., 2023)", "text cites the companion study")
+# MGen copy: numbered references -> find each paper's number in the list and require that number in a citation bracket
+import re as _re
+_refs = man.split("## References")[1].split("## Table 1")[0]
+_pre = man.split("## References")[0]
+def _cited(doi):
+    m = _re.search(r"^(\d+)\. .*" + _re.escape(doi), _refs, _re.M)
+    if not m:
+        return False
+    n = int(m.group(1))
+    for g in _re.findall(r"\[(\d+(?:\s*[,–]\s*\d+)*)\]", _pre):
+        for part in g.split(","):
+            a, _, b = part.strip().partition("–")
+            if int(a) <= n <= int(b or a):
+                return True
+    return False
+checked += 2
+ok_dp, ok_cs = _cited("10.1016/j.dib.2025.111748"), _cited("10.1093/femsec/fiad148")
+print(("PASS" if ok_dp else "FAIL") + "  text cites the data paper (Pérez-Valera and Elhottová 2025, numbered)")
+print(("PASS" if ok_cs else "FAIL") + "  text cites the companion study (Sardar et al. 2023, numbered)")
+if not (ok_dp and ok_cs):
+    fails.append("data-paper citations")
 for bad in ("swine", "poultry", "MGnify", "ACE hybrid", "PRJNA-XXXXXXX", "livestock source", "waste source"):
     checked += 1
     ok = bad not in man.split("## References")[0]
