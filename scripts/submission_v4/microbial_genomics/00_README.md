@@ -32,7 +32,7 @@ The science, numbers and the 58 cited papers are unchanged.
 - **References are now in Vancouver style**, the journal's house style (converted 2026-09-26). The text uses numbered citations in square brackets, in order of first citation, with ranges only for three or more consecutive numbers. The list format is "1. Surname AB, Surname CD. Title. Journal Year;Vol:Pages. DOI". This follows a 2026 Microbial Genomics article (PMC13580827). Full journal names are kept, because the journal applies its own abbreviations at production. The conversion is a build step, so the v4 master stays in Harvard style. Numbered citations are shorter, so the body is now 4,332 words.
 - **Supplementary files:** DRAM metabolism summary (Table S5b) and IQ-TREE SH/AU report (Table S7f) are not in the supplement. Sheet S1O already defines them as repository deposits, and they go in the Zenodo record named in the Data Summary.
 
-## Audits (run 2026-09-23)
+## Audits
 
 The audits in `audit/` are copies of `../audit/` with two adaptations. They accept capital panel callouts, and they end the body word count at "Conflicts of interest". They read the manuscript through `_build/audit_view/`.
 
@@ -50,9 +50,9 @@ Each open item is marked `AUTHOR VERIFICATION REQUIRED` in the files.
 1. **Zenodo record for derived data and code.** Reserve the DOI and put it in the Data Summary and the cover letter. The record should hold Bakta, Panaroo, GTDB-Tk and DRAM outputs, Table S5b, Table S7f, the trait tables and the scripts. The Editorial Office checks DOIs before peer review.
 2. Corresponding-author institutional e-mail. The fee-free OA route under an institutional agreement requires it. Check whether the University of Suwon has a Microbiology Society agreement.
 3. CRediT roles.
-   - Also: the date you accessed ABRicate. It is reference 48, a GitHub page, and the Society asks for an access date on websites.
 4. Funder-role sentence.
 5. Further acknowledgements.
+5a. The date you accessed ABRicate, reference 48. It is a GitHub page, and the Society asks for an access date on websites.
 6. GenAI wording. Also check the Society's AI policy, which the author-guideline page does not cover.
 7. Cover letter: date, Editor, three suggested reviewers.
 8. Word and length limits for Research Articles could not be verified. The article-types page is bot-blocked and not archived. Check it in a browser. The body is 4,332 words.
