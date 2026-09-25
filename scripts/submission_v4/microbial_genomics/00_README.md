@@ -60,3 +60,19 @@ Each open item is marked `AUTHOR VERIFICATION REQUIRED` in the files.
    - lowercase panel letters "(a)". This needs the figure builders.
    - unnumbered Methods/Results/Discussion headings.
    - the category label "Oxidative-stress defence", which Fig. 4, Table 2 and the workbooks share. Change it in all three at once.
+
+## 2026-09-26 — authors' working copy converted to Vancouver
+
+`01_Manuscript_MicrobialGenomics_workhere.docx` is the authors' edited copy, saved on 2026-09-25 and built from the 09-23 package. It still used Harvard references. Its references were converted in place with `convert_workhere_refs.py`, which follows the same rules as the builder. The authors' other edits and formatting are untouched. The unconverted original is `_backup_260926/01_Manuscript_MicrobialGenomics_workhere.original.docx`.
+
+`audit/verify_workhere_refs.py` checks the original against the converted copy on its own, and all 10 checks pass:
+
+- Nothing outside citations changed in the 136 body paragraphs, the tables or the 23 paragraphs after the list.
+- 42 citation groups point to the same papers in the same order.
+- The 58 numbered entries keep their DOI, title text and italic runs.
+- Numbering has no gaps and follows the order of first citation.
+- No author-date citation is left.
+
+**The working copy is now ahead of the markdown master.** Rerunning `build_micgen_package.py` does not include the authors' 09-25 edits. Port the edits into `../01_Manuscript.md` before any rebuild.
+
+The authors' new origin counts are 44 manure, 38 manured soil and 29 soil MAGs. They match `../data_provenance_260923/MAG_provenance.tsv`. The other edited numbers have not been audited yet.
