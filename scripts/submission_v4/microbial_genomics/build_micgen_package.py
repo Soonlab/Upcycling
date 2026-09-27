@@ -276,18 +276,18 @@ subprocess.run([PANDOC, str(out_md), "-o", str(out_docx),
                 "--from=markdown+pipe_tables+tex_math_dollars+raw_attribute"], check=True)
 
 
-def style_doc(path, line_numbers):
+def style_doc(path, line_numbers, font="Arial"):
     doc = Document(path)
     for st in doc.styles:
         if st.type == 1 and st.font is not None:  # paragraph styles
-            st.font.name = "Arial"
+            st.font.name = font
             rpr = st.element.get_or_add_rPr()
             fonts = rpr.find(qn("w:rFonts"))
             if fonts is None:
                 fonts = OxmlElement("w:rFonts")
                 rpr.append(fonts)
             for a in ("w:ascii", "w:hAnsi", "w:cs", "w:eastAsia"):
-                fonts.set(qn(a), "Arial")
+                fonts.set(qn(a), font)
             for a in ("w:asciiTheme", "w:hAnsiTheme", "w:cstheme", "w:eastAsiaTheme"):
                 if fonts.get(qn(a)) is not None:
                     del fonts.attrib[qn(a)]
@@ -352,19 +352,19 @@ sm1 = [f"# Supplementary Material 1\n\n**{title}**\n\nContents: Figures S1–S5,
        "Tables S1–S3 are provided as Supplementary Material 2 (Excel workbook); their descriptions are listed below.\n"]
 for k in (1, 2, 3):
     m = re.search(rf"^### (Table S{k} \|.*?)\n(.*?)(?=^### |^## |\Z)", leg, re.S | re.M)
-    sm1.append(f"**{m.group(1).strip()}** {m.group(2).strip()}\n")
+    sm1.append(f"**{m.group(1).strip().replace(' |', '.')}** {m.group(2).strip()}\n")  # "Table S1." (2026-09-28)
 parts_md = [("00_contents", "\n".join(sm1))]
 for i in range(1, 6):
     m = re.search(rf"^### (Figure S{i} \|.*?)\n(.*?)(?=^### |^## )", leg, re.S | re.M)
     assert m, i
-    parts_md.append((f"S{i}_legend", f"**{m.group(1).strip()}** {m.group(2).strip()}\n"))
+    parts_md.append((f"S{i}_legend", f"**{m.group(1).strip().replace(' |', '.')}** {m.group(2).strip()}\n"))
 pdfs = []
 for stem, text in parts_md:
     md = BUILD / f"sm1_{stem}.md"
     md.write_text(text)
     dx = md.with_suffix(".docx")
     subprocess.run([PANDOC, str(md), "-o", str(dx)], check=True)
-    style_doc(dx, line_numbers=False)
+    style_doc(dx, line_numbers=False, font="Times New Roman")  # SM1 in Times New Roman, like the manuscript (2026-09-28)
     subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir", str(BUILD), str(dx)],
                    check=True, capture_output=True)
     pdfs.append(dx.with_suffix(".pdf"))
@@ -405,7 +405,7 @@ for f in srcs:
         for rng in ws.merged_cells.ranges:
             nw.merge_cells(str(rng))
         nw.freeze_panes = ws.freeze_panes
-    cs.append([m.group(1).strip().replace("*", ""), m.group(2).strip().replace("*", ""), ", ".join(names)])
+    cs.append([m.group(1).strip().replace("*", "").replace(" |", "."), m.group(2).strip().replace("*", ""), ", ".join(names)])
 cs.column_dimensions["A"].width = 45
 cs.column_dimensions["B"].width = 100
 cs.column_dimensions["C"].width = 60
