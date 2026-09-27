@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: If you use this code or these tables, please cite the associated article once published; until then cite
+  this repository.
+type: software
+title: Comparative genomics of enrichment-culture MAGs from cattle manure–soil microcosms identifies convergent
+  Sphingobacterium and Pseudomonas lineages with genomic potential for microbially induced carbonate precipitation
+authors:
+- family-names: Kim
+  given-names: Soon-Chan
+  affiliation: Division of AI Data Science, College of Information and Communication Technology, The University
+    of Suwon, Hwaseong-si, Gyeonggi-do 18323, South Korea
+- family-names: Kim
+  given-names: Daehyun
+  affiliation: Department of Civil and Environmental Engineering, The University of Suwon, Hwaseong-si, Gyeonggi-do
+    18323, South Korea
+- family-names: Cha
+  given-names: Gyuhyon
+  affiliation: Department of Environmental & Energy Engineering, The University of Suwon, Hwaseong-si, Gyeonggi-do
+    18323, South Korea
+- family-names: Ahn
+  given-names: Hongryul
+  affiliation: Division of AI Data Science, College of Information and Communication Technology, The University
+    of Suwon, Hwaseong-si, Gyeonggi-do 18323, South Korea
+repository-code: https://github.com/Soonlab/Upcycling
+license: MIT
+keywords:
+- microbially induced carbonate precipitation
+- metagenome-assembled genomes
+- Sphingobacterium
+- urease
+- carbonic anhydrase
+- cattle manure
+- comparative genomics
+abstract: 'Analysis code, figure builders and supplementary tables for the comparative-genomic re-analysis of 111
+  publicly available metagenome-assembled genomes (Pérez-Valera and Elhottová 2025; NCBI BioProject PRJNA1231077;
+  Zenodo 10.5281/zenodo.15309541) recovered from enrichment cultures of dairy-cattle manure, manure-amended soil
+  and soil microcosms. Six MAGs from two lineages (four Sphingobacterium, two Pseudomonas_E) are prioritized as
+  candidates for microbially induced carbonate precipitation on the basis of urease and carbonic anhydrase gene
+  content, UreC catalytic-residue conservation, purifying selection on urease genes and manure-associated adaptation
+  traits. Corresponding author: Soon-Chan Kim.'

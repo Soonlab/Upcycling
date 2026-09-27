@@ -1,0 +1,52 @@
+{
+  "title": "Comparative genomics of enrichment-culture MAGs from cattle manure–soil microcosms identifies convergent Sphingobacterium and Pseudomonas lineages with genomic potential for microbially induced carbonate precipitation",
+  "upload_type": "software",
+  "description": "Analysis code, figure builders and supplementary tables for the comparative-genomic re-analysis of 111 publicly available metagenome-assembled genomes (Pérez-Valera and Elhottová 2025; NCBI BioProject PRJNA1231077; Zenodo 10.5281/zenodo.15309541) recovered from enrichment cultures of dairy-cattle manure, manure-amended soil and soil microcosms. Six MAGs from two lineages (four Sphingobacterium, two Pseudomonas_E) are prioritized as candidates for microbially induced carbonate precipitation on the basis of urease and carbonic anhydrase gene content, UreC catalytic-residue conservation, purifying selection on urease genes and manure-associated adaptation traits. Corresponding author: Soon-Chan Kim.",
+  "creators": [
+    {
+      "name": "Kim, Soon-Chan",
+      "affiliation": "Division of AI Data Science, College of Information and Communication Technology, The University of Suwon, Hwaseong-si, Gyeonggi-do 18323, South Korea"
+    },
+    {
+      "name": "Kim, Daehyun",
+      "affiliation": "Department of Civil and Environmental Engineering, The University of Suwon, Hwaseong-si, Gyeonggi-do 18323, South Korea"
+    },
+    {
+      "name": "Cha, Gyuhyon",
+      "affiliation": "Department of Environmental & Energy Engineering, The University of Suwon, Hwaseong-si, Gyeonggi-do 18323, South Korea"
+    },
+    {
+      "name": "Ahn, Hongryul",
+      "affiliation": "Division of AI Data Science, College of Information and Communication Technology, The University of Suwon, Hwaseong-si, Gyeonggi-do 18323, South Korea"
+    }
+  ],
+  "keywords": [
+    "microbially induced carbonate precipitation",
+    "metagenome-assembled genomes",
+    "Sphingobacterium",
+    "urease",
+    "carbonic anhydrase",
+    "cattle manure",
+    "comparative genomics"
+  ],
+  "license": "MIT",
+  "access_right": "open",
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.15309541",
+      "relation": "isDerivedFrom",
+      "resource_type": "dataset"
+    },
+    {
+      "identifier": "https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1231077",
+      "relation": "isDerivedFrom",
+      "resource_type": "dataset"
+    },
+    {
+      "identifier": "https://github.com/Soonlab/Upcycling",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ],
+  "language": "eng"
+}
