@@ -15,6 +15,8 @@ induced carbonate precipitation (MICP).
 > **2026-09-23:** every analysis that used the former "livestock source" variable was removed
 > (`scripts/submission_v4/REFRAME_REPORT_260923.md`); Fig 5, Fig S5 and the graphical abstract
 > were rebuilt (`figures/build/build_v4_*.py`), Table S2/S3 workbooks were updated.
+> **2026-09-28:** Microbiology Society style — lowercase (a) panel labels in every figure; supplementary
+> Tables S1/S2 swapped so the workbooks are first cited in order (S1 = per-MAG, S2 = reference panels).
 
 ---
 
@@ -28,8 +30,8 @@ induced carbonate precipitation (MICP).
 │   ├── Graphical_abstract
 │   └── build/                         build_v2_*.py + shared modules; `run_all.sh` rebuilds all pages
 ├── results/
-│   ├── supplementary_tables/          Table S1–S3 workbooks (S1 per-MAG measurements, S2 reference panels,
-│   │                                  reference panels/methods) + Table S5b raw DRAM export
+│   ├── supplementary_tables/          Table S1–S3 workbooks (S1 per-MAG measurements, S2 reference panels
+│   │                                  and method outputs, S3 comparative statistics) + Table S5b raw DRAM export
 │   ├── main/                          Pangenome + GTDB-Tk summaries
 │   ├── extra/                         Trait-module scans, ANI, AAI, novelty screen
 │   ├── revision/                      Cluster audit, permutation stats, dbCAN HMMER (final pass), ureC tree
