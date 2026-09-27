@@ -10,7 +10,7 @@ Microbially induced carbonate precipitation (MICP) is a low-carbon route to grou
 
 The study is computational and we state its limits explicitly: the dataset derives from selective enrichment cultures and the findings define prioritized genomic hypotheses for cultivation and biochemical validation rather than demonstrated MICP activity. We believe the work fits the journal's scope of original research that uses genomic approaches to investigate microbiology, as it combines pan-genome analysis, phylogenomics, gene-locus architecture, selection analysis and genomic safety screening to prioritize lineages of applied interest from public genome-resolved data.
 
-In line with the journal's Open Data policy, all analyzed genomes and the underlying reads are publicly available from the data producers (BioProject PRJNA1231077; Zenodo 10.5281/zenodo.15309541), with per-genome accessions in Table S2P. Our derived data and analysis code are deposited at Zenodo (DOI: AUTHOR VERIFICATION REQUIRED) and GitHub (https://github.com/Soonlab/Upcycling). No new sequence data were generated.
+In line with the journal's Open Data policy, all analyzed genomes and the underlying reads are publicly available from the data producers (BioProject PRJNA1231077; Zenodo 10.5281/zenodo.15309541), with per-genome accessions in Table S2P. Our derived data and analysis code are deposited at Zenodo (https://doi.org/10.5281/zenodo.22999013, restricted during review) and GitHub (https://github.com/Soonlab/Upcycling). No new sequence data were generated.
 
 The manuscript has not been published and is not under consideration elsewhere. All authors have approved the submission and declare no conflicts of interest.
 
