@@ -83,3 +83,20 @@ The Data Summary no longer carries a citation. It keeps the names of the data pr
 
 - The working copy: 1 front-matter citation removed, 41 citation groups converted, 58 references. The verifier gained a check that the front matter lost only the citation, and all 11 checks pass.
 - The build: 23 structural checks and 129 numeric checks pass.
+
+## 2026-09-27 — Major/Minor guideline items applied to the working copy
+
+`01_Manuscript_MicrobialGenomics_workhere.docx` was edited in place (all changed text in blue). Pre-edit copy:
+`_backup_260927/01_Manuscript_MicrobialGenomics_workhere.pre_major_minor_260927.docx`. Ledger: `../MICGEN_GUIDELINE_CHECK_workhere_260927.md`.
+Panel letters are now lowercase "(a)" in the figures (`Figures/`, rebuilt with `UPCYCLING_PANEL=lower`), in the embedded PNGs, in the
+legends and in the callouts ("Fig. 1a"); `Supplementary_Material_1_Figures_S1-S5.pdf` was rebuilt the same way (pre-edit copy in
+`_backup_260927/`). Reference 19 is the Zenodo dataset record; references 20–59 are the former 19–58. Section headings are unnumbered.
+Software versions were added from the environments on this server; ABRicate is v1.4.0 (not v1.0.1). The v4 markdown master and
+`../Figures/` are unchanged and still use capital panel letters: port these edits before any rebuild. `audit/verify_workhere_refs.py`
+targets the 09-26 conversion and no longer applies to this version.
+
+## 2026-09-28 — lowercase panel letters are now the default everywhere
+
+`../Figures/` (v4 master), `../02_Figure_legends.md`, this package and the GitHub `figures/` folder all use Society-style
+"(a)" panel labels; `build_micgen_package.py` no longer capitalizes callouts. Rebuilding is therefore safe again with respect to
+the figures. The markdown master still lacks the authors' 09-25/09-27 text edits (see the 09-27 section).

@@ -1,5 +1,5 @@
-"""Cross-artefact consistency audit - Microbial Genomics copy (2026-09-23): panel callouts are capital letters
-(matching the figures and legends), and the body ends at "## Conflicts of interest" (Society back-matter order).
+"""Cross-artefact consistency audit - Microbial Genomics copy (2026-09-23; 2026-09-27 lowercase (a) panels in figures and legends,
+"Fig. 1a" callouts in the text), and the body ends at "## Conflicts of interest" (Society back-matter order).
 Run with UPCYCLING_MAN_DIR=../_build/audit_view.
 
 Reads the figures shipped in the package (Figures/) rather than new_figure/figures_v2.
@@ -68,7 +68,7 @@ for block in re.split(r"\n### (?=Fig)", leg)[1:]:
     if not m:
         continue
     stem = f"Fig_S{m.group(2)}" if m.group(1) else f"Fig{m.group(2)}"
-    leg_panels[stem] = {x.lower() for x in re.findall(r"\*\*\(([A-E])\)\*\*", block)}
+    leg_panels[stem] = {x.lower() for x in re.findall(r"\*\*\(([A-Ea-e])\)\*\*", block)}
 bad = [(s, p) for s, p in fig_calls if p and p not in leg_panels.get(s, set())]
 check("every cited figure panel exists in that figure's legend",
       not bad, f"missing: {bad or 'none'}")

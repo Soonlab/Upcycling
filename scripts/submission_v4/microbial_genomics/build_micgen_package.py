@@ -67,14 +67,14 @@ man = sub1(r"<!--.*?-->",
 # Highlights are an Elsevier item
 man = sub1(r"\*\*Highlights\*\*\n.*?\n---\n", "", man, re.S)
 
-# American spelling (the category label 'Oxidative-stress defence' is shared with Fig. 4 and the workbooks; left as is)
+# American spelling (the 'Oxidative-stress defense' label was corrected in Fig. 4 and Table 2 on 2026-09-27)
 man = sub1(r"\blabelled\b", "labeled", man)
 
-# figure callouts: the figures and legends use capital panel letters (A), (B); match them
-def up(m):
-    return m.group(1) + m.group(2).upper()
-man, n_call = re.subn(r"(Fig\.\s+S?\d+)([a-e](?:\s*[,–-]\s*[a-e])*)\b", up, man)
+# figure callouts: since 2026-09-27 the figures and legends use Society-style lowercase panel letters (a), (b),
+# and the master's "Fig. 1a" callouts are kept as they are (Microbial Genomics text style, e.g. PMC13580827)
+n_call = len(re.findall(r"(Fig\.\s+S?\d+)([a-e](?:\s*[,–-]\s*[a-e])*)\b", man))
 assert n_call >= 20, n_call
+assert not re.search(r"(Fig\.\s+S?\d+)[A-E]\b", man)
 
 # Impact Statement + Data Summary after the keywords (Society order: Abstract, Data Summary, Impact Statement, Introduction)
 impact = (
@@ -416,5 +416,5 @@ cl = (HERE / "03_Cover_letter_MicrobialGenomics.md")
 subprocess.run([PANDOC, str(cl), "-o", str(cl.with_suffix(".docx"))], check=True)
 style_doc(cl.with_suffix(".docx"), line_numbers=False)
 
-print(f"body words {body_words}; callouts upper-cased {n_call}; references numbered {n_refs}")
+print(f"body words {body_words}; lowercase panel callouts {n_call}; references numbered {n_refs}")
 print("built:", out_md.name, out_docx.name, sm1_pdf.name, "Supplementary_Material_2_Tables_S1-S3.xlsx", "Figures/", cl.name)

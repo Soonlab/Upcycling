@@ -66,7 +66,7 @@ for block in re.split(r"\n### (?=Fig)", leg)[1:]:
     if not m:
         continue
     stem = f"Fig_S{m.group(2)}" if m.group(1) else f"Fig{m.group(2)}"
-    leg_panels[stem] = {x.lower() for x in re.findall(r"\*\*\(([A-E])\)\*\*", block)}
+    leg_panels[stem] = {x.lower() for x in re.findall(r"\*\*\(([A-Ea-e])\)\*\*", block)}
 bad = [(s, p) for s, p in fig_calls if p and p not in leg_panels.get(s, set())]
 check("every cited figure panel exists in that figure's legend",
       not bad, f"missing: {bad or 'none'}")

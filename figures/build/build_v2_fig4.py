@@ -74,7 +74,7 @@ RNG = np.random.default_rng(0)         # fixed jitter for C, identical on every 
 # the MICP-critical trait modules of panel B (category names, not data)
 CRIT = [("Alkaline_Osmo::Mrp_complex", "Mrp Na+/H+ antiporter"),
         ("Alkaline_Osmo::Na_H_antiporter", "nhaA-C antiporter"),
-        ("Alkaline_Osmo::oxidative", "Oxidative-stress defence"),
+        ("Alkaline_Osmo::oxidative", "Oxidative-stress defense"),
         ("Alkaline_Osmo::compatible_solute", "Compatible-solute synthesis"),
         ("CAZyme_proxy::glycoside_hydrolase", "Glycoside hydrolase"),
         ("CAZyme_proxy::carb_binding", "Carbohydrate-binding module"),

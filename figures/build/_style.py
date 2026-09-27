@@ -32,6 +32,7 @@ Sequential heat maps use seq_cmap() (white -> GREEN) so that blue and orange sta
 reserved for the two lineages on every page.
 """
 
+import os
 import re
 from pathlib import Path
 
@@ -155,6 +156,9 @@ def page(height_mm, width_mm=PAGE_W_MM):
         return fig.text(x * MM / fw, 1 - y * MM / fh, s, **kw)
 
     def letter(x, y, s):
+        # panel labels are Microbiology Society style "(a)" by default; UPCYCLING_PANEL=upper restores "A"
+        if os.environ.get("UPCYCLING_PANEL", "lower") == "lower" and len(s) == 1:
+            s = f"({s.lower()})"
         return fig.text(x * MM / fw, 1 - y * MM / fh, s, fontsize=FS_PANEL,
                         fontweight="bold", color=TEXT, ha="left", va="top")
 
