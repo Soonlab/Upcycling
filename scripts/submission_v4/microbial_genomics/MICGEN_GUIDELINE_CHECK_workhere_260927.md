@@ -76,3 +76,9 @@ Open Data 2026-06-18 · Ethics policies(AI 정책) 2026-04-09 · Submission and 
 - `02_Figure_legends.md` 38개 `**(a)**`(+ `(a–e)`·`panels c and d`), 수정 전 `02_Figure_legends.pre_lowercase_260927.md`; `02_Figure_legends.docx` 재생성. `01_Manuscript.md` 콜아웃은 원래 `Fig. 1a`라 무변경.
 - `build_micgen_package.py` 대문자 변환 제거(수정 전 `_build/build_micgen_package.pre_lowercase_260927.py`), 패키지 재빌드. 감사 2종×2사본 legend 정규식 `[A-Ea-e]`.
 - 이제 workhere.docx와 master의 그림·범례·콜아웃 표기가 일치. GitHub `figures/`·`figures/build/`·`scripts/submission_v4/` 동기화.
+
+## 2026-09-28 보충표 S1↔S2 맞바꿈 (m7 처리, 사용자 지시)
+- 첫 인용 순이 S2(2.1 S2P)→S1→S3였음 → 워크북 번호 교환: **S1 = per-MAG(구 S2, 시트 S1A–S1T), S2 = reference panels(구 S1, S2A–S2O)**, S3 불변. 시트 안 문자는 그대로(예: S2P→S1P).
+- 적용: `Supplementary_tables/` 파일명·시트명·README 셀(원본 `_pre_swap_260928/`) · `01_Manuscript.md`(17토큰)·`02_Figure_legends.md`(블록 순서도 S1→S2→S3; `*.pre_swap_260928.md`) · docx 재생성 · 빌더 Data Summary 문구 · 감사 주석 · **workhere.docx 콜아웃 18곳(파란색, `_backup_260927/…pre_swap_260928.docx`)** · 패키지 재빌드(xlsx 시트명·Contents·보충 PDF 목차).
+- 스크립트 `/tmp/.../swap_s1s2.py`(세션 임시). 감사 결과는 아래 줄 참조.
+- 감사: MGen 사본 구조 ALL CHECKS PASS·수치 ALL NUMBERS AGREE, master 동일. workhere 첫 인용 순 S1→S2→S3, 인용 시트 21종 전부 존재.

@@ -100,3 +100,10 @@ targets the 09-26 conversion and no longer applies to this version.
 `../Figures/` (v4 master), `../02_Figure_legends.md`, this package and the GitHub `figures/` folder all use Society-style
 "(a)" panel labels; `build_micgen_package.py` no longer capitalizes callouts. Rebuilding is therefore safe again with respect to
 the figures. The markdown master still lacks the authors' 09-25/09-27 text edits (see the 09-27 section).
+
+## 2026-09-28 — Table S1 and S2 swapped
+
+The supplementary workbooks are now numbered in order of first citation: S1 = per-MAG measurements (S1A–S1T, formerly S2),
+S2 = reference panels and method outputs (S2A–S2O, formerly S1), S3 unchanged. Sheet letters are unchanged, so the provenance
+sheet is now S1P. Applied to the source workbooks, the markdown master, the builder, the audits, the working docx (blue) and the
+rebuilt package.

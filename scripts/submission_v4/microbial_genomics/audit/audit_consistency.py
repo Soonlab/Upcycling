@@ -21,7 +21,7 @@ MAN = MAN_DIR / "01_Manuscript.md"
 LEG = MAN_DIR / "02_Figure_legends.md"
 FIGDIR = MAN_DIR / "Figures"
 TABDIR = BASE / "SUBMISSION/Supplementary_tables_v2"
-# since 2026-09-23 the master ships its own workbooks (S1 = reference panels, S2 = per-MAG, S3 = statistics; sheets S1A ...)
+# since 2026-09-23 the master ships its own workbooks (S1 = per-MAG, S2 = reference panels, S3 = statistics; sheets S1A ...; S1/S2 swapped 2026-09-28)
 if (MAN_DIR / "Supplementary_tables").is_dir() and list((MAN_DIR / "Supplementary_tables").glob("Table_S1_*.xlsx")):
     TABDIR = MAN_DIR / "Supplementary_tables"
 MAX_H_MM = 235.0

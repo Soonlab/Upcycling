@@ -96,7 +96,7 @@ data_summary = (
     
     "and are available from NCBI BioProject PRJNA1231077 (https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1231077) and "
     "Zenodo (https://doi.org/10.5281/zenodo.15309541). The SRA run and BioSample accessions of the reads underlying "
-    "each genome are listed in Table S2P.\n\n"
+    "each genome are listed in Table S1P.\n\n"
     "2. Derived data generated in this study, including the Bakta, Panaroo, GTDB-Tk and DRAM outputs, the full DRAM "
     "metabolism summary, the IQ-TREE report of the SH and AU topology tests and the trait-module tables, are "
     f"available from Zenodo (https://doi.org/{AVR}: reserve the DOI before submission; the record may stay "

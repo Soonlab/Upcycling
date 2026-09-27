@@ -28,7 +28,7 @@ induced carbonate precipitation (MICP).
 │   ├── Graphical_abstract
 │   └── build/                         build_v2_*.py + shared modules; `run_all.sh` rebuilds all pages
 ├── results/
-│   ├── supplementary_tables/          Table S1–S3 workbooks (per-MAG measurements, statistics,
+│   ├── supplementary_tables/          Table S1–S3 workbooks (S1 per-MAG measurements, S2 reference panels,
 │   │                                  reference panels/methods) + Table S5b raw DRAM export
 │   ├── main/                          Pangenome + GTDB-Tk summaries
 │   ├── extra/                         Trait-module scans, ANI, AAI, novelty screen
